@@ -4,12 +4,12 @@ import axios from 'axios';
 import InstAI_icon from "../../image/instai_icon.png";
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import {step1 , step2 , step3 , step4} from "../../store/projectSlice";
-import { useSelector , useDispatch } from 'react-redux';
+//import { useSelector , useDispatch } from 'react-redux';
 
 function Step() {
   //redux 使用
   //const state = useSelector(state => state.project);
-  const dispatch = useDispatch();
+  //const dispatch = useDispatch();
   //const { confirmed1, confirmed2, confirmed3, confirmed4 } = state.project;
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
@@ -22,7 +22,6 @@ function Step() {
   const [confirm1Data, setConfirm1Data] = useState(JSON.parse(localStorage.getItem(`confirmStatusImg_${userid}_${projectname}`) || 'false'));
   const [confirm2Data, setConfirm2Data] = useState(JSON.parse(localStorage.getItem(`confirmStatusReq_${userid}_${projectname}`) || 'false'));
   const [step,setstep] = useState();
-  
   
   const fetchstep = async () => {
     try {
@@ -66,7 +65,7 @@ function Step() {
     const userConfirm = window.confirm(str);
     if (userConfirm) {
       if (!upload) {
-        dispatch(step1);
+        //dispatch(step1);
         setUpload(upload);
         console.log("upload:",upload);
         navigate(`/DataFilter?id=${userid}&projectname=${projectname}`);
@@ -88,7 +87,7 @@ function Step() {
     if (userConfirm) {
       if(upload){
          if (!requirement) {
-          dispatch(step2);
+          //dispatch(step2);
           setRequirement(requirement);
           console.log("Fill out the form : ",requirement);
           navigate(`/Requirment?id=${userid}&projectname=${projectname}`);
@@ -108,7 +107,7 @@ function Step() {
     if(userConfirm){
       if(upload && requirement){
         setConfirm1Data(confirm1Data);
-        dispatch(step3);
+        //dispatch(step3);
         console.log('Button clicked. Confirm is now:', confirm1Data);
         navigate(`/ConfirmImg?id=${userid}&projectname=${projectname}`);
       }
@@ -122,7 +121,7 @@ function Step() {
     const userConfirm=window.confirm("需求檢查");
     if(userConfirm){
       if(confirm1Data && requirement && upload){
-        dispatch(step4);
+        //dispatch(step4);
         setConfirm2Data(confirm2Data);
         console.log('Button clicked. Confirm is now:', confirm2Data);
         navigate(`/ConfirmReq?id=${userid}&projectname=${projectname}`);

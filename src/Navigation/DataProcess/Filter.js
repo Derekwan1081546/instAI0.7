@@ -10,7 +10,7 @@ const Filter = () => {
   const id = searchParams.get('id');
   const projectname = searchParams.get('projectname');
   const navigate = useNavigate();
-  
+  //const [format , setFormat] = useState([]);
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
   const [validFilesCount, setValidFilesCount] = useState(0);
@@ -23,7 +23,6 @@ const Filter = () => {
     return new Promise((resolve) => {
       const img = new Image();
       img.onload = function () {
-        console.log('Image loaded successfully');
         console.log('Original Width:', img.naturalWidth);
         console.log('Original Height:', img.naturalHeight);
         resolve(img.naturalWidth === 512 && img.naturalHeight === 512);
@@ -37,6 +36,7 @@ const Filter = () => {
   };
 
   const handleFileSelect = async (event) => {
+    console.log("touch");
     const files = event.target.files;
     console.log('Selected Files:', files);
     const allowedFileTypes = ['image/jpeg', 'image/png', 'image/jpg'];
@@ -81,7 +81,51 @@ const Filter = () => {
     setImagePreviews(updatedImagePreviews);
     setValidFilesCount(updatedSelectedFiles.length);
   };
-
+  const formatSize = async (file) => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = function () {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = 512;
+        canvas.height = 512;
+        ctx.drawImage(img, 0, 0, 512, 512);
+        canvas.toBlob((blob) => {
+          const formattedFile = new File([blob], file.name, { type: 'image/jpeg' });
+          const previewURL = URL.createObjectURL(formattedFile);
+          resolve({ formattedFile, previewURL });
+        }, 'image/jpeg');
+      };
+      img.onerror = function () {
+        console.error('Error loading image');
+        resolve({ formattedFile: null, previewURL: null });
+      };
+      img.src = URL.createObjectURL(file);
+    });
+  };
+  
+  const handelFormat = async (event) => {
+    const files = event.target.files;
+    const allowedFileTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+    const filteredFiles = [...files].filter((file) =>
+      allowedFileTypes.includes(file.type)
+    );
+  
+    const formatedFiles = await Promise.all(
+      filteredFiles.map(async (file) => await formatSize(file))
+    );
+  
+    const newFormatFiles = formatedFiles.filter((file) => file.formattedFile !== null);
+  
+    const updatedSelectedFiles = [...selectedFiles, ...newFormatFiles.map((file) => file.formattedFile)];
+    const updatedImagePreviews = [...imagePreviews, ...newFormatFiles.map((file) => file.previewURL)];
+    console.log('format success');
+    setSelectedFiles(updatedSelectedFiles);
+    setImagePreviews(updatedImagePreviews);
+    setValidFilesCount(updatedSelectedFiles.length);
+  };
+  
+  
   const handleDownload = (file) => {
     const a = document.createElement('a');
     a.href = window.URL.createObjectURL(new Blob([file]));
@@ -125,7 +169,7 @@ const Filter = () => {
       alert('請選擇要上傳的圖片!');
     } 
     //else if (selectedFiles.length < 10) {
-    //  alert('请至少選擇10张合格的照片!');
+    //  alert('请至少選擇10張合格的照片!');
     //  return;
     //}
     else {
@@ -158,6 +202,7 @@ const Filter = () => {
     }
   };
 
+  
   return (
     <div className="container-fluid mt-3">
       <div className="row d-flex justify-content-between ">
@@ -198,6 +243,11 @@ const Filter = () => {
               Done
             </button>
           </div>
+          <div>
+            <button className={'btn btn-primary'} onClick={handelFormat}>
+              Format data
+            </button>
+          </div>
         </div>
       </div>
 
@@ -223,7 +273,7 @@ const Filter = () => {
 
       <div className="row mt-3">
         <div className="col-12 text-center">
-          <h3> {validFilesCount} photos have been accepted for model processing.</h3>
+          <input type='file' accept='image/' multiple name="images" onChange={handelFormat}/>
         </div>
       </div>
     </div>
