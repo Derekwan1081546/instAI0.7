@@ -14,6 +14,7 @@ const Filter = () => {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
   const [validFilesCount, setValidFilesCount] = useState(0);
+  //const fileInputRef = useRef(null);
 
   useEffect(() => {
     console.log('Selected Files:', selectedFiles.length);
@@ -164,6 +165,7 @@ const Filter = () => {
     });
   };
 
+
   const handleUpload = async () => {
     if (selectedFiles.length === 0) {
       alert('請選擇要上傳的圖片!');
@@ -225,9 +227,18 @@ const Filter = () => {
 
       <div className="row justify-content-between">
         <div className="col-4">
-          <input type="file" accept="image/*" multiple name="images" onChange={handleFileSelect} />
+        <label className="btn btn-primary">
+          select image
+          <input type="file" accept="image/*" multiple name="images" onChange={handleFileSelect} style={{ display: 'none' }} />
+        </label>  
         </div>
-        <div className="col-8 d-flex  justify-content-end">
+        <div className="col-4">
+        <label className="btn btn-primary">
+          Format Images
+          <input type="file" accept="image/" multiple name="images" onChange={handelFormat} style={{ display: 'none' }} />
+        </label>
+        </div>
+        <div className="col-4 d-flex  justify-content-end">
           <div>
             <button className={`btn btn-danger `} onClick={handleDeleteAllPreviews}>
               Remove all
@@ -266,11 +277,7 @@ const Filter = () => {
        ))}
       </div>
 
-      <div className="row mt-3">
-        <div className="col-12 text-center">
-          <input type='file' accept='image/' multiple name="images" onChange={handelFormat}/>
-        </div>
-      </div>
+      
     </div>
   );
 };
