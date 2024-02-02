@@ -168,10 +168,10 @@ const Filter = () => {
     if (selectedFiles.length === 0) {
       alert('請選擇要上傳的圖片!');
     } 
-    //else if (selectedFiles.length < 10) {
-    //  alert('请至少選擇10張合格的照片!');
-    //  return;
-    //}
+    else if (selectedFiles.length < 10) {
+      alert('请至少選擇10張合格的照片!');
+      return;
+    }
     else {
       const confirmDelete = window.confirm('要求已經滿足,確定要上傳圖片?');
       if (!confirmDelete) {
@@ -243,32 +243,27 @@ const Filter = () => {
               Done
             </button>
           </div>
-          <div>
-            <button className={'btn btn-primary'} onClick={handelFormat}>
-              Format data
-            </button>
-          </div>
         </div>
       </div>
 
-      <div className={`mt-3 ${styles.downloadDiv}`} style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}>
+      <div className={`mt-3 ${styles.downloadDiv}`} style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-start', alignItems: 'center' }}>
         {imagePreviews.map((preview, index) => (
-          <span key={index} className={styles.imgPreviews} style={{ marginLeft: '10px', marginBottom: '10px' }}>
-            <img
-              src={preview}
-              alt={`image ${index}`}
-              style={{ width: '100px', height: '120px', top: '20px', marginTop: '20px', marginLeft: '20px', marginBottom: '20px' }}
-            />
+          <span key={index} className={styles.imgPreviews} style={{ marginLeft: '10px', marginBottom: '10px', width: 'calc(100% / 11 - 20px)' }}>
+             <img
+               src={preview}
+               alt={`image ${index}`}
+               style={{ width: '100px', height: '120px', top: '20px', marginTop: '20px', marginLeft: '20px', marginBottom: '20px' }}
+              />
             <div className="d-flex flex-column align-items-center">
-              <button className={`btn btn-danger ${styles.downloadDelete}`} onClick={() => handleDeleteImage(index)}>
-                delete
-              </button>
+               <button className={`btn btn-danger ${styles.downloadDelete}`} onClick={() => handleDeleteImage(index)}>
+                 delete
+               </button>
               <button className={`btn btn-primary ${styles.downloadSingleImg}`} onClick={() => handleDownload(selectedFiles[index])}>
-                Download
+                 Download
               </button>
-            </div>
-          </span>
-        ))}
+           </div>
+         </span>
+       ))}
       </div>
 
       <div className="row mt-3">
