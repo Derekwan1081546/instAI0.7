@@ -154,8 +154,14 @@ const Filter = () => {
     setValidFilesCount(0);
   };
 
-  const handleDownloadAll = () => {
-    selectedFiles.forEach((file) => {
+  const handleDownloadAll = async () => {
+    console.log(`download all ${selectedFiles.length} photos`);
+    const allFiles = [...selectedFiles];
+    const formattedFiles = await Promise.all(selectedFiles.map(async (file) => await formatSize(file)));
+    const newFormatFiles = formattedFiles.filter((file) => file.formattedFile !== null);
+    allFiles.push(...newFormatFiles.map((file) => file.formattedFile));
+
+    allFiles.forEach((file, index) => {
       const a = document.createElement('a');
       a.href = window.URL.createObjectURL(new Blob([file]));
       a.setAttribute('download', file.name);
@@ -164,6 +170,7 @@ const Filter = () => {
       document.body.removeChild(a);
     });
   };
+  
 
 
   const handleUpload = async () => {
