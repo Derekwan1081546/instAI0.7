@@ -3,9 +3,8 @@ import "./Project.css";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
+
 import InstAI_icon from '../../image/instai_icon.png'
-import { useDispatch, useSelector } from "react-redux";
-import { deleteStep  } from "../../store/projectSlice";
 
 function Project() {
   const location = useLocation();
@@ -17,12 +16,9 @@ function Project() {
   const [projectList, setProjectList] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [showLogoutPrompt, setShowLogoutPrompt] = useState(false);
-  
-  // redux //
-  const state = useSelector(state => state.project);
-  const dispatch = useDispatch();
+  const g_r = process.env.GET_PROJECT;
+  const d_p = process.env.DELETE_PROJECT;
 
-  console.log(state);
   console.log(searchParams)
   console.log(id)
   console.log(type)
@@ -30,7 +26,7 @@ function Project() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/api/project/getproject/?username=${type ? id : userid}`);
+        const response = await axios.get(`${g_r}/?username=${type ? id : userid}`);
         setProjectList(response.data);
       } catch (error) {
         console.error(error);
@@ -39,7 +35,7 @@ function Project() {
     };
 
     fetchData();
-  }, [id , userid , type]);
+  }, []);
 
   const handleDeleteProject = async (index) => {
     const confirmDelete = window.confirm("確定要刪除專案?");
@@ -53,14 +49,13 @@ function Project() {
 
     try {
       const response = await axios.post(
-        `http://localhost:8080/api/project/deleteproject?username=${type ? id : userid}`,
+        `${d_p}?username=${type ? id : userid}`,
         { projectName: deletedProject.trim() }
       );
       localStorage.setItem(`firstPage_${type ? id : userid}_${deletedProject}`, 'false');
       localStorage.setItem(`secondPage_${type ? id : userid}_${deletedProject}`, 'false');
       localStorage.setItem(`confirmStatusImg_${type ? id : userid}_${deletedProject}`, 'false');
       localStorage.setItem(`confirmStatusReq_${type ? id : userid}_${deletedProject}`, 'false');
-      dispatch(deleteStep());
       alert(response.data);
       console.log(response);
     } catch (error) {

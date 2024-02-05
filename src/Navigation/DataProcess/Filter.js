@@ -15,7 +15,8 @@ const Filter = () => {
   const [imagePreviews, setImagePreviews] = useState([]);
   const [validFilesCount, setValidFilesCount] = useState(0);
   //const fileInputRef = useRef(null);
-
+  const u = process.env.UPLOAD;
+  const c_s = process.env.CONFIRM_STEP;
   useEffect(() => {
     console.log('Selected Files:', selectedFiles.length);
   }, [selectedFiles]);
@@ -194,14 +195,14 @@ const Filter = () => {
 
       try {
         const response = await axios.post(
-          `http://localhost:8080/api/upload/upload?username=${id}&projectname=${projectname}`,
+          `-${u}?username=${id}&projectname=${projectname}`,
           formData
         );
         console.log(response.data);
         alert('upload success');
 
         const response2 = await axios.post(
-          `http://localhost:8080/api/project/confirmstep/?step=1&username=${id}&projectname=${projectname}`
+          `${c_s}/?step=1&username=${id}&projectname=${projectname}`
         );
         console.log('step updated successfully:', response2.data);
         navigate(`/Step?id=${id}&projectname=${projectname}`);

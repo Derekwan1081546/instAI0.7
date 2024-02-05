@@ -14,10 +14,15 @@ function ConfirmImg() {
   const [confirmed2, setConfirmed2] = useState(JSON.parse(localStorage.getItem(`confirmStatusImg_${id}_${projectname}`) || 'false'));
   const navigate = useNavigate();
   const [selectedFiles, setSelectedFiles] = useState([]);
+  const p = process.env;
+  const upload_download = p.UPLOAD_DOWNLOAD;
+  const upload_deleteimg = p.UPLOAD_DELETEIMG;
+  const upload = p.UPLOAD;
+  const confirm_img = p.AWS_CONFIRM_IMG;
   console.log("現在狀態",confirmed2);
   const fetchData = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/api/upload/download?username=${id}&projectname=${projectname}`);
+      const response = await axios.get(`${upload_download}?username=${id}&projectname=${projectname}`);
       console.log(response.data.images);
       setImagePreviews(response.data.images);
     } catch (error) {
@@ -39,7 +44,7 @@ function ConfirmImg() {
 
     setImagePreviews(updatedPreviews);
     try {
-      await axios.post(`http://localhost:8080/api/upload/deleteimg?username=${id}&projectname=${projectname}`, { filename: deletedImage });
+      await axios.post(`${upload_deleteimg}?username=${id}&projectname=${projectname}`, { filename: deletedImage });
       alert('Delete success');
     } catch (error) {
       console.error('Error deleting image:', error);
@@ -149,7 +154,7 @@ function ConfirmImg() {
       }
       console.log(selectedFiles.length);
       try {
-        const response = await axios.post(`http://localhost:8080/api/upload/upload?username=${id}&projectname=${projectname}`, formData);
+        const response = await axios.post(`${upload}?username=${id}&projectname=${projectname}`, formData);
         console.log(response.data);
         alert('Upload success');
         setSelectedFiles([]);
@@ -180,9 +185,10 @@ function ConfirmImg() {
       
       <div className="image-previews">
         {imagePreviews.map((preview, index) => (
+          
           <div key={index} className="image-preview">
             <img
-              src={`https://instaiweb-bucket.s3.us-east-1.amazonaws.com/${preview}`}
+              src={`${confirm_img}/${preview}`}
               //src={`http://localhost:8080${preview}`}
               alt={`image ${index}`}
               style={{ width: '128px', height: '128px' }}

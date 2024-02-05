@@ -11,11 +11,12 @@ function ViewReq() {
   const searchParams = new URLSearchParams(location.search);
   const projectname = searchParams.get('projectname');
   const id = searchParams.get('id');
+  const get_req = process.env.GET_REQUIREMENT;
   const navigate = useNavigate();
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/upload/getrequirement/?username=${id}&projectname=${projectname}`
+        `${get_req}/?username=${id}&projectname=${projectname}`
       );
       const responseData = response.data.content;
       const parsedData = {};

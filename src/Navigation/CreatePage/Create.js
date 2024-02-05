@@ -10,7 +10,7 @@ function Create() {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const id = searchParams.get('id');
-
+  const add_p = process.env.ADD_PROJECT;
   const [formData, setFormData] = useState({
     projectName: "",
     devices: [],
@@ -32,7 +32,7 @@ function Create() {
       console.log("Form submitted:", formData);
       try {
         const response = await axios.post(
-          `http://localhost:8080/api/project/addproject?username=${id}`,
+          `${add_p}?username=${id}`,
           { projectName: formData.projectName.trim() }
         );
         alert(response.data);

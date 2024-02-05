@@ -13,12 +13,14 @@ function ConfirmReq() {
   const id = searchParams.get('id');
   const navigate = useNavigate();
   const [confirmed, setConfirmed] = useState(JSON.parse(localStorage.getItem(`confirmStatusReq_${id}_${projectname}`) || 'false'));
-
+  const confirm_step = process.env.CONFIRM_STEP;
+  const get_req = process.env.GET_REQUIREMENT;
+  const upload_req = process.env.UPLOAD_REQUIREMENT
   console.log('Initial confirmed value:', confirmed);
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/upload/getrequirement/?username=${id}&projectname=${projectname}`
+        `${get_req}/?username=${id}&projectname=${projectname}`
       );
       const responseData = response.data.content;
       const parsedData = {};
@@ -60,7 +62,7 @@ function ConfirmReq() {
     };
     try { 
       const response = await axios.post(
-        `http://localhost:8080/api/upload/requirement/?username=${id}&projectname=${projectname}`,
+        `${upload_req}/?username=${id}&projectname=${projectname}`,
         requestData
       );
 
@@ -69,7 +71,7 @@ function ConfirmReq() {
       fetchData();
       try {
         const response = await axios.get(
-          `http://localhost:8080/api/upload/getrequirement/?username=${id}&projectname=${projectname}`
+          `${get_req}/?username=${id}&projectname=${projectname}`
         );
         const responseData = response.data.content;
         const parsedData = {};
@@ -140,7 +142,7 @@ const handleConfirmRequirement = () => {
 
     if (confirmed) {
       const response = await axios.post(
-        `http://localhost:8080/api/project/confirmstep/?step=3&username=${id}&projectname=${projectname}`
+        `${confirm_step}/?step=3&username=${id}&projectname=${projectname}`
       );
       console.log('step updated successfully:', response.data);
       window.alert('See your model later');

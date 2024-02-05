@@ -14,10 +14,11 @@ function ViewData() {
   const projectname = searchParams.get('projectname');
   const navigate = useNavigate();
   const [selectedFiles, setSelectedFiles] = useState([]);
-
+  const upload_download = process.env.UPLOAD_DOWNLOAD;
+  const view_data = process.env.AWS_VIEW_DATA;
   // const fetchData = async () => {
   //   try {
-  //     const response = await axios.get(`http://localhost:8080/api/upload/download?username=${id}&projectname=${projectname}`);
+  //     const response = await axios.get(`?username=${id}&projectname=${projectname}`);
   //     console.log(response.data.images);
   //     setImagePreviews(response.data.images);
   //   } catch (error) {
@@ -26,7 +27,7 @@ function ViewData() {
   // };
   const fetchData = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/api/upload/download?username=${id}&projectname=${projectname}`);
+      const response = await axios.get(`${upload_download}?username=${id}&projectname=${projectname}`);
       console.log('Response from backend:', response.data);
   
       if (response.data.images && Array.isArray(response.data.images)) {
@@ -52,7 +53,7 @@ function ViewData() {
 
   //   setImagePreviews(updatedPreviews);
   //   try {
-  //     await axios.post(`http://localhost:8080/api/upload/deleteimg?username=${id}&projectname=${projectname}`, { filename: deletedImage });
+  //     await axios.post(`?username=${id}&projectname=${projectname}`, { filename: deletedImage });
   //     alert('Delete success');
   //   } catch (error) {
   //     console.error('Error deleting image:', error);
@@ -106,7 +107,7 @@ function ViewData() {
   //   }
   //   console.log(selectedFiles.length);
   //   try {
-  //     const response = await axios.post(`http://localhost:8080/api/upload/upload?username=${id}&projectname=${projectname}`, formData);
+  //     const response = await axios.post(`?username=${id}&projectname=${projectname}`, formData);
   //     console.log(response.data);
   //     alert('Upload success');
   //     setSelectedFiles([]);
@@ -141,8 +142,8 @@ function ViewData() {
         {imagePreviews.map((preview, index) => (
           <div key={index} className="image-preview">
             <img
-              //src={`https://instaiweb-bucket.s3.us-east-1.amazonaws.com/uploads/3/cats/5.png`}
-              src={`https://instaiweb-bucket.s3.us-east-1.amazonaws.com/${preview}`}
+              //src={``}
+              src={`${view_data}/${preview}`}
               // src={`http://localhost:8080${preview}`}
               alt={`image ${index}`}
               style={{ width: '128px', height: '128px' }}

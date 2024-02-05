@@ -7,7 +7,7 @@ import InstAI_icon from '../../image/iconnew.png'
 
 const Register = () => {
   const navigate = useNavigate();
-
+  const sign_up = process.env.SIGN_UP;
   const [formErrors, setFormErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
   const [user, setUserDetails] = useState({
@@ -69,7 +69,7 @@ const Register = () => {
     if (Object.keys(formErrors).length === 0 && isSubmit) {
       console.log(user);
       axios
-        .post("http://localhost:8080/api/account/signup/", user)
+        .post(`${sign_up}`, user)
         .then((res) => {
           alert(res.data);
           navigate("/login", { replace: true });
