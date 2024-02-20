@@ -1,47 +1,34 @@
 import './App.css';
 import {BrowserRouter as Router , Routes , Route} from "react-router-dom";
-import React , {useState} from "react";
-// redux
-import { Provider } from 'react-redux';
-import {configureStore } from "@reduxjs/toolkit";
-import projectSlice from "./store/projectSlice";
-import modelSlice from "./store/modelSlice";
+import React , {lazy,Suspense, useState} from "react";
+
+
 // 開發完成頁面
-import Register from "./Navigation/Register/Register";
-import Login from "./Navigation/Login/Login";
-import DataFilter from "./Navigation/DataProcess/Filter";
-import Project from "./Navigation/ProjectPage/Project";
-import CreatePage from "./Navigation/CreatePage/Create";
-import StepPage from "./Navigation/Step1/Step";
+import Loading from './loading';
+const Register = lazy(() => import("./Navigation/Register/Register"));
+const Login = lazy(() => import("./Navigation/Login/Login"));
+const DataFilter = lazy(() => import("./Navigation/DataProcess/Filter"));
+const Project = lazy(() => import("./Navigation/ProjectPage/Project"));
+const CreatePage = lazy(() => import("./Navigation/CreatePage/Create"));
+const StepPage = lazy(() => import("./Navigation/Step1/Step"));
+const ConfirmImg = lazy(() => import('./Navigation/Confirm/ConfirmIMG'));
+const ConfirmReq = lazy(() => import('./Navigation/Confirm/ConfirmReq'));
+const ViewReq = lazy(() => import('./Navigation/Confirm/ViewReq'));
+const ViewData = lazy(() => import('./Navigation/Model/Req'));
+const Requirement = lazy(() => import('./Navigation/Requirment/Requirment'));
+const Data = lazy(() => import("./Navigation/Model/Data"));
+const Req = lazy(() => import('./Navigation/Model/Req'));
+const Model = lazy(() => import('./Navigation/Model/Model'));
 
-import ConfirmImg from './Navigation/Confirm/ConfirmIMG';
-import ConfirmReq from './Navigation/Confirm/ConfirmReq';
-import ViewReq from './Navigation/Confirm/ViewReq';
-import ViewData from './Navigation/Model/Req';
-
-import Requirement from './Navigation/Requirment/Requirment';
-import Data      from "./Navigation/Model/Data";
-import Req from './Navigation/Model/Req';
-import Model     from './Navigation/Model/Model';
-
-//------尚未開發完成-------//
-import LabelPage from './tool/label';
-const store = configureStore({
-  reducer : {
-    project : projectSlice ,
-    model   : modelSlice
-  }
-})
-console.log(store.getState().model);
-console.log(store.getState().project);
-
+// 還沒完成頁面
+const LabelPage = lazy(() => import('./tool/label'));
 
 function App() {
 
   const [userState , setUserState] = useState({});
   return (
     <div className="App">
-      <Provider store = {store}>
+     <Suspense fallback={<Loading/>}>
        <Router>
         <Routes>
           <Route path="/" element={<Register/>}/>
@@ -59,9 +46,10 @@ function App() {
           <Route path="/ViewReq" element={<ViewReq/>}/>
           <Route path="/Model"  element={<Model/>}/>
           <Route path="/Requirment" element={<Requirement/>}/>
+ 
         </Routes>
        </Router>
-      </Provider>
+       </Suspense>
     </div>
   );
 }
