@@ -20,10 +20,10 @@ const Data = lazy(() => import("./Navigation/Model/Data"));
 const Req = lazy(() => import('./Navigation/Model/Req'));
 const Model = lazy(() => import('./Navigation/Model/Model'));
 
-const LabelProject = lazy(()=>import ('./tool/LabelProject'));
-const LabelCreate = lazy(() => import("./tool/LabelCreate"));
-// 還沒完成頁面
-const LabelPage = lazy(() => import("./tool/LabelPage"));
+// const LabelProject = lazy(()=>import ('./tool/LabelProject'));
+// const LabelCreate = lazy(() => import("./tool/LabelCreate"));
+// // 還沒完成頁面
+// const LabelPage = lazy(() => import('./tool/LabelPage'));
 function App() {
 
   const [userState , setUserState] = useState({});
@@ -40,9 +40,9 @@ function App() {
             <Route path='/Step' element={<StepPage />} />
             <Route path="/ConfirmImg" element={<ConfirmImg />} />
             <Route path="/ConfirmReq" element={<ConfirmReq />} />
-            <Route path='/LabelPage' element={<LabelPage />} />
+            {/* <Route path='/LabelPage' element={<LabelPage />} />
             <Route path='/LabelProject' element={<LabelProject/>}/>
-            <Route path='/LabelCreate' element={<LabelCreate/>}/>
+            <Route path='/LabelCreate' element={<LabelCreate/>}/> */}
             <Route path="/Data" element={<Data />} />
             <Route path="/Req" element={<Req />} /> 
             <Route path="/ViewData" element={<ViewData />} />

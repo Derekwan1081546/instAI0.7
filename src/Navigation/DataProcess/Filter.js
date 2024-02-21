@@ -172,7 +172,10 @@ const Filter = () => {
     });
   };
   
-
+ const handleLabel = () =>{
+  // navigate(`/LabelPage_${id}_${projectname}`);
+  navigate("/LabelPage");
+ }
 
   const handleUpload = async () => {
     if (selectedFiles.length === 0) {
@@ -205,7 +208,7 @@ const Filter = () => {
           `${c_s}/?step=1&username=${id}&projectname=${projectname}`
         );
         console.log('step updated successfully:', response2.data);
-        navigate(`/Step?id=${id}&projectname=${projectname}`);
+        navigate(`/LabelPage?id=${id}&projectname=${projectname}`);
       } catch (error) {
         console.error('Error sending data to backend:', error);
       }
@@ -229,7 +232,7 @@ const Filter = () => {
 
       <div className={`card   ${styles.downloadform}`} style={{ height: 100 }}>
         <h1 className="display-4  text-center create-title" style={{ fontWeight: 'bold' }}>
-          Upload/Download
+          Filter the data you want
         </h1>
       </div>
 
@@ -280,6 +283,9 @@ const Filter = () => {
               <button className={`btn btn-primary ${styles.downloadSingleImg}`} onClick={() => handleDownload(selectedFiles[index])}>
                  Download
               </button>
+           </div>
+           <div>
+            <button onClick={handleLabel}>Go to label Img</button>
            </div>
          </span>
        ))}
