@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import "./Create.css";
+import "./LabelCreate.css";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
-import InstAI_icon from '../../image/instai_icon.png';
+import InstAI_icon from "../image/instai_icon.png";
 
-function Create() {
+function LabelCreate() {
   const navigate = useNavigate();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
@@ -19,9 +19,9 @@ function Create() {
 
   const handleFormDataChange = (fieldName, value) => {
     if (fieldName === "projectDescription" && value.length > 30) {
-      window.confirm("限制字數在30字內");
-      value = value.substring(0, 30);
-    }
+        window.confirm("限制字數在30字內");
+        value = value.substring(0, 30);
+      }
     setFormData((prevData) => ({
       ...prevData,
       [fieldName]: value,
@@ -49,7 +49,7 @@ function Create() {
         console.log(response);
 
         // 導航回去
-        navigate(`/Project?id=${id}&type=1`);
+        navigate(`/LabelProject?id=${id}&type=1`);
       } catch (error) {
         console.error("Error sending data to backend:", error);
       }
@@ -72,7 +72,7 @@ function Create() {
         </div>
 
         <div className="col-auto mt-4"> 
-          <NavLink to={`/Project?id=${id}&type=1`} className="projectPageLink">
+          <NavLink to={`/LabelProject?id=${id}&type=1`} className="projectPageLink">
           <button className="btn projectPageButton">返回專案頁面</button>
         </NavLink>
         </div>
@@ -104,7 +104,7 @@ function Create() {
           value={formData.projectDescription}
           onChange={(e) => handleFormDataChange("projectDescription", e.target.value)}
           className="form-control fs-6"
-          rows="3"
+          rows="3" // 設定顯示行數
           ></textarea>
         </div>
 
@@ -117,4 +117,4 @@ function Create() {
   );
 }
 
-export default Create;
+export default LabelCreate;

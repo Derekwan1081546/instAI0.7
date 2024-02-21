@@ -1,0 +1,38 @@
+一. 選擇標註方式 
+1.object detection with bounding boxes 
+2.semantic segmentation with polygons
+3.semantic segmentation with masks
+
+二. configure data 資料取用
+format : use img from <set manually> ${image}
+
+三. label name 標籤名字
+可以增加標籤的名字 並且用顏色區分
+
+四. configure setting 
+1. img zoom
+2. control for zoom in and zoom out
+3. rotate img 
+4. display label => 統一先放page bottom 
+5. add filter for long list of labels 
+
+~~~~使用bounding box 做示範~~~~~~~~
+五. start for label img
+1. click label name and set the region on photo 
+2. 操作上 由小至大 
+3. if the label are finish and user is continue to label another object ,former label can be locked.(非常重要)
+4. 可以跳過照片不進行標註操作 分成skip || update 
+5. 左上角有跳回去的按鈕 只對以操作過的進行資料跳躍 => 只對已經selectFiles進行二次操作
+6. 依照圖片上傳順序進行命名
+7. skip 在console 裡面為2 update 為 1 並且會顯示在預覽操作葉面 顯示圖片的處理
+
+五. 預覽操作葉面
+1. 針對實際有label的圖片 會顯示complete 
+2. id = 上傳的順序 
+3. 預覽方式分為List 以及 grid => 線性布局以及格式布局 
+4. 可以依照照片的狀態進行排列 包括是否完成標註,操作的狀態
+
+六. 輸出顯示
+1. 格式: json , json-min , csv , tsv , coco
+2. 輸出後之json檔案會顯示多種操作 包括id , annotations(操作完成是使用update || skip) 以及原本圖片的長寬 使否有圖片旋轉 標註的x ,y,長度,寬度
+標註方式,使用的標籤的名字,上傳時間,操作完成時間

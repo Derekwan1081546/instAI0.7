@@ -48,6 +48,13 @@
   padding: 10px 20px !important;
   cursor: pointer;
 }
+
+.add-project-button2 {
+  background-color:#000000 !important;
+  color: #fff !important;
+  padding: 10px 20px !important;
+  cursor: pointer;
+}
 .add-project-button:hover {
   background-color:#5d45c9 !important;
 }

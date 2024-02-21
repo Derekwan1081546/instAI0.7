@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import "./Project.css";
+import "./LabelProject.css";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 
-import InstAI_icon from '../../image/instai_icon.png'
+import InstAI_icon from '../image/instai_icon.png'
 
-function Project() {
+function LabelProject() {
   const location = useLocation();
   const userid = location.state;
   const searchParams = new URLSearchParams(location.search);
@@ -17,8 +17,8 @@ function Project() {
   const [searchTerm, setSearchTerm] = useState('');
   const [showLogoutPrompt, setShowLogoutPrompt] = useState(false);
 
-  const g_r = process.env.GET_PROJECT;
-  const d_p = process.env.DELETE_PROJECT;
+  const g_r = process.env.GET_PROJECT; // 後續需要做更改api
+  const d_p = process.env.DELETE_PROJECT; //後續需要做更改api
 
   console.log(searchParams)
   console.log(id)
@@ -58,21 +58,13 @@ function Project() {
       localStorage.setItem(`secondPage_${type ? id : userid}_${deletedProject}`, 'false');
       localStorage.setItem(`confirmStatusImg_${type ? id : userid}_${deletedProject}`, 'false');
       localStorage.setItem(`confirmStatusReq_${type ? id : userid}_${deletedProject}`, 'false');
-      // 
+      //   
       alert(response.data);
       console.log(response);
     } catch (error) {
       console.error("Error sending data to backend:", error);
     }
   };
-
-  const handleLabelNavigate =() =>{
-    const confirmLabel = window.confirm("確定要進行圖片標註嗎?");
-    if(!confirmLabel){
-      return;
-    }
-    navigate("/LabelProject");
-  }
 
   const handleLogout = () => {
     //setShowLogoutPrompt(true);
@@ -82,6 +74,13 @@ function Project() {
     }
     navigate("/"); // Redirect to the home page
   };
+  const handleNavigate = () =>{
+    const confirmBack = window.confirm("確定回去嗎?")
+    if(!confirmBack){
+        return;
+    }
+    navigate(`/Project`); //後續要做url設定
+  }
 
   const handleConfirmLogout = () => {
     setShowLogoutPrompt(false);
@@ -115,7 +114,7 @@ function Project() {
 
     <div className="row">
       <div className="col-12">
-        <h1 className="mt-3" style={{fontWeight:'bold'}}>Projects</h1>
+        <h1 className="mt-3" style={{fontWeight:'bold'}}>Label-Projects</h1>
       </div>
     </div>
 
@@ -130,12 +129,12 @@ function Project() {
       </div>
 
     <div className="col-auto">
-       <NavLink to={`/CreatePage?id=${type ? id : userid}`}>
+       <NavLink to={`/LabelCreate`}>
           <button className="btn add-project-button">新增專案</button>
        </NavLink>
 
-      <div className="mt-2"> {/* 調整 mt-2 或其他樣式以達到合適的間距 */}
-         <button className='btn add-project-button2' onClick={handleLabelNavigate}>標註資料</button>
+      <div className="mt-2">
+         <button className='btn add-project-button2' onClick={handleNavigate}>返回</button>
       </div>
     </div>
     </div>
@@ -151,7 +150,7 @@ function Project() {
 
               <h2 className="project-Name">{project.projectName}</h2>
           
-              <NavLink className=" projectNavLink" to={`/Step?id=${type ? id : userid}&${project.projectName}`}>
+              <NavLink className=" projectNavLink" to={`/LabelPage?id=${type ? id : userid}&${project.projectName}`}>
                 <p className="project-Detial" >{project.projectDescription}</p>
                 </NavLink>
   
@@ -178,4 +177,4 @@ function Project() {
   );
 }
 
-export default Project;
+export default LabelProject;
