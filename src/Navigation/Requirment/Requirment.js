@@ -28,8 +28,8 @@ function Requirement() {
   const searchParams = new URLSearchParams(location.search);
   const id = searchParams.get("id");
   const projectname = searchParams.get("projectname");
-  const u_r = process.env.UPLOAD_REQUIREMENT;
-  const c_s = process.env.CONFIRM_STEP;
+  const u_r = process.env.REACT_APP_UPLOAD_REQUIREMENT;
+  const c_s = process.env.REACT_APP_CONFIRM_STEP;
   // Set initial values for ID, author, and LastUpdated
   useEffect(() => {
     setReqData((prevData) => ({

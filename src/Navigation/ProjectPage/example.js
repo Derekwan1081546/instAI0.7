@@ -16,28 +16,26 @@ function Project() {
   const [projectList, setProjectList] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [showLogoutPrompt, setShowLogoutPrompt] = useState(false);
- 
-  const g_r = process.env.REACT_APP_GET_PROJECT;
-  const d_p = process.env.REACT_APP_DELETE_PROJECT;
+
+
+  console.log(searchParams)
+  console.log(id)
+  console.log(type)
   
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${g_r}/?username=${type ? id : userid}`);
+        const response = await axios.get(`http://localhost:8080/api/project/getproject/?username=${type ? id : userid}`);
         setProjectList(response.data);
-        console.log(response.data);
       } catch (error) {
         console.error(error);
-       
+        console.error("文件讀取失敗");
       }
     };
 
     fetchData();
-    // const store = fetchData();
-    // const storedProjectName = localStorage.getItem('projectName');
-    // const storedProjectDescription = localStorage.getItem('projectDescription');
   }, []);
-  
+
   const handleDeleteProject = async (index) => {
     const confirmDelete = window.confirm("確定要刪除專案?");
     if (!confirmDelete) {
@@ -50,32 +48,19 @@ function Project() {
 
     try {
       const response = await axios.post(
-        `${d_p}?username=${type ? id : userid}`,
+        `http://localhost:8080/api/project/deleteproject?username=${type ? id : userid}`,
         { projectName: deletedProject.trim() }
       );
-      //後續改用redux-persist做state dispatch
       localStorage.setItem(`firstPage_${type ? id : userid}_${deletedProject}`, 'false');
       localStorage.setItem(`secondPage_${type ? id : userid}_${deletedProject}`, 'false');
       localStorage.setItem(`confirmStatusImg_${type ? id : userid}_${deletedProject}`, 'false');
       localStorage.setItem(`confirmStatusReq_${type ? id : userid}_${deletedProject}`, 'false');
-      // 
       alert(response.data);
       console.log(response);
     } catch (error) {
       console.error("Error sending data to backend:", error);
     }
   };
-
-  const handleNavigate = (projectName) => {
-    navigate(`/Step?id=${type ? id : userid}&project=${projectName}`);
-  }
-  // const handleLabelNavigate =() =>{
-  //   const confirmLabel = window.confirm("確定要進行圖片標註嗎?");
-  //   if(!confirmLabel){
-  //     return;
-  //   }
-  //   navigate("/LabelProject");
-  // }
 
   const handleLogout = () => {
     //setShowLogoutPrompt(true);
@@ -124,7 +109,7 @@ function Project() {
 
     <div className="row d-flex justify-content-between">
       <div className="col-auto">
-       <input 
+      <input 
         className="form-control "
         type="text"
         placeholder="搜尋專案"
@@ -132,17 +117,12 @@ function Project() {
         onChange={(e) => setSearchTerm(e.target.value)} />
       </div>
 
-    <div className="col-auto">
-       <NavLink to={`/CreatePage?id=${type ? id : userid}`}>
+      <div className="col-auto">
+        <NavLink to={`/CreatePage?id=${type ? id : userid}`}>
           <button className="btn add-project-button">新增專案</button>
-       </NavLink>
-
-      <div className="mt-2"> {/* 調整 mt-2 或其他樣式以達到合適的間距 */}
-         {/* <button className='btn add-project-button2' onClick={handleLabelNavigate}>標註資料</button> */}
+        </NavLink>
       </div>
     </div>
-    </div>
-
 
     <div className="row ml-3" style={{marginLeft:3}}>
       {filteredProjects.map((projectName, index) => (
@@ -153,25 +133,14 @@ function Project() {
             <div className="project-list-grid">
 
               <h2 className="project-Name">{projectName}</h2>
-              {/* <h2 className="project-Name">{localStorage.getItem(`projectName`)}</h2> */}
           
-              {/* <div className=" projectNavLink" >
-                {filteredProjects.map((projectDescription,index)=>(
-                  <p className="project-Detial" key={index}>{projectDescription}</p>
-                ))}
-                </div> */}
-                  <div className="projectNavLink">
-                  <p className="project-Detial">事後需要修改後端傳送的資料</p>
-                  </div>
+              <NavLink className=" projectNavLink" to={`/Step?id=${type ? id : userid}&project=${projectName}`}>
+                <p className="project-Detial" >{projectName}的詳細訊息</p>
+                </NavLink>
   
               <div className="project-Delete">
                 <button className="btn deleteButton" onClick={() => handleDeleteProject(index)}>刪除專案</button>
               </div>
-              <div className="project-Nav"  style={{ marginLeft: '110px' }}>
-                <button className="btn deleteButton" onClick={handleNavigate} >
-                  進入專案
-                </button>
-              </div> 
           </div>
           
         </div>

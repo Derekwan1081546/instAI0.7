@@ -15,8 +15,8 @@ function ConfirmImg() {
   const navigate = useNavigate();
   const [selectedFiles, setSelectedFiles] = useState([]);
   const p = process.env;
-  const upload_download = p.UPLOAD_DOWNLOAD;
-  const upload_deleteimg = p.UPLOAD_DELETEIMG;
+  const upload_download = p.REACT_APP_UPLOAD_DOWNLOAD;
+  const upload_deleteimg = p.REACT_APP_UPLOAD_DELETEIMG;
   const upload = p.UPLOAD;
   const confirm_img = p.AWS_CONFIRM_IMG;
   console.log("現在狀態",confirmed2);

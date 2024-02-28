@@ -10,7 +10,7 @@ function Step() {
   const searchParams = new URLSearchParams(location.search);
   const userid = searchParams.get('id');
   const projectname = searchParams.get('project');
-  const g_s = process.env.GET_STEP;
+  const g_s = process.env.REACT_APP_GET_STEP;
   const modelLink = `/Model?id=${userid}&projectname=${projectname}`;
   const [upload, setUpload] = useState(
     JSON.parse(localStorage.getItem(`firstPage_${userid}_${projectname}`) || 'false')
@@ -24,7 +24,7 @@ function Step() {
   const [confirm2Data, setConfirm2Data] = useState(
     JSON.parse(localStorage.getItem(`confirmStatusReq_${userid}_${projectname}`) || 'false')
   );
-  const [step,setstep] = useState();
+  const [step,setstep] = useState(0);
   const fetchstep = async () => {
     try {
       const response = await axios.get(
@@ -56,32 +56,36 @@ function Step() {
   console.log('circleNo2ClassName:', circleNo2ClassName);
   console.log('circleNo3ClassName:', circleNo3ClassName);
   console.log('circleNo4ClassName:', circleNo4ClassName);
+  console.log('step',step);
   //-----------------------------------------------------//
   const Green1 = () => {
     console.log("upload 被點擊");
     var str = "上傳資料";
-    if (upload){
+    if (upload) {
       str = "預覽資料";
     }
     const userConfirm = window.confirm(str);
     if (userConfirm) {
       if (!upload) {
-        //   setUpload((prevData) => {
-        //   const newUpload = !prevData;
-        //   localStorage.setItem(`firstPage_${userid}_${projectname}`, newUpload.toString());
-        //   return newUpload;
-        // });
-        // localStorage.setItem(`confirmStatusImg_${userid}_${projectname}`, upload.toString());
-        setUpload(upload);
-        console.log("upload:",upload);
-        navigate(`/Download2?id=${userid}&projectname=${projectname}`);
-      }
-      else{
+        const CheckFilter = window.confirm("是否需要資料篩選?");
+        if (CheckFilter) {
+          // If user confirms the need for data filtering
+          setUpload(upload);
+          console.log("upload", upload);
+          navigate(`/DataFilter?id=${userid}&projectname=${projectname}`);
+        } else {
+          // If user does not need data filtering
+          setUpload(upload);
+          console.log("upload:", upload);
+          navigate(`/UploadImg?id=${userid}&projectname=${projectname}`);
+        }
+      } else {
         console.log("upload 已經確定");
         navigate(`/ViewData?id=${userid}&projectname=${projectname}`);
       }
     }
   };
+  
   
   const Green2 = () => {
     console.log("第二個按鈕被點擊");
@@ -93,12 +97,6 @@ function Step() {
     if (userConfirm) {
       if(upload){
          if (!requirement) {
-          // setRequirement((prevData) => {
-          //   const newRequirement = !prevData;
-          //   localStorage.setItem(`secondPage_${userid}_${projectname}`, newRequirement.toString());
-          //   return newRequirement;
-          // });
-          //localStorage.setItem(`secondPage_${userid}_${projectname}`, requirement.toString());
           setRequirement(requirement);
           console.log("Fill out the form : ",requirement);
           navigate(`/Requirment?id=${userid}&projectname=${projectname}`);
@@ -117,18 +115,6 @@ function Step() {
     const userConfirm=window.confirm("圖片檢查");
     if(userConfirm){
       if(upload && requirement){
-        // if(confirm1Data){
-        //   console.log("不須1212");
-        //   navigate(`/ConfirmImg?id=${userid}&projectname=${projectname}`);
-        // }
-        // else{
-        //   setConfirm1Data((prevData) => {
-        //     const newConfirm1Data = !prevData;
-        //     localStorage.setItem(`confirmStatusImg_${userid}_${projectname}`, newConfirm1Data.toString());
-        //     return newConfirm1Data;
-        //   });
-        // }
-        //localStorage.setItem(`confirmStatusImg_${userid}_${projectname}`, confirm1Data.toString());
         setConfirm1Data(confirm1Data);
         console.log('Button clicked. Confirm is now:', confirm1Data);
         navigate(`/ConfirmImg?id=${userid}&projectname=${projectname}`);
@@ -137,6 +123,29 @@ function Step() {
         alert("請照步驟執行");
       }
   }
+  };
+  const devBack = () => {
+    const confirm = window.confirm("確定要還原所有設定嗎?");
+    
+    if (confirm) {
+      // Reset all states to their initial values
+      setUpload(false);
+      setRequirement(false);
+      setConfirm1Data(false);
+      setConfirm2Data(false);
+  
+      // Reset corresponding localStorage values
+      localStorage.setItem(`firstPage_${userid}_${projectname}`, 'false');
+      localStorage.setItem(`secondPage_${userid}_${projectname}`, 'false');
+      localStorage.setItem(`confirmStatusImg_${userid}_${projectname}`, 'false');
+      localStorage.setItem(`confirmStatusReq_${userid}_${projectname}`, 'false');
+  
+      // Optional: You might want to reset the step state to 0 as well
+      setstep(0);
+      
+      alert("已還原所有設定");
+      fetchstep();
+    }
   };
 
   const handleForm2DataChange = () => {
@@ -209,9 +218,9 @@ function Step() {
       </div>
     </div>
 
-        <h1 className='main-projectTitle'>
-        {projectname} 
-        </h1>
+        {/* <h1 className='main-projectTitle'>
+        {projectName} 
+        </h1> */}
       <nav className="secondNav">
         <ul>
           <li >Steps</li>
@@ -267,7 +276,9 @@ function Step() {
         </ul>
         <button onClick={navigateLogic} className={step === 3 ? 'upload-buttonNo5-active' : 'upload-buttonNo5'}>Start Training</button>
       </div>
-    
+     <div className='col auto'>
+      <button onClick={devBack} className='devBtn'>還原設定</button>
+     </div>
     </div>
   );
 }

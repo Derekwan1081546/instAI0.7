@@ -105,3 +105,10 @@ margin-top: 60px;
 grid-area: projectDelete;
 justify-self: start;
 }
+
+.project-Nav{
+  width: 200px;
+  margin-top: 60px;
+  grid-area: projectDelete;
+  justify-self: start;
+  }

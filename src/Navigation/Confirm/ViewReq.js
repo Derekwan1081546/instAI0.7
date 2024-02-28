@@ -11,7 +11,7 @@ function ViewReq() {
   const searchParams = new URLSearchParams(location.search);
   const projectname = searchParams.get('projectname');
   const id = searchParams.get('id');
-  const get_req = process.env.GET_REQUIREMENT;
+  const get_req = process.env.REACT_APP_GET_REQUIREMENT;
   const navigate = useNavigate();
   const fetchData = async () => {
     try {

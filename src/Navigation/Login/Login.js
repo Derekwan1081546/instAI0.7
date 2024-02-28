@@ -9,7 +9,7 @@ const Login = ({ setUserState }) => {
   const navigate = useNavigate();
   const [formErrors, setFormErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
-  const log_in = process.env.LOG_IN
+  const log_in = process.env.REACT_APP_LOG_IN
   const [user, setUserDetails] = useState({
     email: "",
     password: "",
@@ -36,7 +36,7 @@ const Login = ({ setUserState }) => {
     }
     return error;
   };
-
+  
   const loginHandler = (e) => {
     e.preventDefault();
     setFormErrors(validateForm(user));
@@ -66,7 +66,7 @@ const Login = ({ setUserState }) => {
 
   return (
     <Fragment>
-<div className="container"  style={{marginTop:"30vh"}}>
+     <div className="container"  style={{marginTop:"30vh"}}>
         <div className="row">
           <div className="col-md-3 mx-auto"> 
             <img src={InstAI_icon} className="img-fluid" alt="InstAi_Icon" ></img>

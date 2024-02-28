@@ -10,11 +10,11 @@ function Create() {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const id = searchParams.get('id');
-  const add_p = process.env.ADD_PROJECT;
+  const add_p = process.env.REACT_APP_ADD_PROJECT;
   const [formData, setFormData] = useState({
     projectName: "",
     devices: [],
-    ProjectDescription:""
+    projectDescription:""
   });
 
   const handleFormDataChange = (fieldName, value) => {
@@ -29,7 +29,11 @@ function Create() {
 
     console.log(`Field ${fieldName} updated to:`, value);
   };
-
+  
+  const information = async() =>{
+    console.log(formData.projectDescription);
+    console.log(formData.projectName);
+  }
   const addProject = async () => {
     if (formData.projectName.trim() === "") {
       alert("請輸入專案名稱");
@@ -44,6 +48,8 @@ function Create() {
           }
         );
         alert(response.data);
+        // localStorage.setItem('projectName', formData.projectName.trim());
+        // localStorage.setItem('projectDescription', formData.projectDescription.trim());
         handleFormDataChange("projectName", "");
         handleFormDataChange("projectDescription", ""); // 清空專案描述
         console.log(response);
@@ -56,12 +62,12 @@ function Create() {
     }
   };
 
-  const enterSolve = async (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault(); // 避免預設跳轉
-      await addProject(); // non-blocking statement
-    }
-  };
+  // const enterSolve = async (e) => {
+  //   if (e.key === "Enter") {
+  //     e.preventDefault(); // 避免預設跳轉
+  //     await addProject(); // non-blocking statement
+  //   }
+  // };
 
   return (
     <div className="container-fluid mt-3">
@@ -93,12 +99,12 @@ function Create() {
             name="projectName"
             value={formData.projectName}
             onChange={(e) => handleFormDataChange("projectName", e.target.value)}
-            onKeyDown={enterSolve}
             className="form-control fs-6"
           />
         </div>
         <div className="createProjectDescription">
           <label className="form-label fs-6">專案描述：</label>
+          {/* 彥君注意這裡 */}
           <textarea
           name="projectDescription"
           value={formData.projectDescription}
@@ -107,9 +113,12 @@ function Create() {
           rows="3"
           ></textarea>
         </div>
-
+        
         <button className="btn createButton" type="button" onClick={addProject}>
           新增專案
+        </button>
+        <button className="btn createButton" type='button' onClick={information}>
+          顯示輸入資料
         </button>
       </form>
     </div>

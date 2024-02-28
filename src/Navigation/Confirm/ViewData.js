@@ -14,8 +14,8 @@ function ViewData() {
   const projectname = searchParams.get('projectname');
   const navigate = useNavigate();
   const [selectedFiles, setSelectedFiles] = useState([]);
-  const upload_download = process.env.UPLOAD_DOWNLOAD;
-  const view_data = process.env.AWS_VIEW_DATA;
+  const upload_download = process.env.REACT_APP_UPLOAD_DOWNLOAD;
+  const view_data = process.env.REACT_APP_AWS_VIEW_DATA;
   // const fetchData = async () => {
   //   try {
   //     const response = await axios.get(`?username=${id}&projectname=${projectname}`);

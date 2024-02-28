@@ -19,7 +19,7 @@ const Requirement = lazy(() => import('./Navigation/Requirment/Requirment'));
 const Data = lazy(() => import("./Navigation/Model/Data"));
 const Req = lazy(() => import('./Navigation/Model/Req'));
 const Model = lazy(() => import('./Navigation/Model/Model'));
-
+const UploadImg = lazy(() => import('./Navigation/UploadImg/UploadImg'));
 // const LabelProject = lazy(()=>import ('./tool/LabelProject'));
 // const LabelCreate = lazy(() => import("./tool/LabelCreate"));
 // // 還沒完成頁面
@@ -49,7 +49,7 @@ function App() {
             <Route path="/ViewReq" element={<ViewReq />} />
             <Route path="/Model" element={<Model />} />
             <Route path="/Requirment" element={<Requirement />} />
-
+            <Route path='/UploadImg' element={<UploadImg/>}/>
           </Routes>
         </Suspense>
       </Router>

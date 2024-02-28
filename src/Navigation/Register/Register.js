@@ -7,7 +7,7 @@ import InstAI_icon from '../../image/iconnew.png'
 
 const Register = () => {
   const navigate = useNavigate();
-  const sign_up = process.env.SIGN_UP;
+  const sign_up = process.env.REACT_APP_SIGN_UP;
   const [formErrors, setFormErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
   const [user, setUserDetails] = useState({

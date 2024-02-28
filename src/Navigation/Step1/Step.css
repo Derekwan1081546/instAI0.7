@@ -52,6 +52,13 @@
   background: rgb(48, 0, 137);
 }
 
+.devBtn{
+  background-color: #f7006f;
+  border: 5px solid #000000;
+  border-radius: 50%;
+  background: #eeeeee;
+    z-index: 2; 
+}
 
  .circleNo1{
   background-color: #6D51EE;

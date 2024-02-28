@@ -17,7 +17,7 @@ const Model = () => {
   const userid = searchParams.get('id');
   const projectname = searchParams.get("projectname");
   const [modelFile, setModelFile] = useState(yolov3Model);
-  const d_m = process.env.DOWNLOAD_MODEL;
+  const d_m = process.env.REACT_APP_DOWNLOAD_MODEL;
   useEffect(() => {
     const fetchModel = async () => {
       try {
