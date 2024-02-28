@@ -1,6 +1,6 @@
 import './App.css';
-import {BrowserRouter as Router , Routes , Route} from "react-router-dom";
-import React , {lazy, Suspense , useState} from "react";
+import {BrowserRouter as Router , Routes , Route , useLocation , useNavigate} from "react-router-dom";
+import React , {lazy, Suspense , useState , useEffect} from "react";
 
 
 // 開發完成頁面
@@ -24,12 +24,21 @@ const UploadImg = lazy(() => import('./Navigation/UploadImg/UploadImg'));
 // const LabelCreate = lazy(() => import("./tool/LabelCreate"));
 // // 還沒完成頁面
 // const LabelPage = lazy(() => import('./tool/LabelPage'));
-function App() {
 
-  const [userState , setUserState] = useState({});
+
+function App_dev() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [userState, setUserState] = useState({});
+
+  useEffect(() => {
+    if (!userState.token && location.pathname !== "/Login") {
+      navigate("/Login");
+    }
+  }, [userState, location, navigate]);
   return (
     <div className="App">
-      <Router>
+      
         <Suspense fallback={<div>Loading...</div>}>
           <Routes>
             <Route path="/" element={<Register />} />
@@ -52,9 +61,16 @@ function App() {
             <Route path='/UploadImg' element={<UploadImg/>}/>
           </Routes>
         </Suspense>
-      </Router>
+      
     </div>
   );
+}
+function App(){
+  return(
+    <Router>
+      <App_dev/>
+    </Router>
+  )
 }
 
 export default App;

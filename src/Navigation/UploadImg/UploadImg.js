@@ -13,6 +13,9 @@ function UploadImg() {
   const projectname = searchParams.get('projectname');
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
+  const u = process.env.REACT_APP_UPLOAD;
+  const c_s = process.env.REACT_APP_CONFIRM_STEP;
+  const [mode , setMode] = useState(false);
   //const [username, setUsername] = useState(""); 
   //const [filename, setFilename] = useState(""); 
   // 文件選擇
@@ -89,7 +92,22 @@ function UploadImg() {
     setImagePreviews([]);
     setSelectedFiles([]);
   };
-
+  const selectModle = () => {
+    if (mode === false) {
+      const confirmation = window.confirm("你想要關掉篩選模式功能並且無限制上傳圖片嗎?");
+      if (confirmation) {
+        setMode(true);
+        // 可以將格式篩選的功能關掉，變成無限制上傳照片並且都會顯示照片
+      }
+    } else if (mode === true) {
+      const confirmationWithFilter = window.confirm("你想要開啟篩選模式功能對上傳的照片做尺寸篩選嗎");
+      if (confirmationWithFilter) {
+        setMode(false);
+        // 在這裡添加對篩選模式的相關邏輯
+      }
+    }
+    console.log(mode);
+  }
   // 下載預覽 //modified
   const handleDownloadAll = () => {
     selectedFiles.forEach((file) => {
@@ -103,177 +121,159 @@ function UploadImg() {
     });
   };
 
-  const handleupload = async () => {
-    // 檢查是否有選擇任何檔案
+  const handleUpload = async () => {
     if (selectedFiles.length === 0) {
       alert('請選擇要上傳的圖片!');
+    } 
+    else if (selectedFiles.length < 10) {
+      alert('请至少選擇10張合格的照片!');
+      return;
     }
-    else{
-      const confirmDelete = window.confirm("確定要上傳圖片?");
+    else {
+      const confirmDelete = window.confirm('要求已經滿足,確定要上傳圖片?');
       if (!confirmDelete) {
         return;
       }
       const uploaded = [...selectedFiles];
       const formData = new FormData();
-      for(let i =0;i<uploaded.length;++i){
-        formData.append('file', uploaded[i]);
-      }
-  
+      uploaded.forEach((file) => {
+        formData.append('file', file);
+      });
+
       try {
-        const response = await axios.post(`http://localhost:8080/api/upload/upload?username=${id}&projectname=${projectname}`, formData)
-        .then(response => {
-          console.log(response.data);
-          // Handle success
-          alert('upload success')
-        })
-        .catch(error => {
-          console.error(1233+error);
-          // Handle error
-        });
-        console.log(response);
+        const response = await axios.post(
+          `-${u}?username=${id}&projectname=${projectname}`,
+          formData
+        );
+        console.log(response.data);
+        alert('upload success');
+
         const response2 = await axios.post(
-          `http://localhost:8080/api/project/confirmstep/?step=1&username=${id}&projectname=${projectname}`
+          `${c_s}/?step=1&username=${id}&projectname=${projectname}`
         );
         console.log('step updated successfully:', response2.data);
-        localStorage.setItem(`firstPage_${id}_${projectname}`, 'true');
-        navigate(`/Step?id=${id}&project=${projectname}`);
+        navigate(`/LabelPage?id=${id}&projectname=${projectname}`);
       } catch (error) {
-        console.error("Error sending data to backend:", error);
+        console.error('Error sending data to backend:', error);
       }
     }
   };
 
   return (
-    // <div className={styles.downloadBackground}>
     <div className="container-fluid mt-3">
-
-  
-      <div  className="row d-flex justify-content-between ">
-        <div className="col-auto"> 
-          <img src={InstAI_icon} className="img-fluid" alt="InstAi_Icon" style={{ width: '76.8px', height: '76.8px' }} ></img>
+      <div className="row d-flex justify-content-between ">
+        <div className="col-auto">
+          <img
+            src={InstAI_icon}
+            className="img-fluid"
+            alt="InstAi_Icon"
+            style={{ width: '76.8px', height: '76.8px' }}
+          />
         </div>
         <div className="custom-border"></div>
-       </div>
+      </div>
 
-       <div className={`card   ${styles.downloadform}`} style={{height:100}}>
-          <h1 className="display-4  text-center create-title" style={{fontWeight:'bold'}}>Upload/Download</h1>
+      <div className={`card   ${styles.downloadform}`} style={{ height: 100 }}>
+        <h1 className="display-4  text-center create-title" style={{ fontWeight: 'bold' }}>
+          Filter the data you want
+        </h1>
+      </div>
+
+      <div className="row justify-content-between">
+        <div className="col-4">
+        <label className="btn btn-primary">
+          select image
+          <input type="file" accept="image/*" multiple name="images" onChange={handleFileSelect} style={{ display: 'none' }} />
+        </label>  
         </div>
-
-      
-
-      <div class="row justify-content-between">
-         <div class="col-4">
-          <input type="file" accept="image/*" multiple name="images" onChange={handleFileSelect} />
+        <div className="col-4 d-flex  justify-content-end">
+          <div>
+            <button className={'btn btn-primary'} onClick={selectModle}>
+              Select modes
+            </button>
           </div>
-        <div class="col-8 d-flex  justify-content-end">
-            <div >
-               <button className={`btn btn-danger `} onClick={handleDeleteAllPreviews}>Remove all</button>
-            </div>
-           
-            <div >
-              <button className={`btn btn-primary`} onClick={handleDownloadAll}>Download All</button>
-            </div>
+          <div>
+            <button className={`btn btn-danger `} onClick={handleDeleteAllPreviews}>
+              Remove all
+            </button>
+          </div>
+          <div>
+            <button className={`btn btn-primary`} onClick={handleDownloadAll}>
+              Download All
+            </button>
+          </div>
+          <div>
+            <button className={`btn btn-success `} onClick={handleUpload}>
+              Done
+            </button>
+          </div>
+          
+        </div>
+      </div>
 
-            <div >
-              <button className={`btn btn-success ` } onClick={handleupload}>Done</button>
-           </div>
-         </div>
-     </div>
-     {/* 我想要使用這個長方形將每一個img都分別包裹起來 並且長方形中會包裹圖片的information  */}
-     {/* 並且我希望長方形以及圖片的訊息都是橫向的 長方形的長度佔頁面的橫向70% 寬度像現在的圖片使用的一樣 */}
-     {/* 並且長方形的內容 從左到右 分別是 圖片編號(從1開始) , 上傳日期 , 上傳時間 , 是否有標註 , 尺寸 , 圖片預覽  */}
-     <div className="mt-3" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-  {/* Horizontal Bar */}
-  <div
+      <div className="mt-3" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+      <div
+         style={{
+           display: "flex",
+           flexDirection: "row",
+           justifyContent: "space-around",
+           alignItems: "center",
+           width: "100%",
+           marginBottom: "2px",
+           padding: "5px",
+           border: "1px solid black",
+         }}
+       >
+       <p>img id</p>
+       <p>labeled</p>
+       <p>img height</p>
+       <p>img width</p>
+       <p>delete</p>
+       <p>file</p>
+     </div>       
+     {imagePreviews.map((preview, index) => (
+    <div
+    key={index}
+    className="image-previews-wrapper"
     style={{
       display: "flex",
       flexDirection: "row",
-      justifyContent: "space-around",
+      justifyContent: "space-between",
       alignItems: "center",
       width: "100%",
-      marginBottom: "10px",
-      padding: "10px",
+      marginBottom: "2px",
+      padding: "5px",
       border: "1px solid black",
     }}
-  >
-    <p>img id</p>
-    <p>labeled</p>
-    <p>img height</p>
-    <p>img width</p>
-    <p>file</p>
-  </div>
-  {imagePreviews.map((preview, index) => (
-    <div
-      key={index}
-      className="image-previews-wrapper"
-      style={{
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "space-around",
-        alignItems: "center",
-        width: "70%",
-        marginBottom: "10px",
-        padding: "10px",
-        border: "1px solid black",
-      }}
-    >
-      {/* Image and Information */}
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          marginRight: "20px",
-        }}
-      >
-        <img
-          src={preview}
-          alt={`image ${index}`}
-          style={{ width: "100px", height: "120px", marginBottom: "5px" }}
-          loading="lazy"
-        />
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-around",
-            alignItems: "center",
-            width: "100%",
-          }}
-        >
-          <p>{index + 1}</p>
-          <p>No</p>
-          <p>512 px</p>
-          <p>512 px</p>
-          <p></p>
-        </div>
-      </div>
-      {/* Delete Button */}
-      <div className="d-flex flex-column align-items-center">
-        <button
+  > 
+      {/* Information */}
+      <div className="d-flex flex-row align-items-center" >
+        <p style={{marginLeft:'120px'}}>{index + 1}</p>
+        <p style={{marginLeft:'220px'}}>{selectedFiles[index].isTagged ? 'Yes' : 'No'}</p>
+        <p style={{marginLeft:'230px'}}>512</p>
+        <p style={{marginLeft:'250px'}}>512</p>
+         <button
           className="btn btn-danger"
-          onClick={() => {
-            // create a new array without the deleted file
-            const newFiles = imageFiles.filter((f, i) => i !== index);
-            // update the state with the new array
-            setImageFiles(newFiles);
-          }}
-        >
+          onClick={handleDeleteImage}
+          style={{marginLeft:'200px'}}>
           Delete
         </button>
       </div>
+      {/* Image */}
+      <img
+        src={preview}
+        alt={`image ${index}`}
+        style={{ width: '100px', height: '120px', marginRight: '50px' }}
+        loading='lazy'
+      />
     </div>
-  ))}
+))}
 </div>
 
 
-
-
-
-
-     
+      
     </div>
   );
-}
+};
 
 export default UploadImg;

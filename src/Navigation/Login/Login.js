@@ -37,32 +37,48 @@ const Login = ({ setUserState }) => {
     return error;
   };
   
-  const loginHandler = (e) => {
+  const loginHandler = async (e) => {
     e.preventDefault();
     setFormErrors(validateForm(user));
     setIsSubmit(true);
-  };
-
-  useEffect(() => {
+  
     if (Object.keys(formErrors).length === 0 && isSubmit) {
-      console.log(user);
-      axios
-        .post(`${log_in}`, user)
-        .then((res) => {
-          if(res.data.includes("Faile"))
-            alert("Log in failed!");
-          else
-            alert("Log in Success!");
-          if (res.data.includes("Success")) {
-            //setUserState(res.data.user);
-            const remove = "Success";
-            const id = res.data.replace(remove, "");
-            console.log(id);
-            navigate("/Project", { state: id, replace: true });
+      try {
+        const response = await axios.post(log_in, user);
+        
+        if (response.data.includes("Failed")) {
+          alert("Log in failed!");
+        } else {
+          alert("Log in Success!");
+          console.log(response.data);
+          const token = response.data.token;
+          localStorage.setItem("jwtToken", token);
+          
+          axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  
+          const remove = "Success";
+          const id = response.data.replace(remove, "");
+          console.log(id);
+          navigate("/Project", { state: id, replace: true });
+  
+          try {
+            const jwtResponse = await axios.get(log_in,{
+              headers:{
+                  'Content-Type' : 'application/json',
+                  'Authorization' : `Bearer ${token}`
+              }
+            });
+            console.log(jwtResponse.data);
+          } catch(error) {
+            console.error('Error fetching data', error);
           }
-        });
+        }
+      } catch (error) {
+        console.error('Error logging in', error);
+      }
     }
-  }, [formErrors, isSubmit]);
+  };
+  
 
   return (
     <Fragment>

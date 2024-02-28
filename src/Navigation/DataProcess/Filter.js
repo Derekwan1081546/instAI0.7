@@ -309,8 +309,8 @@ const Filter = () => {
            justifyContent: "space-around",
            alignItems: "center",
            width: "100%",
-           marginBottom: "10px",
-           padding: "10px",
+           marginBottom: "2px",
+           padding: "5px",
            border: "1px solid black",
          }}
        >
@@ -318,46 +318,46 @@ const Filter = () => {
        <p>labeled</p>
        <p>img height</p>
        <p>img width</p>
+       <p>delete</p>
        <p>file</p>
      </div>       
-  {imagePreviews.map((preview, index) => (
+     {imagePreviews.map((preview, index) => (
     <div
     key={index}
     className="image-previews-wrapper"
     style={{
       display: "flex",
       flexDirection: "row",
-      justifyContent: "space-around",
+      justifyContent: "space-between",
       alignItems: "center",
-      width: "70%",
-      marginBottom: "5px",
+      width: "100%",
+      marginBottom: "2px",
       padding: "5px",
       border: "1px solid black",
     }}
   > 
-  
+      {/* Information */}
+      <div className="d-flex flex-row align-items-center" >
+        <p style={{marginLeft:'120px'}}>{index + 1}</p>
+        <p style={{marginLeft:'220px'}}>{selectedFiles[index].isTagged ? 'Yes' : 'No'}</p>
+        <p style={{marginLeft:'230px'}}>512</p>
+        <p style={{marginLeft:'250px'}}>512</p>
+         <button
+          className="btn btn-danger"
+          onClick={handleDeleteImage}
+          style={{marginLeft:'200px'}}>
+          Delete
+        </button>
+      </div>
       {/* Image */}
       <img
         src={preview}
         alt={`image ${index}`}
-        style={{ width: '100px', height: '120px', top: '20px', marginTop: '20px', marginLeft: '20px', marginBottom: '20px' }}
+        style={{ width: '100px', height: '120px', marginRight: '50px' }}
         loading='lazy'
       />
-      {/* Information */}
-      <div className="d-flex flex-column align-items-center">
-        <p>Image {index + 1}</p>
-        <p>Upload time: {selectedFiles[index].uploadDate},{selectedFiles[index].uploadTime} </p>
-       
-        <p>Tagged: {selectedFiles[index].isTagged ? 'Yes' : 'No'}</p>
-        <p>Size: 512 × 512</p>
-        {/* Additional buttons (delete and download) */}
-        <button className={`btn btn-danger ${styles.downloadDelete}`} onClick={() => handleDeleteImage(index)}>
-          Delete
-        </button>
-        
-      </div>
     </div>
-  ))}
+))}
 </div>
 
 
