@@ -48,7 +48,7 @@ const Login = ({ setUserState }) => {
   
     try {
       const response = await axios.post(log_in, user);
-  
+      console.log(response.data);
       if (response.data && response.data.message && typeof response.data === 'object' && response.data.message.includes("Failed")) {
         alert("登錄失敗！");
       } else {
@@ -57,20 +57,20 @@ const Login = ({ setUserState }) => {
         localStorage.setItem("jwtToken", token);
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
   
-        try {
-          const response = await axios.get(R_L, {
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-            }
-          });
-          console.log(response.data);
-        } catch (error) {
-          console.error('獲取數據時出錯', error);
-        }
+        // try {
+        //   const response = await axios.get(R_L, {
+        //     headers: {
+        //       'Content-Type': 'application/json',
+        //       'Authorization': `Bearer ${token}`
+        //     }
+        //   });
+        //   console.log(response.data);
+        // } catch (error) {
+        //   console.error('獲取數據時出錯', error);
+        // }
   
         const remove = "Success";
-        const id = response.data.replace(remove, "");
+        const id = response.data.message.replace(remove, "");
         console.log(id);
         navigate("/Project", { state: id, replace: true });
       }

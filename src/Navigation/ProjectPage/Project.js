@@ -23,13 +23,26 @@ function Project() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${g_r}/?username=${type ? id : userid}`);
-        setProjectList(response.data);
-        console.log(response.data);
-      } catch (error) {
-        console.error(error);
+        const token = localStorage.getItem("jwtToken");
+          const response = await axios.get(`${g_r}/?username=${type ? id : userid}`, {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            }
+          });
+          console.log(response.data);
+          setProjectList(response.data);
+        } catch (error) {
+          console.error('獲取數據時出錯', error);
+        }
+      // try {
+      //   const response = await axios.get(`${g_r}/?username=${type ? id : userid}`);
+      //   setProjectList(response.data);
+      //   console.log(response.data);
+      // } catch (error) {
+      //   console.error(error);
        
-      }
+      // }
     };
 
     fetchData();
