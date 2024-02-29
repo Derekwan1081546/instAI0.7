@@ -15,6 +15,7 @@ const Filter = () => {
   const [imagePreviews, setImagePreviews] = useState([]);
   const [validFilesCount, setValidFilesCount] = useState(0);
   const [mode , setMode] = useState(false);
+  
   //const fileInputRef = useRef(null);
   const u = process.env.REACT_APP_UPLOAD;
   const c_s = process.env.REACT_APP_CONFIRM_STEP;

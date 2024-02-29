@@ -6,7 +6,7 @@
 example:
 
 try{
-    const response = await axios.get(`http://your-backencd-url`,{
+    const response = await axios.get(REACT_APP_LOGIN,{
         headers:{
             'Content-Type' : 'application/json',
             'Authorization' : 'Bearer your_token gere'

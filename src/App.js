@@ -26,16 +26,16 @@ const UploadImg = lazy(() => import('./Navigation/UploadImg/UploadImg'));
 // const LabelPage = lazy(() => import('./tool/LabelPage'));
 
 
-function App_dev() {
-  const location = useLocation();
-  const navigate = useNavigate();
+function AppDev() {
+  // const location = useLocation();
+  // const navigate = useNavigate();
   const [userState, setUserState] = useState({});
-
-  useEffect(() => {
-    if (!userState.token && location.pathname !== "/Login") {
-      navigate("/Login");
-    }
-  }, [userState, location, navigate]);
+  
+  // useEffect(() => {
+  //   if (location.pathname !== "/Login") {
+  //     navigate("/Login");
+  //   }
+  // }, [userState, location, navigate]);
   return (
     <div className="App">
       
@@ -49,9 +49,6 @@ function App_dev() {
             <Route path='/Step' element={<StepPage />} />
             <Route path="/ConfirmImg" element={<ConfirmImg />} />
             <Route path="/ConfirmReq" element={<ConfirmReq />} />
-            {/* <Route path='/LabelPage' element={<LabelPage />} />
-            <Route path='/LabelProject' element={<LabelProject/>}/>
-            <Route path='/LabelCreate' element={<LabelCreate/>}/> */}
             <Route path="/Data" element={<Data />} />
             <Route path="/Req" element={<Req />} /> 
             <Route path="/ViewData" element={<ViewData />} />
@@ -68,7 +65,7 @@ function App_dev() {
 function App(){
   return(
     <Router>
-      <App_dev/>
+      <AppDev/>
     </Router>
   )
 }

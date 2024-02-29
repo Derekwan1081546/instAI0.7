@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState,  Fragment } from "react";
 import basestyle from "../Base.module.css";
 import loginstyle from "./Login.module.css";
 import axios from "axios";
@@ -14,6 +14,7 @@ const Login = ({ setUserState }) => {
     email: "",
     password: "",
   });
+  const R_L = process.env.REACT_APP_LOG_IN;
 
   const changeHandler = (e) => {
     const { name, value } = e.target;
@@ -36,48 +37,48 @@ const Login = ({ setUserState }) => {
     }
     return error;
   };
-  
   const loginHandler = async (e) => {
     e.preventDefault();
     setFormErrors(validateForm(user));
     setIsSubmit(true);
   
-    if (Object.keys(formErrors).length === 0 && isSubmit) {
-      try {
-        const response = await axios.post(log_in, user);
-        
-        if (response.data.includes("Failed")) {
-          alert("Log in failed!");
-        } else {
-          alert("Log in Success!");
+    if (Object.keys(formErrors).length !== 0 || !isSubmit) {
+      return;
+    }
+  
+    try {
+      const response = await axios.post(log_in, user);
+  
+      if (response.data && response.data.message && typeof response.data === 'object' && response.data.message.includes("Failed")) {
+        alert("登錄失敗！");
+      } else {
+        alert("登錄成功！");
+        const token = response.data.token;
+        localStorage.setItem("jwtToken", token);
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  
+        try {
+          const response = await axios.get(R_L, {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            }
+          });
           console.log(response.data);
-          const token = response.data.token;
-          localStorage.setItem("jwtToken", token);
-          
-          axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-  
-          const remove = "Success";
-          const id = response.data.replace(remove, "");
-          console.log(id);
-          navigate("/Project", { state: id, replace: true });
-  
-          try {
-            const jwtResponse = await axios.get(log_in,{
-              headers:{
-                  'Content-Type' : 'application/json',
-                  'Authorization' : `Bearer ${token}`
-              }
-            });
-            console.log(jwtResponse.data);
-          } catch(error) {
-            console.error('Error fetching data', error);
-          }
+        } catch (error) {
+          console.error('獲取數據時出錯', error);
         }
-      } catch (error) {
-        console.error('Error logging in', error);
+  
+        const remove = "Success";
+        const id = response.data.replace(remove, "");
+        console.log(id);
+        navigate("/Project", { state: id, replace: true });
       }
+    } catch (error) {
+      console.error('登錄時出錯', error);
     }
   };
+  
   
 
   return (
