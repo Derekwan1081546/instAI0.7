@@ -56,19 +56,6 @@ const Login = ({ setUserState }) => {
         const token = response.data.token;
         localStorage.setItem("jwtToken", token);
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-  
-        // try {
-        //   const response = await axios.get(R_L, {
-        //     headers: {
-        //       'Content-Type': 'application/json',
-        //       'Authorization': `Bearer ${token}`
-        //     }
-        //   });
-        //   console.log(response.data);
-        // } catch (error) {
-        //   console.error('獲取數據時出錯', error);
-        // }
-  
         const remove = "Success";
         const id = response.data.message.replace(remove, "");
         console.log(id);

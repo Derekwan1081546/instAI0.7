@@ -1,5 +1,5 @@
 import './App.css';
-import {BrowserRouter as Router , Routes , Route , useLocation , useNavigate} from "react-router-dom";
+import {BrowserRouter as Router , Routes , Route , useNavigate , useLocation} from "react-router-dom";
 import React , {lazy, Suspense , useState , useEffect} from "react";
 
 
@@ -24,44 +24,64 @@ const UploadImg = lazy(() => import('./Navigation/UploadImg/UploadImg'));
 // const LabelCreate = lazy(() => import("./tool/LabelCreate"));
 // // 還沒完成頁面
 // const LabelPage = lazy(() => import('./tool/LabelPage'));
-
-
+const Loading = lazy(() => import('./loading'));
 function AppDev() {
-  // const location = useLocation();
-  // const navigate = useNavigate();
-  const [userState, setUserState] = useState({});
   
-  // useEffect(() => {
-  //   if (location.pathname !== "/Login") {
-  //     navigate("/Login");
-  //   }
-  // }, [userState, location, navigate]);
+  const [userState, setUserState] = useState({});
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("jwtToken");
+    if (token !== 'false') {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+      if (location.pathname !== "/Login" && location.pathname !== "/" && isLoggedIn !== true) {
+        navigate("/Login"); //鎖住其他頁面 不准url 操作導航
+      }
+    }
+  }, [navigate, location, isLoggedIn]);
+
   return (
     <div className="App">
       
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<div>loading</div>}>
           <Routes>
-            <Route path="/" element={<Register />} />
-            <Route path='/Login' element={<Login setUserState={setUserState} />} />
-            <Route path='/DataFilter' element={<DataFilter />} />
-            <Route path="/Project" element={<Project />} />
-            <Route path="/CreatePage" element={<CreatePage />} />
-            <Route path='/Step' element={<StepPage />} />
-            <Route path="/ConfirmImg" element={<ConfirmImg />} />
-            <Route path="/ConfirmReq" element={<ConfirmReq />} />
-            <Route path="/Data" element={<Data />} />
-            <Route path="/Req" element={<Req />} /> 
-            <Route path="/ViewData" element={<ViewData />} />
-            <Route path="/ViewReq" element={<ViewReq />} />
-            <Route path="/Model" element={<Model />} />
-            <Route path="/Requirment" element={<Requirement />} />
-            <Route path='/UploadImg' element={<UploadImg/>}/>
+            {isLoggedIn ? (
+              <>
+                <Route path="/" element={<Register />} />
+                <Route path='/Login' element={<Login setUserState={setUserState} />} />
+                <Route path='/DataFilter' element={<DataFilter />} />
+                <Route path="/Project" element={<Project />} />
+                <Route path="/CreatePage" element={<CreatePage />} />
+                <Route path='/Step' element={<StepPage />} />
+                <Route path="/ConfirmImg" element={<ConfirmImg />} />
+                <Route path="/ConfirmReq" element={<ConfirmReq />} />
+                <Route path="/Data" element={<Data />} />
+                <Route path="/Req" element={<Req />} /> 
+                <Route path="/ViewData" element={<ViewData />} />
+                <Route path="/ViewReq" element={<ViewReq />} />
+                <Route path="/Model" element={<Model />} />
+                <Route path="/Requirment" element={<Requirement />} />
+                <Route path='/UploadImg' element={<UploadImg/>}/>
+                <Route path='/Loading' element={<Loading/>}/>
+              </>
+            ) : (
+              <>
+                <Route path="/" element={<Register />} />
+                <Route path='/Login' element={<Login setUserState={setUserState} />} />
+                <Route path='/Loading' element={<Loading/>}/>
+              </>
+            )}
           </Routes>
         </Suspense>
       
     </div>
   );
 }
+
 function App(){
   return(
     <Router>

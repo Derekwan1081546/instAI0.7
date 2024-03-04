@@ -54,7 +54,12 @@ const Register = () => {
     }
     return error;
   };
-
+  // const deleteState = () =>{
+  //   localStorage.setItem('jwtToken',false);
+  //   alert('註銷token');
+  //   const token = localStorage.getItem('jwtToken');
+  //   console.log(token);
+  // }
   const signupHandler = (e) => {
     e.preventDefault();
     setFormErrors(validateForm(user));

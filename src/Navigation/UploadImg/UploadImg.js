@@ -3,7 +3,7 @@ import styles from './UploadImg.css';
 import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
 import InstAI_icon from "../../image/instai_icon.png";
-
+import barImg from '../../image/bar.png';
 
 function UploadImg() {
   const navigate = useNavigate();
@@ -134,6 +134,7 @@ function UploadImg() {
       if (!confirmDelete) {
         return;
       }
+      navigate(`/Step?id=${id}&projectname=${projectname}`);
       const uploaded = [...selectedFiles];
       const formData = new FormData();
       uploaded.forEach((file) => {

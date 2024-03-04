@@ -3,7 +3,7 @@ import axios from 'axios';
 import InstAI_icon from '../../image/instai_icon.png';
 import styles from './Filter.css';
 import { useNavigate, useLocation } from 'react-router-dom';
-import barImg from '../../image/bar.png'
+
 const Filter = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
