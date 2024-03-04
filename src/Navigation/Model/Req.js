@@ -15,9 +15,14 @@ function Data() {
 
   const fetchData = async () => {
     try {
+      const token = localStorage.getItem('jwtToken');
       const response = await axios.get(
-        `http://localhost:8080/api/upload/getrequirement/?username=${id}&projectname=${projectname}`
-      );
+        `http://localhost:8080/api/upload/getrequirement/?username=${id}&projectname=${projectname}`, {
+          headers: {
+            'Content-Type':'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
       const responseData = response.data.content;
       const parsedData = {};
       responseData.forEach(item => {
@@ -49,11 +54,16 @@ function Data() {
         author: '',
         LastUpdated: new Date().toLocaleString(),
       };
-
+      const token = localStorage.getItem('jwtToken');
       const response = await axios.post(
         `http://localhost:8080/api/upload/requirement/?username=${id}&projectname=${projectname}`,
-        { data: updatedData }
-      );
+        { data: updatedData }, {
+          headers: {
+            'Content-Type':'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
+      
 
       console.log('Data updated successfully:', response.data);
 

@@ -22,13 +22,20 @@ function ConfirmImg() {
   console.log("現在狀態",confirmed2);
   const fetchData = async () => {
     try {
-      const response = await axios.get(`${upload_download}?username=${id}&projectname=${projectname}`);
+      const token = localStorage.getItem("jwtToken");
+      const response = await axios.get(`${upload_download}?username=${id}&projectname=${projectname}`, {
+        headers: {
+          'Content-Type':'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
       console.log(response.data.images);
       setImagePreviews(response.data.images);
     } catch (error) {
       console.error('Error fetching image previews:', error);
     }
   };
+
   useEffect(() => {
     localStorage.setItem(`confirmStatusImg_${id}_${projectname}`, confirmed2.toString());
     fetchData();
@@ -154,16 +161,25 @@ function ConfirmImg() {
       }
       console.log(selectedFiles.length);
       try {
-        const response = await axios.post(`${upload}?username=${id}&projectname=${projectname}`, formData);
+        const token = localStorage.getItem('jwtToken');
+        const response = await axios.post(
+          `${upload}?username=${id}&projectname=${projectname}`,
+          formData,
+          {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          }
+        );
         console.log(response.data);
         alert('Upload success');
         setSelectedFiles([]);
         setImagePreviews2([]);
         fetchData();
       } catch (error) {
-        console.error('Error uploading images:', error);
-        alert('Upload failed');
+        console.error('Error uploading data:', error);
       }
+      
     }
   };
 

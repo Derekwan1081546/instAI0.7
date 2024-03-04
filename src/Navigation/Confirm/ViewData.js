@@ -27,7 +27,13 @@ function ViewData() {
   // };
   const fetchData = async () => {
     try {
-      const response = await axios.get(`${upload_download}?username=${id}&projectname=${projectname}`);
+      const token = localStorage.getItem('jwtToken');
+      const response = await axios.get(`${upload_download}?username=${id}&projectname=${projectname}`, {
+        headers: {
+          'Content-Type':'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
       console.log('Response from backend:', response.data);
   
       if (response.data.images && Array.isArray(response.data.images)) {

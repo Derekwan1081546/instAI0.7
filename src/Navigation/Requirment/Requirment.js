@@ -83,14 +83,24 @@ function Requirement() {
       },
     };
     try {
+      const token = localStorage.getItem('jwtToken');
       const response = await axios.post(
         `${u_r}/?username=${id}&projectname=${projectname}`,
-        requestData
-      );
+        requestData, {
+          headers: {
+            'Content-Type':'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
+      
       console.log("server response:", response.data);
       const response2 = await axios.post(
-        `${c_s}/?step=2&username=${id}&projectname=${projectname}`
-      );
+        `${c_s}/?step=2&username=${id}&projectname=${projectname}`, {
+          headers: {
+            'Content-Type':'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
       console.log('step updated successfully:', response2.data);
       alert("Requirement submitted successfully!");
       // Reset form data

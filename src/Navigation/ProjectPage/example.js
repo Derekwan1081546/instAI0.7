@@ -25,7 +25,13 @@ function Project() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/api/project/getproject/?username=${type ? id : userid}`);
+        const token = localStorage.getItem('jwtToken');
+        const response = await axios.get(`http://localhost:8080/api/project/getproject/?username=${type ? id : userid}`, {
+          headers: {
+            'Content-Type':'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
         setProjectList(response.data);
       } catch (error) {
         console.error(error);
@@ -49,8 +55,12 @@ function Project() {
     try {
       const response = await axios.post(
         `http://localhost:8080/api/project/deleteproject?username=${type ? id : userid}`,
-        { projectName: deletedProject.trim() }
-      );
+        { projectName: deletedProject.trim() }, {
+          headers: {
+            'Content-Type':'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
       localStorage.setItem(`firstPage_${type ? id : userid}_${deletedProject}`, 'false');
       localStorage.setItem(`secondPage_${type ? id : userid}_${deletedProject}`, 'false');
       localStorage.setItem(`confirmStatusImg_${type ? id : userid}_${deletedProject}`, 'false');

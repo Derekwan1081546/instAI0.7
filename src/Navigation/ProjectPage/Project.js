@@ -44,11 +44,7 @@ function Project() {
        
       // }
     };
-
     fetchData();
-    // const store = fetchData();
-    // const storedProjectName = localStorage.getItem('projectName');
-    // const storedProjectDescription = localStorage.getItem('projectDescription');
   }, []);
   
   const handleDeleteProject = async (index) => {
@@ -82,14 +78,6 @@ function Project() {
   const handleNavigate = (projectName) => {
     navigate(`/Step?id=${type ? id : userid}&project=${projectName}`);
   }
-  // const handleLabelNavigate =() =>{
-  //   const confirmLabel = window.confirm("確定要進行圖片標註嗎?");
-  //   if(!confirmLabel){
-  //     return;
-  //   }
-  //   navigate("/LabelProject");
-  // }
-
   const handleLogout = () => {
     //setShowLogoutPrompt(true);
     const confirmlogout = window.confirm("確定要登出嗎？");

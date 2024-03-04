@@ -27,9 +27,14 @@ function Step() {
   const [step,setstep] = useState(0);
   const fetchstep = async () => {
     try {
+      const token = localStorage.getItem('jwtToken');
       const response = await axios.get(
-        `${g_s}/?username=${userid}&projectname=${projectname}`
-      );
+        `${g_s}/?username=${userid}&projectname=${projectname}`, {
+          headers: {
+            'Content-Type':'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
       console.log(response.data)
       setstep(response.data);
     } catch (error) {
@@ -179,9 +184,15 @@ function Step() {
     if(userConfirm ){
       if (confirm1Data  && confirm2Data && upload && requirement){  
         try {
+          const token = localStorage.getItem('jwtToken');
           const response = await axios.get(
-            `${g_s}/?username=${userid}&projectname=${projectname}`
-          );
+            `${g_s}/?username=${userid}&projectname=${projectname}`, {
+              headers: {
+                'Content-Type':'application/json',
+                'Authorization': `Bearer ${token}`
+              }
+            });
+          
           console.log(response.data)
           if(response.data === 3){
             navigate(modelLink);

@@ -40,18 +40,21 @@ function Create() {
     } else {
       console.log("Form submitted:", formData);
       try {
+        const token = localStorage.getItem('jwtToken');
         const response = await axios.post(
           `${add_p}?username=${id}`,
           {
             projectName: formData.projectName.trim(),
-            projectDescription: formData.projectDescription.trim(), // 新增專案描述
-          }
-        );
+            projectDescription: formData.projectDescription.trim(),
+          }, {
+            headers: {
+              'Content-Type':'application/json',
+              'Authorization': `Bearer ${token}`
+            }
+          });
         alert(response.data);
-        // localStorage.setItem('projectName', formData.projectName.trim());
-        // localStorage.setItem('projectDescription', formData.projectDescription.trim());
         handleFormDataChange("projectName", "");
-        handleFormDataChange("projectDescription", ""); // 清空專案描述
+        handleFormDataChange("projectDescription", ""); 
         console.log(response);
 
         // 導航回去
@@ -61,13 +64,6 @@ function Create() {
       }
     }
   };
-
-  // const enterSolve = async (e) => {
-  //   if (e.key === "Enter") {
-  //     e.preventDefault(); // 避免預設跳轉
-  //     await addProject(); // non-blocking statement
-  //   }
-  // };
 
   return (
     <div className="container-fluid mt-3">
@@ -84,9 +80,6 @@ function Create() {
         </div>
         <div className="custom-border"></div>
     </div>
-    
-
-
     <div className="card col-xl-5  create-form" style={{height:550}}>
       <form onSubmit={(e) => e.preventDefault()} >
         <div>

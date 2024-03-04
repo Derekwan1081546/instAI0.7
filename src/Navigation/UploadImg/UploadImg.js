@@ -142,16 +142,26 @@ function UploadImg() {
       });
 
       try {
+        const token = localStorage.getItem('jwtToken');
         const response = await axios.post(
           `-${u}?username=${id}&projectname=${projectname}`,
-          formData
-        );
+          formData, {
+            headers: {
+              'Content-Type':'application/json',
+              'Authorization': `Bearer ${token}`
+            }
+          });
         console.log(response.data);
         alert('upload success');
 
         const response2 = await axios.post(
-          `${c_s}/?step=1&username=${id}&projectname=${projectname}`
-        );
+          `${c_s}/?step=1&username=${id}&projectname=${projectname}`, {
+            headers: {
+              'Content-Type':'application/json',
+              'Authorization': `Bearer ${token}`
+            }
+          });
+        
         console.log('step updated successfully:', response2.data);
         navigate(`/LabelPage?id=${id}&projectname=${projectname}`);
       } catch (error) {

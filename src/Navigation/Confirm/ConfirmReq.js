@@ -19,9 +19,14 @@ function ConfirmReq() {
   console.log('Initial confirmed value:', confirmed);
   const fetchData = async () => {
     try {
+      const token = localStorage.getItem('jetToken');
       const response = await axios.get(
-        `${get_req}/?username=${id}&projectname=${projectname}`
-      );
+        `${get_req}/?username=${id}&projectname=${projectname}`, {
+          headers: {
+            'Content-Type':'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
       const responseData = response.data.content;
       const parsedData = {};
       responseData.forEach(item => {
@@ -70,9 +75,14 @@ function ConfirmReq() {
 
       fetchData();
       try {
+        const token = localStorage.getItem('jetToken');
         const response = await axios.get(
-          `${get_req}/?username=${id}&projectname=${projectname}`
-        );
+          `${get_req}/?username=${id}&projectname=${projectname}`, {
+            headers: {
+              'Content-Type':'application/json',
+              'Authorization': `Bearer ${token}`
+            }
+          });
         const responseData = response.data.content;
         const parsedData = {};
         responseData.forEach(item => {
@@ -141,9 +151,14 @@ const handleConfirmRequirement = () => {
     }
 
     if (confirmed) {
+      const token = localStorage.getItem('jwtToken');
       const response = await axios.post(
-        `${confirm_step}/?step=3&username=${id}&projectname=${projectname}`
-      );
+        `${confirm_step}/?step=3&username=${id}&projectname=${projectname}`, {
+          headers: {
+            'Content-Type':'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
       console.log('step updated successfully:', response.data);
       window.alert('See your model later');
     }

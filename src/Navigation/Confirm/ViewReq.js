@@ -15,9 +15,14 @@ function ViewReq() {
   const navigate = useNavigate();
   const fetchData = async () => {
     try {
+      const token = localStorage.getItem('jwtToken');
       const response = await axios.get(
-        `${get_req}/?username=${id}&projectname=${projectname}`
-      );
+        `${get_req}/?username=${id}&projectname=${projectname}`, {
+          headers: {
+            'Content-Type':'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
       const responseData = response.data.content;
       const parsedData = {};
       responseData.forEach(item => {

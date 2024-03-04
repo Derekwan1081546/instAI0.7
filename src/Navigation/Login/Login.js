@@ -47,7 +47,7 @@ const Login = ({ setUserState }) => {
     }
   
     try {
-      const response = await axios.post(log_in, user);
+      const response = await axios.post(log_in, user,);
       console.log(response.data);
       if (response.data && response.data.message && typeof response.data === 'object' && response.data.message.includes("Failed")) {
         alert("登錄失敗！");

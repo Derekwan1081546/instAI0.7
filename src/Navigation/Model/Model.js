@@ -21,14 +21,19 @@ const Model = () => {
   useEffect(() => {
     const fetchModel = async () => {
       try {
-
+        const token = localStorage.getItem('jwtToken');
         const responses = await axios.post(
           `${d_m}/?username=${userid}&projectname=${projectname}`, 
-          null, // 注意這裡傳遞了 null，因為 POST 請求不需要傳遞具體的資料
+          null,
           { 
             responseType: 'blob'
-          }
-        );
+          }, {
+            headers: {
+              'Content-Type':'application/json',
+              'Authorization': `Bearer ${token}`
+            }
+          });
+        
         console.log('Model fetched successfully');
         setModelFile(responses.data);
 

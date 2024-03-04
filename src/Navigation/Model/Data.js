@@ -15,7 +15,13 @@ function Data() {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const fetchData = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/api/upload/download?username=${id}&projectname=${projectname}`);
+      const token = localStorage.getItem('jwtToken');
+      const response = await axios.get(`http://localhost:8080/api/upload/download?username=${id}&projectname=${projectname}`, {
+        headers: {
+          'Content-Type':'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
       console.log(response.data.images);
       setImagePreviews(response.data.images);
     } catch (error) {
@@ -99,7 +105,13 @@ function Data() {
     }
     console.log(selectedFiles.length);
     try {
-      const response = await axios.post(`http://localhost:8080/api/upload/upload?username=${id}&projectname=${projectname}`, formData);
+      const token = localStorage.getItem('jwtToken');
+      const response = await axios.post(`http://localhost:8080/api/upload/upload?username=${id}&projectname=${projectname}`, formData, {
+        headers: {
+          'Content-Type':'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
       console.log(response.data);
       alert('Upload success');
       setSelectedFiles([]);
