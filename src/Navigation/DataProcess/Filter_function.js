@@ -233,7 +233,7 @@ const Filter = () => {
       try {
         const token = localStorage.getItem('jwtToken');
         const response = await axios.post(
-          `-${u}?username=${id}&projectname=${projectname}`,
+          `${u}?username=${id}&projectname=${projectname}`,
           formData , 
            {
             headers: {

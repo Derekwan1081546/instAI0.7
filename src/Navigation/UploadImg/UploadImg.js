@@ -134,7 +134,7 @@ function UploadImg() {
       if (!confirmDelete) {
         return;
       }
-      navigate(`/Step?id=${id}&projectname=${projectname}`);
+      navigate(`/Step?id=${id}&project=${projectname}`);
       const uploaded = [...selectedFiles];
       const formData = new FormData();
       uploaded.forEach((file) => {
@@ -144,7 +144,7 @@ function UploadImg() {
       try {
         const token = localStorage.getItem('jwtToken');
         const response = await axios.post(
-          `-${u}?username=${id}&projectname=${projectname}`,
+          `${u}?username=${id}&projectname=${projectname}`,
           formData, {
             headers: {
               'Content-Type':'application/json',

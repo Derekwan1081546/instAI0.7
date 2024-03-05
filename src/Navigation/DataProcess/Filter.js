@@ -233,7 +233,7 @@ const Filter = () => {
       try {
         const token = localStorage.getItem('jwtToken');
         const response = await axios.post(
-          `-${u}?username=${id}&projectname=${projectname}`,
+          `${u}?username=${id}&projectname=${projectname}`,
           formData, {
             headers: {
               'Content-Type':'application/json',
@@ -243,16 +243,29 @@ const Filter = () => {
         
         console.log(response.data);
         alert('upload success');
-
+        
         const response2 = await axios.post(
-          `${c_s}/?step=1&username=${id}&projectname=${projectname}`, {
+          `${c_s}/?step=1&username=${id}&projectname=${projectname}`, // URL，包含查詢參數
+          {}, // 空的請求主體
+          {
             headers: {
-              'Content-Type':'application/json',
+              'Content-Type': 'application/json',
               'Authorization': `Bearer ${token}`
             }
-          });
+          }
+        );
         console.log('step updated successfully:', response2.data);
-        navigate(`/LabelPage?id=${id}&projectname=${projectname}`);
+        
+
+        // const response2 = await axios.post(
+        //   `${c_s}/?step=1&username=${id}&projectname=${projectname}`, {
+        //     headers: {
+        //       'Content-Type':'application/json',
+        //       'Authorization': `Bearer ${token}`
+        //     }
+        //   });
+        console.log('step updated successfully:', response2.data);
+        navigate(`/LabelPage?id=${id}&project=${projectname}`);
       } catch (error) {
         console.error('Error sending data to backend:', error);
       }
