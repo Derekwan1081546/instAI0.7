@@ -24,7 +24,7 @@ function Step() {
   const [confirm2Data, setConfirm2Data] = useState(
     JSON.parse(localStorage.getItem(`confirmStatusReq_${userid}_${projectname}`) || 'false')
   );
-  const [step,setstep] = useState(0);
+  const [step,setstep] = useState();
   const fetchstep = async () => {
     try {
       const token = localStorage.getItem('jwtToken');
