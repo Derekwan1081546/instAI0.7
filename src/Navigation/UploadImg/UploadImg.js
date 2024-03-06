@@ -134,26 +134,33 @@ function UploadImg() {
       if (!confirmDelete) {
         return;
       }
-      navigate(`/Step?id=${id}&project=${projectname}`);
+      
       const uploaded = [...selectedFiles];
       const formData = new FormData();
-      uploaded.forEach((file) => {
-        formData.append('file', file);
-      });
 
+      // uploaded.forEach((file) => {
+      //   console.log("filename:",file.name);
+      //   formData.append(`file`, file); 
+      // });
+      for(let i =0;i<uploaded.length;++i){
+        //console.log(uploaded[i]);
+        formData.append('file', uploaded[i]);
+      }
+      //console.log(formData);
       try {
         const token = localStorage.getItem('jwtToken');
         const response = await axios.post(
           `${u}?username=${id}&projectname=${projectname}`,
-          formData, {
+          formData, 
+          {
             headers: {
-              'Content-Type':'application/json',
+              'Content-Type':'multipart/form-data',
               'Authorization': `Bearer ${token}`
             }
           });
         console.log(response.data);
         alert('upload success');
-
+        console.log(token);
         const response2 = await axios.post(
           `${c_s}/?step=1&username=${id}&projectname=${projectname}`, {
             headers: {
@@ -163,7 +170,8 @@ function UploadImg() {
           });
         
         console.log('step updated successfully:', response2.data);
-        navigate(`/LabelPage?id=${id}&projectname=${projectname}`);
+        navigate(`/Step?id=${id}&project=${projectname}`);
+        //navigate(`/LabelPage?id=${id}&projectname=${projectname}`);
       } catch (error) {
         console.error('Error sending data to backend:', error);
       }

@@ -23,6 +23,7 @@ function Project() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+          const token = localStorage.getItem("jwtToken");
           const response = await axios.get(`${g_r}/?username=${type ? id : userid}`, {
             headers: {
               'Content-Type': 'application/json',
@@ -61,10 +62,12 @@ function Project() {
     setProjectList(updatedProjects);
 
     try {
+      //console.log(deletedProject.name);
+      const token = localStorage.getItem("jwtToken");
       const response = await axios.post(
-        `${d_p}?username=${type ? id : userid}`,
+        `${d_p}/?username=${type ? id : userid}`,
         { 
-          projectName: deletedProject.trim(),
+          projectName: deletedProject.name,
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
