@@ -2,7 +2,22 @@ import './App.css';
 import {BrowserRouter as Router , Routes , Route , useNavigate , useLocation} from "react-router-dom";
 import React , {lazy, Suspense , useState , useEffect} from "react";
 
+//使用 WebSocket 的網址向 Server 開啟連結
+let ws = new WebSocket('ws://localhost:8080')
 
+//開啟後執行的動作，指定一個 function 會在連結 WebSocket 後執行
+ws.onopen = () => {
+    console.log('open connection')
+}
+
+//關閉後執行的動作，指定一個 function 會在連結中斷後執行
+ws.onclose = () => {
+    console.log('close connection')
+}
+//接收 Server 發送的訊息
+ws.onmessage = event => {
+  console.log(event)
+}
 // 開發完成頁面
 // import Loading from './loading';
 const Register = lazy(() => import("./Navigation/Register/Register"));
@@ -14,7 +29,7 @@ const StepPage = lazy(() => import("./Navigation/Step1/Step"));
 const ConfirmImg = lazy(() => import('./Navigation/Confirm/ConfirmIMG'));
 const ConfirmReq = lazy(() => import('./Navigation/Confirm/ConfirmReq'));
 const ViewReq = lazy(() => import('./Navigation/Confirm/ViewReq'));
-const ViewData = lazy(() => import('./Navigation/Model/Req'));
+const ViewData = lazy(() => import('./Navigation/Confirm/ViewData'));
 const Requirement = lazy(() => import('./Navigation/Requirment/Requirment'));
 const Data = lazy(() => import("./Navigation/Model/Data"));
 const Req = lazy(() => import('./Navigation/Model/Req'));
