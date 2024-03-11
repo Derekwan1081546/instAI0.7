@@ -236,7 +236,7 @@ const Filter = () => {
           `${u}?username=${id}&projectname=${projectname}`,
           formData, {
             headers: {
-              'Content-Type':'application/json',
+              'Content-Type':'multipart/form-data',
               'Authorization': `Bearer ${token}`
             }
           });

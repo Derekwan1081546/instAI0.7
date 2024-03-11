@@ -73,14 +73,20 @@ function Step() {
     if (userConfirm) {
       if (!upload) {
         const CheckFilter = window.confirm("是否需要資料篩選?");
+        //setUpload(uplooaded);
+        setUpload((prevData) => {
+          const newUpload = !prevData;
+          localStorage.setItem(`firstPage_${userid}_${projectname}`, newUpload.toString());
+          return newUpload;
+        });
         if (CheckFilter) {
           // If user confirms the need for data filtering
-          setUpload(upload);
+          
           console.log("upload", upload);
           navigate(`/DataFilter?id=${userid}&projectname=${projectname}`);
         } else {
           // If user does not need data filtering
-          setUpload(upload);
+          //setUpload(upload);
           console.log("upload:", upload);
           navigate(`/UploadImg?id=${userid}&projectname=${projectname}`);
         }

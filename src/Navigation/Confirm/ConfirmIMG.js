@@ -18,7 +18,7 @@ function ConfirmImg() {
   const upload_download = p.REACT_APP_UPLOAD_DOWNLOAD;
   const upload_deleteimg = p.REACT_APP_UPLOAD_DELETEIMG;
   const upload = p.UPLOAD;
-  const confirm_img = p.AWS_CONFIRM_IMG;
+  const confirm_img = p.REACT_APP_AWS_CONFIRM_IMG;
   console.log("現在狀態",confirmed2);
   const fetchData = async () => {
     try {
@@ -246,10 +246,10 @@ function ConfirmImg() {
  
 
       <div className=" d-flex mt-2 mb-3 justify-content-between ">
-      <div class="col-4">
+      <div className="col-4">
       {!confirmed2 ? <input type="file" accept="image/*" multiple name="images" onChange={handleFileSelect} /> : <></>}
           </div>
-        <div class="col-8 d-flex  justify-content-end">
+        <div className="col-8 d-flex  justify-content-end">
             <div >
             {!confirmed2 ? <button className='btn btn-warning' onClick={handleUpload} >Change</button> : <></>}
              {/* <button onClick={handleUpload} disabled = {confirmed2 ? true : false}>Change</button> */}

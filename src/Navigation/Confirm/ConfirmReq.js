@@ -15,11 +15,11 @@ function ConfirmReq() {
   const [confirmed, setConfirmed] = useState(JSON.parse(localStorage.getItem(`confirmStatusReq_${id}_${projectname}`) || 'false'));
   const confirm_step = process.env.REACT_APP_CONFIRM_STEP;
   const get_req = process.env.REACT_APP_GET_REQUIREMENT;
-  const upload_req = process.env.REACT_APP_UPLOAD_REQUIREMENT
+  const upload_req = process.env.REACT_APP_UPLOAD_REQUIREMENT;
   console.log('Initial confirmed value:', confirmed);
   const fetchData = async () => {
     try {
-      const token = localStorage.getItem('jetToken');
+      const token = localStorage.getItem('jwtToken');
       const response = await axios.get(
         `${get_req}/?username=${id}&projectname=${projectname}`, {
           headers: {
@@ -75,7 +75,7 @@ function ConfirmReq() {
 
       fetchData();
       try {
-        const token = localStorage.getItem('jetToken');
+        const token = localStorage.getItem('jwtToken');
         const response = await axios.get(
           `${get_req}/?username=${id}&projectname=${projectname}`, {
             headers: {
