@@ -9,7 +9,7 @@ function Create() {
   const navigate = useNavigate();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-  const id = searchParams.get('id');
+  const id = localStorage.getItem("userId");
   const add_p = process.env.REACT_APP_ADD_PROJECT;
   const [formData, setFormData] = useState({
     projectName: "",
@@ -26,14 +26,9 @@ function Create() {
       ...prevData,
       [fieldName]: value,
     }));
-
-    console.log(`Field ${fieldName} updated to:`, value);
   };
   
-  const information = async() =>{
-    console.log(formData.projectDescription);
-    console.log(formData.projectName);
-  }
+  
   const addProject = async () => {
     if (formData.projectName.trim() === "") {
       alert("請輸入專案名稱");
@@ -58,7 +53,7 @@ function Create() {
         console.log(response);
 
         // 導航回去
-        navigate(`/Project?id=${id}&type=1`);
+        navigate(`/Project?&type=1`);
       } catch (error) {
         console.error("Error sending data to backend:", error);
       }
@@ -97,7 +92,6 @@ function Create() {
         </div>
         <div className="createProjectDescription">
           <label className="form-label fs-6">專案描述：</label>
-          {/* 彥君注意這裡 */}
           <textarea
           name="projectDescription"
           value={formData.projectDescription}
@@ -109,9 +103,6 @@ function Create() {
         
         <button className="btn createButton" type="button" onClick={addProject}>
           新增專案
-        </button>
-        <button className="btn createButton" type='button' onClick={information}>
-          顯示輸入資料
         </button>
       </form>
     </div>

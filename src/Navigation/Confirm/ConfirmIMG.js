@@ -9,7 +9,7 @@ function ConfirmImg() {
   const [imagePreviews2, setImagePreviews2] = useState([]);
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-  const id = searchParams.get('id');
+  const id = localStorage.getItem("userId");
   const projectname = searchParams.get('projectname');
   const [confirmed2, setConfirmed2] = useState(JSON.parse(localStorage.getItem(`confirmStatusImg_${id}_${projectname}`) || 'false'));
   const navigate = useNavigate();
@@ -143,7 +143,7 @@ function ConfirmImg() {
       window.alert('See your model later');
     }
 
-    navigate(`/Step?id=${id}&project=${projectname}`);
+    navigate(`/Step?project=${projectname}`);
   };
   const handleUpload = async () => {
     if (selectedFiles.length === 0) {

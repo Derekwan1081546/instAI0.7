@@ -7,7 +7,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 const Filter = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-  const id = searchParams.get('id');
+  const id = localStorage.getItem("userId");
   const projectname = searchParams.get('projectname');
   const navigate = useNavigate();
   //const [format , setFormat] = useState([]);
@@ -252,7 +252,7 @@ const Filter = () => {
             }
           });
         console.log('step updated successfully:', response2.data);
-        navigate(`/LabelPage?id=${id}&projectname=${projectname}`);
+        navigate(`/LabelPage?projectname=${projectname}`);
       } catch (error) {
         console.error('Error sending data to backend:', error);
       }

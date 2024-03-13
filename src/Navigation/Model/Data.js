@@ -9,7 +9,7 @@ function Data() {
   const [imagePreviews2, setImagePreviews2] = useState([]);
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-  const id = searchParams.get('id');
+  const id = localStorage.getItem("userId");
   const projectname = searchParams.get('projectname');
   const navigate = useNavigate();
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -91,7 +91,7 @@ function Data() {
       window.alert('See your model later');
     }
 
-    navigate(`/Model?id=${id}&project=${projectname}`);
+    navigate(`/Model?project=${projectname}`);
   };
   const handleUpload = async () => {
     const confirmUpload = window.confirm('確定要新增圖片?');

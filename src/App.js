@@ -1,15 +1,12 @@
 import './App.css';
 import {BrowserRouter as Router , Routes , Route , useNavigate , useLocation} from "react-router-dom";
 import React , {lazy, Suspense , useState , useEffect} from "react";
-
 //使用 WebSocket 的網址向 Server 開啟連結
 let ws = new WebSocket('ws://localhost:8080')
-
 //開啟後執行的動作，指定一個 function 會在連結 WebSocket 後執行
 ws.onopen = () => {
     console.log('open connection')
 }
-
 //關閉後執行的動作，指定一個 function 會在連結中斷後執行
 ws.onclose = () => {
     console.log('close connection')
@@ -35,30 +32,44 @@ const Data = lazy(() => import("./Navigation/Model/Data"));
 const Req = lazy(() => import('./Navigation/Model/Req'));
 const Model = lazy(() => import('./Navigation/Model/Model'));
 const UploadImg = lazy(() => import('./Navigation/UploadImg/UploadImg'));
-// const LabelProject = lazy(()=>import ('./tool/LabelProject'));
-// const LabelCreate = lazy(() => import("./tool/LabelCreate"));
-// // 還沒完成頁面
-// const LabelPage = lazy(() => import('./tool/LabelPage'));
+
+
 const Loading = lazy(() => import('./loading'));
 function AppDev() {
-  
-  const [userState, setUserState] = useState({});
+  const setUserState= useState({});
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-
+  console.log(isLoggedIn);
   useEffect(() => {
     const token = localStorage.getItem("jwtToken");
-    if (token !== 'false') {
+    if(token && token !== 'false'){
+      //檢查TOKEN是否為base64字串
+      const base64Regex = /^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/;
+      if (base64Regex.test(token)) {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const userId = localStorage.setItem("userId",payload.user);
+        const id_test = localStorage.getItem("id_test");
+        const urlParams = new URLSearchParams(window.location.search);
+        const id = urlParams.get('id');
+        if(userId !== id_test || userId !== id){
+          navigate(location.pathname);  
+        }
+      } else {
+        console.error('Invalid token');
+      }
+    }
+    if (token && token !== 'false') {
       setIsLoggedIn(true);
     } else {
       setIsLoggedIn(false);
-      if (location.pathname !== "/Login" && location.pathname !== "/" && isLoggedIn !== true) {
-        navigate("/Login"); //鎖住其他頁面 不准url 操作導航
+      if (location.pathname !== "/Login" && location.pathname !== "/" && isLoggedIn !== true ) {
+        navigate("/Login"); 
       }
     }
   }, [navigate, location, isLoggedIn]);
 
+  
   return (
     <div className="App">
       

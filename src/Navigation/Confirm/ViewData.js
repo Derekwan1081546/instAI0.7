@@ -10,7 +10,7 @@ function ViewData() {
   const [imagePreviews2, setImagePreviews2] = useState([]);
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-  const id = searchParams.get('id');
+  const id = localStorage.getItem("userId");
   const projectname = searchParams.get('projectname');
   const navigate = useNavigate();
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -99,7 +99,7 @@ function ViewData() {
   
   const handleGoBack = () => {
     console.log("檢查");
-    navigate(`/Step?id=${id}&project=${projectname}`);
+    navigate(`/Step?project=${projectname}`);
   };
   // const handleUpload = async () => {
   //   const confirmUpload = window.confirm('確定要新增圖片?');

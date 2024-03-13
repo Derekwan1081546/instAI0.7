@@ -8,10 +8,10 @@ import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 function Step() {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-  const userid = searchParams.get('id');
+  const userid = localStorage.getItem("userId");
   const projectname = searchParams.get('project');
   const g_s = process.env.REACT_APP_GET_STEP;
-  const modelLink = `/Model?id=${userid}&projectname=${projectname}`;
+  const modelLink = `/Model?projectname=${projectname}`;
   const [upload, setUpload] = useState(
     JSON.parse(localStorage.getItem(`firstPage_${userid}_${projectname}`) || 'false')
   );
@@ -42,7 +42,7 @@ function Step() {
     }
   };
   useEffect(() => {
-    console.log(upload.toString(),requirement.toString(),confirm1Data.toString(),confirm2Data.toString());
+    // console.log(upload.toString(),requirement.toString(),confirm1Data.toString(),confirm2Data.toString());
     localStorage.setItem(`firstPage_${userid}_${projectname}`, upload.toString());
     localStorage.setItem(`secondPage_${userid}_${projectname}`, requirement.toString());
     localStorage.setItem(`confirmStatusImg_${userid}_${projectname}`, confirm1Data.toString());
@@ -53,15 +53,15 @@ function Step() {
   /*const response =  來自後端回傳的檢查 可能使用axios 當這個頁面被點及進入時 後端會回傳說相對應的data以及req資料夾是否是空的 如果都是有一定資料量的話 回傳true */
   const navigate = useNavigate();
   // console.log("第一個按鈕:" ,upload , "第二個按鈕 ", requirement) ;
-  const circleNo1ClassName = upload ? 'circleNo1-active' : 'circleNo1';
-  const circleNo2ClassName = requirement ? 'circleNo2-active' : 'circleNo2';
-  const circleNo3ClassName = confirm1Data ? 'circleNo3-active' : 'circleNo3';
-  const circleNo4ClassName = confirm2Data ? 'circleNo4-active' : 'circleNo4';
-  console.log('circleNo1ClassName:', circleNo1ClassName);
-  console.log('circleNo2ClassName:', circleNo2ClassName);
-  console.log('circleNo3ClassName:', circleNo3ClassName);
-  console.log('circleNo4ClassName:', circleNo4ClassName);
-  console.log('step',step);
+  // const circleNo1ClassName = upload ? 'circleNo1-active' : 'circleNo1';
+  // const circleNo2ClassName = requirement ? 'circleNo2-active' : 'circleNo2';
+  // const circleNo3ClassName = confirm1Data ? 'circleNo3-active' : 'circleNo3';
+  // const circleNo4ClassName = confirm2Data ? 'circleNo4-active' : 'circleNo4';
+  // console.log('circleNo1ClassName:', circleNo1ClassName);
+  // console.log('circleNo2ClassName:', circleNo2ClassName);
+  // console.log('circleNo3ClassName:', circleNo3ClassName);
+  // console.log('circleNo4ClassName:', circleNo4ClassName);
+  // console.log('step',step);
   //-----------------------------------------------------//
   const Green1 = () => {
     console.log("upload 被點擊");
@@ -83,16 +83,16 @@ function Step() {
           // If user confirms the need for data filtering
           
           console.log("upload", upload);
-          navigate(`/DataFilter?id=${userid}&projectname=${projectname}`);
+          navigate(`/DataFilter?projectname=${projectname}`);
         } else {
           // If user does not need data filtering
           //setUpload(upload);
           console.log("upload:", upload);
-          navigate(`/UploadImg?id=${userid}&projectname=${projectname}`);
+          navigate(`/UploadImg?projectname=${projectname}`);
         }
       } else {
         console.log("upload 已經確定");
-        navigate(`/ViewData?id=${userid}&projectname=${projectname}`);
+        navigate(`/ViewData?projectname=${projectname}`);
       }
     }
   };
@@ -110,11 +110,11 @@ function Step() {
          if (!requirement) {
           setRequirement(requirement);
           console.log("Fill out the form : ",requirement);
-          navigate(`/Requirment?id=${userid}&projectname=${projectname}`);
+          navigate(`/Requirment?projectname=${projectname}`);
         }
         else{
           console.log("requirement 已經確定");
-          navigate(`/ViewReq?id=${userid}&projectname=${projectname}`)
+          navigate(`/ViewReq?projectname=${projectname}`)
         }
       }
       else{
@@ -128,7 +128,7 @@ function Step() {
       if(upload && requirement){
         setConfirm1Data(confirm1Data);
         console.log('Button clicked. Confirm is now:', confirm1Data);
-        navigate(`/ConfirmImg?id=${userid}&projectname=${projectname}`);
+        navigate(`/ConfirmImg?projectname=${projectname}`);
       }
       else{
         alert("請照步驟執行");
@@ -177,7 +177,7 @@ function Step() {
         //localStorage.setItem(`confirmStatusReq_${userid}_${projectname}`, confirm2Data.toString());
         setConfirm2Data(confirm2Data);
         console.log('Button clicked. Confirm is now:', confirm2Data);
-        navigate(`/ConfirmReq?id=${userid}&projectname=${projectname}`);
+        navigate(`/ConfirmReq?projectname=${projectname}`);
     }
     else{
       alert("請照步驟執行");

@@ -14,8 +14,6 @@ const Login = ({ setUserState }) => {
     email: "",
     password: "",
   });
-  const R_L = process.env.REACT_APP_LOG_IN;
-
   const changeHandler = (e) => {
     const { name, value } = e.target;
     setUserDetails((prevUser) => ({
@@ -58,6 +56,9 @@ const Login = ({ setUserState }) => {
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         const remove = "Success";
         const id = response.data.message.replace(remove, "");
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const userId = localStorage.setItem("userId",payload.user);
+        console.log(userId);
         console.log(id);
         navigate("/Project", { state: id, replace: true });
       }
@@ -65,7 +66,6 @@ const Login = ({ setUserState }) => {
       console.error('登錄時出錯', error);
     }
   };
-  
   
 
   return (

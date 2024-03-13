@@ -10,7 +10,7 @@ function ViewReq() {
   const [editable, setEditable] = useState(false);
   const searchParams = new URLSearchParams(location.search);
   const projectname = searchParams.get('projectname');
-  const id = searchParams.get('id');
+  const id = localStorage.getItem("userId");
   const get_req = process.env.REACT_APP_GET_REQUIREMENT;
   const navigate = useNavigate();
   const fetchData = async () => {
@@ -41,7 +41,7 @@ function ViewReq() {
 
   const handleGoBack = () => {
     console.log("已經檢查需求");
-    navigate(`/Step?id=${id}&project=${projectname}`);
+    navigate(`/Step?project=${projectname}`);
   };
 
   return (

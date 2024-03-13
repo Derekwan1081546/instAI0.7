@@ -9,7 +9,7 @@ function UploadImg() {
   const navigate = useNavigate();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-  const id = searchParams.get('id');
+  const id = localStorage.getItem("userId");
   const projectname = searchParams.get('projectname');
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
@@ -170,7 +170,7 @@ function UploadImg() {
           });
         
         console.log('step updated successfully:', response2.data);
-        navigate(`/Step?id=${id}&project=${projectname}`);
+        navigate(`/Step?project=${projectname}`);
         //navigate(`/LabelPage?id=${id}&projectname=${projectname}`);
       } catch (error) {
         console.error('Error sending data to backend:', error);

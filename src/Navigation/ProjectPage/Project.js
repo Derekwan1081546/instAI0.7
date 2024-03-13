@@ -10,13 +10,12 @@ function Project() {
   const location = useLocation();
   const userid = location.state;
   const searchParams = new URLSearchParams(location.search);
-  const id = searchParams.get("id");
+  const id = localStorage.getItem("userId");
   const type = searchParams.get("type");
   const navigate = useNavigate();
   const [projectList, setProjectList] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [showLogoutPrompt, setShowLogoutPrompt] = useState(false);
-  const token = localStorage.getItem("jwtToken");
   const g_r = process.env.REACT_APP_GET_PROJECT;
   const d_p = process.env.REACT_APP_DELETE_PROJECT;
   
@@ -49,7 +48,7 @@ function Project() {
       // }
     };
     fetchData();
-  }, []);
+  }, [g_r,id,type,userid]);
   
   const handleDeleteProject = async (index) => {
     const confirmDelete = window.confirm("確定要刪除專案?");
@@ -88,7 +87,7 @@ function Project() {
   };
 
   const handleNavigate = (projectName) => {
-    navigate(`/Step?id=${type ? id : userid}&project=${projectName}`);
+    navigate(`/Step?project=${projectName}`);
   }
   const handleLogout = () => {
     //setShowLogoutPrompt(true);
@@ -112,9 +111,6 @@ function Project() {
     setShowLogoutPrompt(false);
   };
 
-  // const filteredProjects = projectList.filter(project =>
-  //   project.toLowerCase().includes(searchTerm.toLowerCase())
-  // );
   const filteredProjects = projectList.filter(project =>
     project.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -152,7 +148,7 @@ function Project() {
       </div>
 
     <div className="col-auto">
-       <NavLink to={`/CreatePage?id=${type ? id : userid}`}>
+       <NavLink to={`/CreatePage`}>
           <button className="btn add-project-button">新增專案</button>
        </NavLink>
 
@@ -196,9 +192,6 @@ function Project() {
 
       ))}
     </div>
-
-
-   
     {/* Logout Prompt */}
     {showLogoutPrompt && (
       <div className="logout-prompt">

@@ -10,7 +10,7 @@ function ConfirmReq() {
   const [editable, setEditable] = useState(false);
   const searchParams = new URLSearchParams(location.search);
   const projectname = searchParams.get('projectname');
-  const id = searchParams.get('id');
+  const id = localStorage.getItem("userId");
   const navigate = useNavigate();
   const [confirmed, setConfirmed] = useState(JSON.parse(localStorage.getItem(`confirmStatusReq_${id}_${projectname}`) || 'false'));
   const confirm_step = process.env.REACT_APP_CONFIRM_STEP;
@@ -163,7 +163,7 @@ const handleConfirmRequirement = () => {
       window.alert('See your model later');
     }
 
-    navigate(`/Step?id=${id}&project=${projectname}`);
+    navigate(`/Step?project=${projectname}`);
   };
 
   return (

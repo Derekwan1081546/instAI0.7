@@ -26,7 +26,7 @@ function Requirement() {
   const [isDataChecked, setIsDataChecked] = useState(false);
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-  const id = searchParams.get("id");
+  const id = localStorage.getItem("userId");
   const projectname = searchParams.get("projectname");
   const u_r = process.env.REACT_APP_UPLOAD_REQUIREMENT;
   const c_s = process.env.REACT_APP_CONFIRM_STEP;
@@ -121,7 +121,7 @@ function Requirement() {
       setIsDataChecked(false);
       localStorage.setItem(`secondPage_${id}_${projectname}`, 'true');
       //navigate 
-      navigate(`/Step?id=${id}&project=${projectname}`);
+      navigate(`/Step?project=${projectname}`);
     } catch (error) {
       console.error("Submission failed:", error);
       if (error.response) {
