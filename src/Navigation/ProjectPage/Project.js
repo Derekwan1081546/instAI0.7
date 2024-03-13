@@ -3,7 +3,7 @@ import "./Project.css";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
-
+import { BounceLoader } from 'react-spinners';
 import InstAI_icon from '../../image/instai_icon.png'
 
 function Project() {
@@ -18,37 +18,31 @@ function Project() {
   const [showLogoutPrompt, setShowLogoutPrompt] = useState(false);
   const g_r = process.env.REACT_APP_GET_PROJECT;
   const d_p = process.env.REACT_APP_DELETE_PROJECT;
-  
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-          const token = localStorage.getItem("jwtToken");
-          const response = await axios.get(`${g_r}/?username=${type ? id : userid}`, {
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-            }
-          });
-          console.log(response.data);
-          const combinedProjects = response.data.projectname.map((projectname, index) => ({
-            name: projectname,
-            desc: response.data.desc[index]
-          }));
-          setProjectList(combinedProjects);
-        } catch (error) {
-          console.error('獲取數據時出錯', error);
+  const [isLoading, setIsLoading] = useState(false); 
+useEffect(() => {
+  const fetchData = async () => {
+    setIsLoading(true); // 在發送請求之前，設置isLoading為true
+    try {
+      const token = localStorage.getItem("jwtToken");
+      const response = await axios.get(`${g_r}/?username=${type ? id : userid}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         }
-      // try {
-      //   const response = await axios.get(`${g_r}/?username=${type ? id : userid}`);
-      //   setProjectList(response.data);
-      //   console.log(response.data);
-      // } catch (error) {
-      //   console.error(error);
-       
-      // }
-    };
-    fetchData();
-  }, [g_r,id,type,userid]);
+      });
+      console.log(response.data);
+      const combinedProjects = response.data.projectname.map((projectname, index) => ({
+        name: projectname,
+        desc: response.data.desc[index]
+      }));
+      setProjectList(combinedProjects);
+    } catch (error) {
+      console.error('獲取數據時出錯', error);
+    }
+    setIsLoading(false); // 在接收到響應或捕獲到錯誤後，設置isLoading為false
+  };
+  fetchData();
+}, [g_r,id,type,userid]);
   
   const handleDeleteProject = async (index) => {
     const confirmDelete = window.confirm("確定要刪除專案?");
@@ -148,51 +142,36 @@ function Project() {
       </div>
 
     <div className="col-auto">
-       <NavLink to={`/CreatePage`}>
+       <NavLink to={`/DecisionPage`}>
           <button className="btn add-project-button">新增專案</button>
        </NavLink>
-
-      <div className="mt-2"> {/* 調整 mt-2 或其他樣式以達到合適的間距 */}
-         {/* <button className='btn add-project-button2' onClick={handleLabelNavigate}>標註資料</button> */}
-      </div>
     </div>
     </div>
-
 
     <div className="row ml-3" style={{ marginLeft: 3 }}>
-      {filteredProjects.map((project, index) => ( // 修改這裡的參數名稱為 project
-
+    {isLoading ? (
+       <div className="loading" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+       <BounceLoader color={'black'} loading={isLoading} size={120} /> 
+     </div>
+    ) : (
+      filteredProjects.map((project, index) => (
         <div className="col-lg-2 col-md-3 mb-4 mt-3 project" key={index}>
-
           <div className="project-list-grid">
-
-            <h2 className="project-Name">{project.name}</h2> {/* 使用 project.name 來顯示專案名稱 */}
-            {/* <h2 className="project-Name">{localStorage.getItem(`projectName`)}</h2> */}
-        
-            {/* <div className=" projectNavLink" >
-              {filteredProjects.map((projectDescription,index)=>(
-                <p className="project-Detial" key={index}>{projectDescription}</p>
-              ))}
-              </div> */}
-                <div className="projectNavLink">
-                <p className="project-Detial">{project.desc}</p> {/* 使用 project.desc 來顯示專案描述 */}
-                </div>
-
+            <h2 className="project-Name">{project.name}</h2>
+            <div className="projectNavLink">
+              <p className="project-Detial">{project.desc}</p>
+            </div>
             <div className="project-Delete">
               <button className="btn deleteButton" onClick={() => handleDeleteProject(index)}>刪除專案</button>
             </div>
             <div className="project-Nav" style={{ marginLeft: '110px' }}>
-              <button className="btn deleteButton" onClick={() => handleNavigate(project.name)}> {/* 傳遞專案名稱給 handleNavigate 函式 */}
-                進入專案
-              </button>
+              <button className="btn deleteButton" onClick={() => handleNavigate(project.name)}>進入專案</button>
             </div> 
           </div>
-          
         </div>
-
-      ))}
-    </div>
-    {/* Logout Prompt */}
+      ))
+    )}
+  </div>
     {showLogoutPrompt && (
       <div className="logout-prompt">
         <p>確定要登出嗎？</p>

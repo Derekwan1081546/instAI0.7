@@ -226,7 +226,7 @@ function Step() {
         <img src={InstAI_icon} className="img-fluid" alt="InstAi_Icon" style={{ width: '76.8px', height: '76.8px' }} ></img>
       </div>
       <div className="col-auto mt-4"> 
-         <NavLink to={`/Project?id=${userid}&type=1`} className="projectPageLink">
+         <NavLink to={`/Project?&type=1`} className="projectPageLink">
             <button className="btn projectPageButton">返回專案頁面</button>
           </NavLink>
       </div>

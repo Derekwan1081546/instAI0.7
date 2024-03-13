@@ -1,6 +1,7 @@
 import './App.css';
 import {BrowserRouter as Router , Routes , Route , useNavigate , useLocation} from "react-router-dom";
 import React , {lazy, Suspense , useState , useEffect} from "react";
+import { BounceLoader } from 'react-spinners';
 //使用 WebSocket 的網址向 Server 開啟連結
 let ws = new WebSocket('ws://localhost:8080')
 //開啟後執行的動作，指定一個 function 會在連結 WebSocket 後執行
@@ -32,9 +33,10 @@ const Data = lazy(() => import("./Navigation/Model/Data"));
 const Req = lazy(() => import('./Navigation/Model/Req'));
 const Model = lazy(() => import('./Navigation/Model/Model'));
 const UploadImg = lazy(() => import('./Navigation/UploadImg/UploadImg'));
+const DecisionPage = lazy(()=>import('./Navigation/DecisonPage/DecisionPage'));
+const ModelStyle = lazy(() => import("./Navigation/ModelStyle/ModelStyle"));
+const ImgPrompt = lazy(() => import("./Navigation/Requirment/ImgPrompt"));
 
-
-const Loading = lazy(() => import('./loading'));
 function AppDev() {
   const setUserState= useState({});
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -73,7 +75,10 @@ function AppDev() {
   return (
     <div className="App">
       
-        <Suspense fallback={<div>loading</div>}>
+        <Suspense fallback={ 
+    <div className="loading" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+       <BounceLoader color={'#123abc'} size={120} /> 
+     </div>}>
           <Routes>
             {isLoggedIn ? (
               <>
@@ -92,13 +97,14 @@ function AppDev() {
                 <Route path="/Model" element={<Model />} />
                 <Route path="/Requirment" element={<Requirement />} />
                 <Route path='/UploadImg' element={<UploadImg/>}/>
-                <Route path='/Loading' element={<Loading/>}/>
+                <Route path="/DecisionPage" element={<DecisionPage/>}/>
+                <Route path="/ModelStyle" element={<ModelStyle/>}/>
+                <Route path="/ImgPrompt" element={<ImgPrompt/>}/>
               </>
             ) : (
               <>
                 <Route path="/" element={<Register />} />
                 <Route path='/Login' element={<Login setUserState={setUserState} />} />
-                <Route path='/Loading' element={<Loading/>}/>
               </>
             )}
           </Routes>
