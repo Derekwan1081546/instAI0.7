@@ -71,7 +71,7 @@ export default function ModelStyle(){
                 <Row className="justify-content-around">
                  {Object.keys(models).map(modelKey => (
                   <Col md={4} className="mb-4">
-                    <div style={{ cursor: 'pointer' }} onClick={() => {handleNavigate}}> 
+                    <div style={{ cursor: 'pointer' }} onClick={() => {}}> 
                   <Card>
                  <Card.Img variant="top" src={`${modelKey}.jpg`} />
                  <Card.Body>
