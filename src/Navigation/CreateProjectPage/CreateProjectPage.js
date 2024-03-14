@@ -31,7 +31,20 @@ function DecisionPage (){
     };
     fetchData();
     },[]);
-
+    const navigateModel =()=>{
+      const y = window.confirm("確定前往模型生成?");
+      if(y){
+        navigate(`/CreatePage`);
+      }
+      return;
+    }
+    const navigateImg = () =>{
+      const y = window.confirm("確定前往圖片生成?");
+      if(y){
+        navigate(`/ModelSelectionPage`);
+      }
+      return ;
+    }
     // logic area 
 
     return (
@@ -69,7 +82,7 @@ function DecisionPage (){
                 />
                 <Card.Title>AI Model Training</Card.Title>
                 <Card.Text>Dorem ipsum dolor sit amet, consectetur adipiscing elit.</Card.Text>
-                <Button variant="primary" style={{width:"100%"}}>Choose</Button>
+                <Button variant="primary" style={{width:"100%"}} onClick={navigateModel}>Choose</Button>
               </Card.Body>
             </Card>
           </Col>
@@ -85,7 +98,7 @@ function DecisionPage (){
                 />
                 <Card.Title>Image Generation</Card.Title>
                 <Card.Text>Generate 25 image data for AI model training for free</Card.Text>
-                <Button variant="primary" style={{width:"100%"}}>Choose</Button>
+                <Button variant="primary" style={{width:"100%"}} onClick={navigateImg}>Choose</Button>
               </Card.Body>
             </Card>
           </Col>

@@ -11,6 +11,15 @@ export default function ModelStyle(){
     const searchParams = new URLSearchParams(location.search);
     const type = searchParams.get("type");
     const p = process.env;
+    const [models, setModels] = useState({
+        model1: { title: 'Model 1', content: '初始內容' },
+        model2: { title: 'Model 2', content: '初始內容' },
+        model3: { title: 'Model 3', content: '出屎內容' },
+        model4: { title: 'Model 4', content: '初始內容' },
+        model5: { title: 'Model 5', content: '出屎內容' },
+        model6: { title: 'Model 6', content: '初始內容' },
+      });
+
     useEffect(()=>{
         const fetchData = async() =>{
          try{
@@ -30,7 +39,15 @@ export default function ModelStyle(){
         fetchData();
         },[]);
         // logic area 
-
+    const handleNavigate =() =>{
+      // navigate to image generation page 
+    }
+    const updateModelContent = (modelKey, newContent) => {
+        setModels(prevModels => ({
+          ...prevModels,
+          [modelKey]: { ...prevModels[modelKey], content: newContent },
+        }));
+      };
 
         return (
             <div style={{ backgroundColor: 'white' }}>
@@ -52,18 +69,20 @@ export default function ModelStyle(){
               <Container className="d-flex flex-column justify-content-center" style={{ minHeight: '60vh', maxWidth: '50rem', margin: '50px auto', backgroundColor: 'white', borderRadius: '15px', boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)', padding: '20px' }}>
                 <h2 className="text-center mb-4">What’s the image style for your AI model?</h2>
                 <Row className="justify-content-around">
-                  {Array.from({ length: 6 }, (_, i) => (
-                    <Col md={4} className="mb-4">
-                      <Card>
-                        <Card.Img variant="top" src={`model${i + 1}.jpg`} /> {/* 替換成你的模型圖片的路徑 */}
-                        <Card.Body>
-                          <Card.Title>Model {i + 1}</Card.Title>
-                          <Card.Text>天俊還沒告訴我要寫甚麼 所以我還沒有分開寫你們</Card.Text>
-                        </Card.Body>
-                      </Card>
-                    </Col>
-                  ))}
-                </Row>
+                 {Object.keys(models).map(modelKey => (
+                  <Col md={4} className="mb-4">
+                    <div style={{ cursor: 'pointer' }} onClick={() => {handleNavigate}}> 
+                  <Card>
+                 <Card.Img variant="top" src={`${modelKey}.jpg`} />
+                 <Card.Body>
+                  <Card.Title>{models[modelKey].title}</Card.Title>
+                   <Card.Text>{models[modelKey].content}</Card.Text>
+                 </Card.Body>
+                 </Card>
+                </div>
+                </Col>
+                 ))}
+              </Row>
               </Container>
             </div>
           );

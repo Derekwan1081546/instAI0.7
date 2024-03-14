@@ -33,9 +33,9 @@ const Data = lazy(() => import("./Navigation/Model/Data"));
 const Req = lazy(() => import('./Navigation/Model/Req'));
 const Model = lazy(() => import('./Navigation/Model/Model'));
 const UploadImg = lazy(() => import('./Navigation/UploadImg/UploadImg'));
-const DecisionPage = lazy(()=>import('./Navigation/DecisonPage/DecisionPage'));
-const ModelStyle = lazy(() => import("./Navigation/ModelStyle/ModelStyle"));
-const ImgPrompt = lazy(() => import("./Navigation/Requirment/ImgPrompt"));
+const CreateProjectPage = lazy(()=>import('./Navigation/CreateProjectPage/CreateProjectPage'));
+const ModelSelectionPage = lazy(() => import("./Navigation/ModelSelectionPage/ModelSelectionPage"));
+const PromptInputPage = lazy(() => import("./Navigation/PromptInputPage/PromptInputPage"));
 
 function AppDev() {
   const setUserState= useState({});
@@ -97,9 +97,9 @@ function AppDev() {
                 <Route path="/Model" element={<Model />} />
                 <Route path="/Requirment" element={<Requirement />} />
                 <Route path='/UploadImg' element={<UploadImg/>}/>
-                <Route path="/DecisionPage" element={<DecisionPage/>}/>
-                <Route path="/ModelStyle" element={<ModelStyle/>}/>
-                <Route path="/ImgPrompt" element={<ImgPrompt/>}/>
+                <Route path="/CreateProjectPage" element={<CreateProjectPage/>}/>
+                <Route path="/ModelSelectionPage" element={<ModelSelectionPage/>}/>
+                <Route path="/PromptInputPage" element={<PromptInputPage/>}/>
               </>
             ) : (
               <>

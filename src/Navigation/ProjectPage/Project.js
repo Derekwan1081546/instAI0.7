@@ -142,7 +142,7 @@ useEffect(() => {
       </div>
 
     <div className="col-auto">
-       <NavLink to={`/DecisionPage`}>
+       <NavLink to={`/CreateProjectPage`}>
           <button className="btn add-project-button">新增專案</button>
        </NavLink>
     </div>
