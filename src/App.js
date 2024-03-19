@@ -42,7 +42,6 @@ function AppDev() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  console.log(isLoggedIn);
   useEffect(() => {
     const token = localStorage.getItem("jwtToken");
     if(token && token !== 'false'){
