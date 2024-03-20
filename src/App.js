@@ -36,6 +36,8 @@ const UploadImg = lazy(() => import('./Navigation/UploadImg/UploadImg'));
 const CreateProjectPage = lazy(()=>import('./Navigation/CreateProjectPage/CreateProjectPage'));
 const ModelSelectionPage = lazy(() => import("./Navigation/ModelSelectionPage/ModelSelectionPage"));
 const PromptInputPage = lazy(() => import("./Navigation/PromptInputPage/PromptInputPage"));
+const ImageDisplay = lazy(() => import("./Navigation/ImgDisplayPage/ImgDisplayPage"));
+const Txt2ImgPage = lazy(() => import("./StableDiffusion/txt2txt/TXTtoIMG"));
 
 function AppDev() {
   const setUserState= useState({});
@@ -76,7 +78,7 @@ function AppDev() {
       
         <Suspense fallback={ 
     <div className="loading" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-       <BounceLoader color={'#123abc'} size={120} /> 
+       <BounceLoader color={'#black'} size={120} /> 
      </div>}>
           <Routes>
             {isLoggedIn ? (
@@ -99,6 +101,8 @@ function AppDev() {
                 <Route path="/CreateProjectPage" element={<CreateProjectPage/>}/>
                 <Route path="/ModelSelectionPage" element={<ModelSelectionPage/>}/>
                 <Route path="/PromptInputPage" element={<PromptInputPage/>}/>
+                <Route path ="/ImgDisplayPage" element={<ImageDisplay/>}/>
+                <Route path ="/Txt2ImgPage" element={<Txt2ImgPage/>}/>
               </>
             ) : (
               <>

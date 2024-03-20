@@ -17,7 +17,8 @@ export default function ModelStyle(){
     const searchParams = new URLSearchParams(location.search);
     const type = searchParams.get("type");
     const p = process.env;
-    // const api = p.{REACT_APP_NEW_API}
+    const modelSelect = p.REACT_APP_MODEL_SELECT;
+    const modelInformation = p.REACT_APP_MODEL_INFORMATION;
     const [models, setModels] = useState({
         model1: { title: 'Yolo v3 tiny', content: 'This is a lightweight object detection model suitable for running on devices with limited computational resources. Due to its simple structure, it requires relatively fewer images for training.',
         img : yolov3Tiny, link :'/PromptInputPage' },
@@ -31,20 +32,18 @@ export default function ModelStyle(){
         img:yolov7 , link : '/PromptInputPage'},
         model6: { title: 'Yolo v8', content: "This model might be the latest version in the YOLO series. For training, if the dataset is small (a few hundred images), it's recommended to use yolov8n or yolov8s. Oversized models may lead to overfitting. For medium-sized datasets (a few thousand images), yolov8s or yolov8m could be considered." ,
         img:yolov8 , link : '/PromptInputPage'},
-        
       });
   
     useEffect(()=>{
         const fetchData = async() =>{
          try{
           const token = localStorage.getItem("jwtToken");
-          const response = await axios.get(`adsadssa${id}`, {
+          const response = await axios.get(`${modelInformation}${id}`, {
             headers: {
               'Content-Type': 'application/json',
               'Authorization': `Bearer ${token}`
             }
           });
-        //   從後端讀取有甚麼照片風格 ? 
           console.log(response.data);
          }catch (error){
     
@@ -53,16 +52,13 @@ export default function ModelStyle(){
         fetchData();
         },[]);
         // logic area 
-    const handleNavigate =() =>{
-     navigate('/PromptInputPage'); 
-    }
 
-    const updateModelContent = (modelKey, newContent) => {
-        setModels(prevModels => ({
-          ...prevModels,
-          [modelKey]: { ...prevModels[modelKey], content: newContent },
-        }));
-      };
+    // const updateModelContent = (modelKey, newContent) => {
+    //     setModels(prevModels => ({
+    //       ...prevModels,
+    //       [modelKey]: { ...prevModels[modelKey], content: newContent },
+    //     }));
+    //   };
       const handleModelClick = (modelKey) => {
         // 記錄數值
         const value = modelKey; // 設定使用甚麼model
@@ -73,7 +69,7 @@ export default function ModelStyle(){
         const response = async() =>{
           try{
            const token = localStorage.getItem("jwtToken");
-           const response = await axios.post(`adsadssa${id}`,formData, {
+           const response = await axios.post(`${modelSelect}${id}`,formData, {
              headers: {
                'Content-Type': 'application/json',
                'Authorization': `Bearer ${token}`
@@ -83,13 +79,13 @@ export default function ModelStyle(){
           }catch (error){
             console.error("Error sending data to backend:", error);
          }
+         console.log(response.data);
       }};
         return (
             <div style={{ backgroundColor: 'white' }}>
               <Navbar style={{ backgroundColor: 'WHITE',boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)' }}>
                 <Nav className="mr-auto" style={{marginLeft:"10px"}}>
                   <h3>Back</h3>
-                  <button onClick={handleNavigate} style={{marginLeft:"50PX",color:"purple"}}>get in prompt page</button>
                 </Nav>
                 <Navbar.Brand href="#home" className="mx-auto">
                   <img
@@ -110,7 +106,7 @@ export default function ModelStyle(){
                     <div style={{ cursor: 'pointer' }} onClick={() => handleModelClick(models[modelKey].title)}> 
                   <Card>
                     {/* <NavLink to = {models[modelKey].link}> */}
-                    <Card.Img variant="top" src={models[modelKey].img} style={{width:'250px',height:'150px'}} />
+                    <Card.Img variant="top" src={models[modelKey].img} loading="lazy" style={{width:'250px',height:'150px'}} />
                  <Card.Body>
                   <NavLink to={models[modelKey].link}><Card.Title>{models[modelKey].title}</Card.Title></NavLink>
                    <Card.Text>{models[modelKey].content}</Card.Text>
