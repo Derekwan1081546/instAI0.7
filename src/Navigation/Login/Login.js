@@ -1,4 +1,4 @@
-import React, { useState,  Fragment } from "react";
+import React, { useState,  Fragment , useEffect} from "react";
 import basestyle from "../Base.module.css";
 import loginstyle from "./Login.module.css";
 import axios from "axios";
@@ -9,11 +9,41 @@ const Login = ({ setUserState }) => {
   const navigate = useNavigate();
   const [formErrors, setFormErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
-  const log_in = process.env.REACT_APP_LOG_IN
+  const log_in = process.env.REACT_APP_LOG_IN;
   const [user, setUserDetails] = useState({
     email: "",
     password: "",
   });
+
+  useEffect(() => {
+    if (isSubmit && Object.keys(formErrors).length === 0) {
+      const login = async () => {
+        try {
+          const response = await axios.post(log_in, user);
+          console.log(response.data);
+          if (response.data && response.data.message && typeof response.data === 'object' && response.data.message.includes("Failed")) {
+            alert("登錄失敗！");
+          } else {
+            alert("登錄成功！");
+            const token = response.data.token;
+            localStorage.setItem("jwtToken", token);
+            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+            const remove = "Success";
+            const id = response.data.message.replace(remove, "");
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            const userId = localStorage.setItem("userId",payload.user);
+            console.log(userId);
+            console.log(id);
+            navigate("/Project", { state: id, replace: true });
+          }
+        } catch (error) {
+          console.error('登錄時出錯', error);
+        }
+      };
+      login();
+    }
+  }, [isSubmit, formErrors]);
+
   const changeHandler = (e) => {
     const { name, value } = e.target;
     setUserDetails((prevUser) => ({
@@ -35,35 +65,13 @@ const Login = ({ setUserState }) => {
     }
     return error;
   };
-  const loginHandler = async (e) => {
+
+  const loginHandler = (e) => {
     e.preventDefault();
-    setFormErrors(validateForm(user));
-    setIsSubmit(true);
-  
-    if (Object.keys(formErrors).length !== 0 || !isSubmit) {
-      return;
-    }
-  
-    try {
-      const response = await axios.post(log_in, user,);
-      console.log(response.data);
-      if (response.data && response.data.message && typeof response.data === 'object' && response.data.message.includes("Failed")) {
-        alert("登錄失敗！");
-      } else {
-        alert("登錄成功！");
-        const token = response.data.token;
-        localStorage.setItem("jwtToken", token);
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        const remove = "Success";
-        const id = response.data.message.replace(remove, "");
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        const userId = localStorage.setItem("userId",payload.user);
-        console.log(userId);
-        console.log(id);
-        navigate("/Project", { state: id, replace: true });
-      }
-    } catch (error) {
-      console.error('登錄時出錯', error);
+    const errors = validateForm(user);
+    setFormErrors(errors);
+    if (Object.keys(errors).length === 0) {
+      setIsSubmit(true);
     }
   };
   
