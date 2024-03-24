@@ -12,7 +12,7 @@ const ImageDisplay = () => {
   const base64Data = location.state?.base64Data;
   const navigate = useNavigate();
   const id = localStorage.getItem("userId");
-
+  
   useEffect(()=>{
     try{
       const dataURL = `data:image/png;base64,${base64Data}`;
@@ -54,19 +54,25 @@ const ImageDisplay = () => {
       InstAI
     </Navbar.Brand>
   </Navbar>
-  <Container className="d-flex flex-column justify-content-center" style={{ minHeight: '60vh', maxWidth: '50rem', margin: '50px auto', backgroundColor: 'white', 
-      borderRadius: '15px', boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)', padding: '20px' }}>
-      {images.map((base64, index) => (
-        <span key={index} className="image-item">
-          {`data:image/png;base64,${base64}` ? ( // Check if dataURL is not empty
-            <img src={`data:image/png;base64,${base64}`} alt={`Image ${index}`} loading="lazy" />
+  <Container>
+  <Row>
+    {images.map((base64, index) => (
+      <Col sm={6} md={4} lg={3} key={index}>
+        <Card className="mb-4">
+          {`data:image/png;base64,${base64}` ? (
+            <Card.Img variant="top" src={`data:image/png;base64,${base64}`} />
           ) : (
             <p>Error loading image</p>
           )}
-          <button onClick={() => downloadSingleImage(`data:image/png;base64,${base64}`, index)}>下載</button>
-        </span>
-      ))}
-      </Container>
+          <Card.Body>
+            <Button variant="primary" onClick={() => downloadSingleImage(`data:image/png;base64,${base64}`, index)}>下載</Button>
+          </Card.Body>
+        </Card>
+      </Col>
+    ))}
+  </Row>
+</Container>
+
     </div>
     
 
