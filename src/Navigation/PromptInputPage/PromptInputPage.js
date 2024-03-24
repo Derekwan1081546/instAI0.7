@@ -10,35 +10,14 @@ import "./PromptInputPage.css";
 export default function ImgPrompt(){
     const location = useLocation();
     const navigate = useNavigate();
-    const id = localStorage.getItem("userId");
+    const id = localStorage.getItem("userId");  // user區分使用的id
     const searchParams = new URLSearchParams(location.search);
     const type = searchParams.get("type");
+    const [content, setContent] = useState(''); // 用來存取使用者的prompt => content
+    const [state , setState] = useState(false); //處理頁面渲染 如果提交PROMPT表單則會變成等待Page
     const p = process.env;
-    const prompt = p.REACT_APP_PROCESS_PROMPT;
-    const imgComplete = p.REACT_APP_SDIMG_COMPLETE;
-    // const sd_complete = p.REACT
-    const handleBack =() =>{
-      navigate('/ModelSelectionPage');
-    }
-    const handleNavigate = () =>{
-      navigate('/ImgDisplayPage');
-    }
-    const [content, setContent] = useState('');
-
-    const handleContentChange = (event) => {
-      setContent(event.target.value);
-    };
-    
-    const handleChangeState =() =>{
-      const confirm = window.confirm("sure to give up?");
-      if(confirm){
-        setState(!state);
-      }
-      else{
-        return;
-      }
-    }
-
+    const prompt = p.REACT_APP_PROCESS_PROMPT;   // 提交prompt的api 
+    const imgComplete = p.REACT_APP_SDIMG_COMPLETE; // check whether the img are gernerated or not 
     const [formData, setFormData] = useState({
       enable_hr: false,
       denoising_strength: 0,
@@ -66,85 +45,92 @@ export default function ImgPrompt(){
       script_args: [],
       sampler_index: "Euler a",
       alwayson_scripts: {}
-    });
-    const [state , setState] = useState(false);
+    });    // initial folder for img generation 
+   
+    // 跳轉回去
+    const handleBack =() =>{
+      navigate('/ModelSelectionPage');
+    }
+    // 
+    const handleContentChange = (event) => {
+      setContent(event.target.value);
+    };   // 對應到formControl 的表單，存取使用者的輸入 
 
-    useEffect(()=>{
-        const fetchData = async() =>{
-         try{
-          const token = localStorage.getItem("jwtToken");
-          const response = await axios.get(``, {
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-            }
-          });
-          console.log(response.data);
-         }catch (error){
-          console.error("Error sending data to backend:", error);
-        }
-        };
-        fetchData();
-        },[state]);
+    useEffect(() => {
+      // console.log(formData.prompt);
+      // console.log(formData);
+      // console.log(state);
+    }, [formData.prompt , formData , state]); // 顯示使用者輸入
 
-  useEffect(() => {
-    console.log(formData.prompt);
-  }, [formData.prompt]);
+    const handleChangeState =() =>{
+      const confirm = window.confirm("sure to give up?");
+      if(confirm){
+        setState(!state);
+      }
+      else{
+        return;
+      }
+      // 確認是否submit 決定是否要變更狀態
+    }
 
-        const handleSubmit = (event) => {
-          const confirm = window.confirm("sure to submit prompt ?");
-          if(confirm){
-            event.preventDefault();
-            setFormData(prevState => ({
-              ...prevState,
-              prompt: content
-            }));
-            console.log(formData.prompt);
-            setState(!state);
-            console.log(state);
-            const response = async() =>{
-              try{
-               const token = localStorage.getItem("jwtToken");
-               const response = await axios.post(`${prompt}${id}`,formData, {
-                 headers: {
-                   'Content-Type': 'application/json',
-                   'Authorization': `Bearer ${token}`
-                 }
-               });
-               console.log(response.data);
-              }catch (error){
-                console.error("Error sending data to backend:", error);
-             }
-           }
-          //  console.log(response);
-           const checkImageGenerationComplete = async () => {
-            try {
-              const token = localStorage.getItem("jwtToken");
-              const response = await axios.get(`${imgComplete}${id}`, {
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${token}`
+    // // 同步操作部分
+    // useEffect(()=>{
+    //     const fetchData = async() =>{
+    //      try{
+    //       const token = localStorage.getItem("jwtToken");
+    //       const response = await axios.get(``, {
+    //         headers: {
+    //           'Content-Type': 'application/json',
+    //           'Authorization': `Bearer ${token}`
+    //         }
+    //       });
+    //       console.log(response.data);
+    //      }catch (error){
+    //       console.error("Error sending data to backend:", error);
+    //     }
+    //     };
+    //     fetchData();
+    //   },[state]);
+
+  const handleSubmit = (event) => {
+    const confirm = window.confirm("sure to submit prompt ?");
+     if(confirm){
+       event.preventDefault();
+       // 確認好之後才把前面使用 handleContentChange修改好的content輸入到formData的prompt裡面
+       setFormData(prevState => ({
+       ...prevState,
+       prompt: content
+     }));
+
+    console.log(formData.prompt); // 顯示修改成果
+    setState(!state);             // 轉換成已提交後須等待的page
+    // 對後端針對prompt接收的api發出post
+     const postData = async() =>{
+      try{
+        const token = localStorage.getItem("jwtToken");
+        const response = await axios.post(`${prompt}`,formData, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
                 }
-              });
-      
-              // 如果 API 回傳了資料，則停止檢查並導航到新的頁面
-              if (response.data) {
-                clearInterval(intervalId);
-                navigate('/ImgDisplayPage');
-              }
-            } catch (error) {
-              console.error("Error checking image generation:", error);
-            }
-          };
-          const intervalId = setInterval(checkImageGenerationComplete, 30000);
-          }
-          else{
-             return ;
-          }
-         
-        };    
-         // logic area 
-         return (
+        });
+        setState(!state);
+        console.log(response.data); // 這邊應該會是base64的圖片字串
+        const base64Data = response.data;
+        navigate(`ImgDisplayPage`,{ state: { base64Data } });
+        }catch (error){
+        console.error("Error sending data to backend:", error);
+        }
+    }
+    postData();
+        }
+        else{
+          return ;
+        }
+    };    
+        
+
+  return (
           <>
           {state ? (
             <>
@@ -157,15 +143,17 @@ export default function ImgPrompt(){
         <Navbar.Brand href="#home" className="mx-auto">
           <img
             src={InstAI_icon} 
-            width="30"
-            height="30"
+            width="60"
+            height="60"
             className="d-inline-block align-top"
             alt="InstAI logo"
           />
           InstAI
         </Navbar.Brand>
       </Navbar>
-      <Container className="d-flex flex-column justify-content-center" style={{ minHeight: '60vh', maxWidth: '50rem', margin: '50px auto', backgroundColor: 'white', borderRadius: '15px', boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)', padding: '20px' }}>
+
+      <Container className="d-flex flex-column justify-content-center" style={{ minHeight: '60vh', maxWidth: '50rem', margin: '50px auto', backgroundColor: 'white', 
+      borderRadius: '15px', boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)', padding: '20px' }}>
       <h2 className="text-center mb-4">Generative model is processing your request.</h2>
       <p className="text-center mb-4">Estimated time: </p>
       <h2 className="text-center mb-4">5 minutes</h2>
@@ -175,9 +163,6 @@ export default function ImgPrompt(){
         
         <Button variant="primary" style={{ width: '50%', marginLeft: '25%' , marginTop:"30px"}} onClick={handleChangeState}>
           Cancel Request
-        </Button>
-        <Button onClick={handleNavigate} style={{marginTop:'50px'}}>
-          Go to IMG display page
         </Button>
       </Container>
             </>
