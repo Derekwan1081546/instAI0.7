@@ -17,7 +17,7 @@ export default function ImgPrompt(){
     const [state , setState] = useState(false); //處理頁面渲染 如果提交PROMPT表單則會變成等待Page
     const p = process.env;
     const prompt = p.REACT_APP_PROCESS_PROMPT;   // 提交prompt的api 
-    const imgComplete = p.REACT_APP_SDIMG_COMPLETE; // check whether the img are gernerated or not 
+    
     const [formData, setFormData] = useState({
       enable_hr: false,
       denoising_strength: 0,
@@ -29,7 +29,7 @@ export default function ImgPrompt(){
       prompt: "A cat",
       styles: [],
       seed: -1,
-      batch_size: 1,
+      batch_size: 20,
       n_iter: 1,
       steps: 20,
       cfg_scale: 7,
@@ -73,24 +73,6 @@ export default function ImgPrompt(){
       // 確認是否submit 決定是否要變更狀態
     }
 
-    // // 同步操作部分
-    // useEffect(()=>{
-    //     const fetchData = async() =>{
-    //      try{
-    //       const token = localStorage.getItem("jwtToken");
-    //       const response = await axios.get(``, {
-    //         headers: {
-    //           'Content-Type': 'application/json',
-    //           'Authorization': `Bearer ${token}`
-    //         }
-    //       });
-    //       console.log(response.data);
-    //      }catch (error){
-    //       console.error("Error sending data to backend:", error);
-    //     }
-    //     };
-    //     fetchData();
-    //   },[state]);
 
   const handleSubmit = (event) => {
     const confirm = window.confirm("sure to submit prompt ?");
@@ -117,7 +99,8 @@ export default function ImgPrompt(){
         setState(!state);
         console.log(response.data); // 這邊應該會是base64的圖片字串
         const base64Data = response.data;
-        navigate(`ImgDisplayPage`,{ state: { base64Data } });
+        const promptData = formData;
+        navigate(`ImgDisplayPage`,{ state: { base64Data , promptData} });
         }catch (error){
         console.error("Error sending data to backend:", error);
         }
@@ -137,7 +120,7 @@ export default function ImgPrompt(){
               <Navbar bg="white" style={{ boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)' }}>
         <Nav className="mr-auto">
         <Nav className="mr-auto" style={{marginLeft:"10px"}}>
-             <h3 onClick={handleBack}>Back</h3>
+             <h3 onClick={handleBack}>←Back</h3>
             </Nav>
         </Nav>
         <Navbar.Brand href="#home" className="mx-auto">

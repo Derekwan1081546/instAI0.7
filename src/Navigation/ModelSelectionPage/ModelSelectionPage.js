@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from "react";
-import { useNavigate,useLocation,NavLink } from "react-router-dom";
+import {useLocation,NavLink } from "react-router-dom";
 import axios from "axios"
 import InstAI_icon from "../../image/instai_icon.png";
 import { Navbar, Nav, Container, Row, Col, Card, Button } from 'react-bootstrap';
@@ -12,7 +12,6 @@ import yolov8 from "../../image/yoloV8.jpg";
 
 export default function ModelStyle(){
     const location = useLocation();
-    const navigate = useNavigate();
     const id = localStorage.getItem("userId");
     const searchParams = new URLSearchParams(location.search);
     const type = searchParams.get("type");
@@ -51,14 +50,8 @@ export default function ModelStyle(){
         };
         fetchData();
         },[]);
-        // logic area 
+        
 
-    // const updateModelContent = (modelKey, newContent) => {
-    //     setModels(prevModels => ({
-    //       ...prevModels,
-    //       [modelKey]: { ...prevModels[modelKey], content: newContent },
-    //     }));
-    //   };
       const handleModelClick = (modelKey) => {
         // 記錄數值
         const value = modelKey; // 設定使用甚麼model
@@ -85,7 +78,14 @@ export default function ModelStyle(){
             <div style={{ backgroundColor: 'white' }}>
               <Navbar style={{ backgroundColor: 'WHITE',boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)' }}>
                 <Nav className="mr-auto" style={{marginLeft:"10px"}}>
-                  <h3>Back</h3>
+                <div className="col-auto mt-4"> 
+                  <NavLink to={`/CreateProjectPage`} className="CreateProjectPageLink">
+                  <button className="btn createprojectPageButton" style={{ marginLeft: "10px", fontFamily: 'Lato' }}>
+                    <h3 style={{ marginLeft: "10px" }}>←Back</h3>
+                  </button>
+                  </NavLink>
+                </div>
+                  {/* <h3>Back</h3> */}
                 </Nav>
                 <Navbar.Brand href="#home" className="mx-auto">
                   <img
@@ -99,7 +99,7 @@ export default function ModelStyle(){
                 </Navbar.Brand>
               </Navbar>
               <Container className="d-flex flex-column justify-content-center" style={{ minHeight: '60vh', maxWidth: '80rem', margin: '50px auto', backgroundColor: 'white', borderRadius: '15px', boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)', padding: '20px' }}>
-                <h2 className="text-center mb-4">What’s the image style for your AI model?</h2>
+                <h2 className="text-center mb-4" style={{ marginLeft: "10px", fontFamily: 'Lato', fontStyle: 'normal' }}>What’s the image style for your AI model?</h2>
                 <Row className="justify-content-around">
                  {Object.keys(models).map(modelKey => (
                   <Col md={4} className="mb-4">
@@ -121,4 +121,3 @@ export default function ModelStyle(){
             </div>
           );
 }
-

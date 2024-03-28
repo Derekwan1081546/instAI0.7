@@ -162,12 +162,15 @@ function UploadImg() {
         alert('upload success');
         console.log(token);
         const response2 = await axios.post(
-          `${c_s}/?step=1&username=${id}&projectname=${projectname}`, {
+          `${c_s}/?step=1&username=${id}&projectname=${projectname}`,
+          {},
+          {
             headers: {
-              'Content-Type':'application/json',
+              'Content-Type': 'application/json',
               'Authorization': `Bearer ${token}`
             }
-          });
+          }
+        );
         
         console.log('step updated successfully:', response2.data);
         navigate(`/Step?project=${projectname}`);

@@ -1,5 +1,5 @@
 import React , {useState , useEffect} from "react";
-import {useNavigate , useLocation} from "react-router-dom";
+import {NavLink, useNavigate , useLocation} from "react-router-dom";
 // import { BounceLoader } from "react-spinners";
 import InstAI_icon from '../../image/instai_icon.png'
 // import arrow from "../../image/arrow.png"; 這個圖片不好用
@@ -50,8 +50,15 @@ function DecisionPage (){
     return (
       <div style={{ backgroundColor: 'white' }}> 
         <Navbar style={{ backgroundColor: 'white' ,boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)'}} >
-          <Nav className="mr-auto">
-            <h3 style={{marginLeft:"10px"}}>Back</h3>
+          <Nav className="mr-auto" style={{marginLeft:"10px"}}>
+          <div className="col-auto mt-4"> 
+            <NavLink to={`/Project?type=1`} className="projectPageLink">
+            <button className="btn createprojectPageButton" style={{ marginLeft: "10px", fontFamily: 'Lato' }}>
+              <h3 style={{ marginLeft: "10px" }}>←Back</h3>
+            </button>
+            </NavLink>
+          </div>
+            {/* <h3 style={{marginLeft:"10px"}}>Back</h3> */}
           </Nav>
           <Navbar.Brand href="#home" className="mx-auto">
             <img
@@ -68,7 +75,7 @@ function DecisionPage (){
           minHeight: '60vh', maxWidth: '50rem', margin: '50px auto', 
           backgroundColor: 'white', borderRadius: '15px',boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)' 
           }}>
-        <h2 className="text-center">What would you like to try?</h2>
+        <h2 className="text-center" style={{ marginLeft: "10px", fontFamily: 'Lato', fontStyle: 'normal' }}>What would you like to try?</h2>
         <Row className="justify-content-around">
           <Col md={5}>
             <Card>

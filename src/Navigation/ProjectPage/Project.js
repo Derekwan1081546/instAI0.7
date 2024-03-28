@@ -18,31 +18,48 @@ function Project() {
   const [showLogoutPrompt, setShowLogoutPrompt] = useState(false);
   const g_r = process.env.REACT_APP_GET_PROJECT;
   const d_p = process.env.REACT_APP_DELETE_PROJECT;
-  const [isLoading, setIsLoading] = useState(false); 
-useEffect(() => {
-  const fetchData = async () => {
-    setIsLoading(true); // 在發送請求之前，設置isLoading為true
-    try {
-      const token = localStorage.getItem("jwtToken");
-      const response = await axios.get(`${g_r}/?username=${type ? id : userid}`, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+  const [isLoading, setIsLoading] = useState(false);
+  let isMounted = true; // 使用一個標誌來標記組件是否已經 mount 
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true); // 在發送請求之前，設置isLoading為true
+      try {
+        const token = localStorage.getItem("jwtToken");
+        const response = await axios.get(`${g_r}/?username=${type ? id : userid}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        console.log(response.data);
+        const combinedProjects = response.data.projectname.map((projectname, index) => ({
+          name: projectname,
+          desc: response.data.desc[index]
+        }));
+        setProjectList(combinedProjects);
+      } catch (error) {
+        if (error.response.status === 403) {
+          if (isMounted) {
+            isMounted = false; // 在第一次執行後將標誌設置為false，以防止後續執行
+            console.error('獲取數據時出錯', error);
+            alert("Timed out, please log in again!");
+            navigate("/");
+          } else {
+            console.error('獲取數據時出錯', error);
+          }
+
+        } else {
+          console.error("An error occurred:", error);
         }
-      });
-      console.log(response.data);
-      const combinedProjects = response.data.projectname.map((projectname, index) => ({
-        name: projectname,
-        desc: response.data.desc[index]
-      }));
-      setProjectList(combinedProjects);
-    } catch (error) {
-      console.error('獲取數據時出錯', error);
-    }
-    setIsLoading(false); // 在接收到響應或捕獲到錯誤後，設置isLoading為false
-  };
-  fetchData();
-}, [g_r,id,type,userid]);
+        
+      }finally {
+        setIsLoading(false); // 在接收到響應或捕獲到錯誤後，設置isLoading為false
+      }
+    };
+    fetchData();
+  }, [g_r,id,type,userid]);
+
+  
   
   const handleDeleteProject = async (index) => {
     const confirmDelete = window.confirm("確定要刪除專案?");
@@ -60,13 +77,16 @@ useEffect(() => {
       const response = await axios.post(
         `${d_p}/?username=${type ? id : userid}`,
         { 
-          projectName: deletedProject.name,
+          projectName: deletedProject.name
+        },
+        {
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
           }
         }
       );
+      
       //後續改用redux-persist做state dispatch
       localStorage.setItem(`firstPage_${type ? id : userid}_${deletedProject}`, 'false');
       localStorage.setItem(`secondPage_${type ? id : userid}_${deletedProject}`, 'false');
@@ -90,7 +110,8 @@ useEffect(() => {
       return;
     }
     localStorage.setItem('jwtToken',false);
-    alert('註銷token');
+    console.log('註銷token');
+    //alert('註銷token');
     const token = localStorage.getItem('jwtToken');
     console.log(token);
     navigate("/"); // Redirect to the home page

@@ -48,7 +48,7 @@ function Step() {
     localStorage.setItem(`confirmStatusImg_${userid}_${projectname}`, confirm1Data.toString());
     localStorage.setItem(`confirmStatusReq_${userid}_${projectname}`, confirm2Data.toString());
     fetchstep();
-  }, [upload, requirement, confirm1Data, confirm2Data]); 
+  }, [upload, requirement, confirm1Data, confirm2Data , step]); 
 
   /*const response =  來自後端回傳的檢查 可能使用axios 當這個頁面被點及進入時 後端會回傳說相對應的data以及req資料夾是否是空的 如果都是有一定資料量的話 回傳true */
   const navigate = useNavigate();
@@ -294,7 +294,7 @@ function Step() {
         <button onClick={navigateLogic} className={step === 3 ? 'upload-buttonNo5-active' : 'upload-buttonNo5'}>Start Training</button>
       </div>
      <div className='col auto'>
-      <button onClick={devBack} className='devBtn'>還原設定</button>
+     <button onClick={devBack} style={{backgroundColor: 'white',fontWeight: "inherit", boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.5)', border: 'none'}}>還原設定</button>
      </div>
     </div>
   );
