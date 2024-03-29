@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import "./Create.css";
 import { useLocation } from "react-router-dom";
@@ -10,6 +10,7 @@ function Create() {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const id = localStorage.getItem("userId");
+  const [response, setResponse] = useState(null); 
   const add_p = process.env.REACT_APP_ADD_PROJECT;
   const [formData, setFormData] = useState({
     projectName: "",
@@ -47,11 +48,10 @@ function Create() {
               'Authorization': `Bearer ${token}`
             }
           });
-        alert(response.data);
+        setResponse(response.data);    
         handleFormDataChange("projectName", "");
         handleFormDataChange("projectDescription", ""); 
         console.log(response);
-
         // 導航回去
         navigate(`/Project?&type=1`);
       } catch (error) {
@@ -59,7 +59,12 @@ function Create() {
       }
     }
   };
-
+  useEffect(() => {
+    if (response) {
+      alert(response);
+      navigate(`/Project?&type=1`);
+    }
+  }, [response]); 
   return (
     <div className="container-fluid mt-3">
       

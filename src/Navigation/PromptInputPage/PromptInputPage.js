@@ -57,10 +57,9 @@ export default function ImgPrompt(){
     };   // 對應到formControl 的表單，存取使用者的輸入 
 
     useEffect(() => {
-      // console.log(formData.prompt);
-      // console.log(formData);
-      // console.log(state);
-    }, [formData.prompt , formData , state]); // 顯示使用者輸入
+      console.log(formData);
+      console.log(formData.prompt);
+    }, [formData]); // 只监视 formData 的变化
 
     const handleChangeState =() =>{
       const confirm = window.confirm("sure to give up?");
@@ -79,11 +78,9 @@ export default function ImgPrompt(){
      if(confirm){
        event.preventDefault();
        // 確認好之後才把前面使用 handleContentChange修改好的content輸入到formData的prompt裡面
-       setFormData(prevState => ({
-       ...prevState,
-       prompt: content
-     }));
-
+       const updatedFormData = { ...formData, prompt: content };
+       setFormData(updatedFormData);
+    console.log(formData);
     console.log(formData.prompt); // 顯示修改成果
     setState(!state);             // 轉換成已提交後須等待的page
     // 對後端針對prompt接收的api發出post
@@ -111,8 +108,7 @@ export default function ImgPrompt(){
           return ;
         }
     };    
-        
-
+      
   return (
           <>
           {state ? (

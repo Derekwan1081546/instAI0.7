@@ -15,54 +15,52 @@ const ImageDisplay = () => {
   const id = localStorage.getItem("userId");
   const [images, setImages] = useState([]);
   const base64Data = location.state?.base64Data ?? "";
-  const promptData = location.state?.formData ?? "";
-  
-  useEffect(() =>{
-    setLoading(false);
-  },[base64Data])
-  useEffect(()=>{
-    setLoading(true);
-  },[resendPromptData])
-  const resendPromptData = () =>{
-     const confirmed = window.confirm("確定要重新產生圖片嗎");
-     if(confirmed){
-        
-        const postSDimg = async() =>{
-          setLoading(true);
-          try{
-            const token = localStorage.getItem("jwtToken");
-            const response = await axios.post(`${imgComplete}`,promptData, {
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-                    }
-            });
-            console.log(response.data); // 這邊應該會是base64的圖片字串
-            const newBase64Data = response.data;
-            setImages(prevImages => {
-              // 在這裡，prevImages 是上一次 render 時的狀態
-              // 我們將其與新的 base64Data 結合，產生新的圖集
-              return [...prevImages, ...newBase64Data];
-            });
-            setLoading(false);
+  const promptData = location.state?.promptData ?? "";
 
-            }catch (error){
-            console.error("Error sending data to backend:", error);
-            }
-            
-        }
-        postSDimg();
-     }
-     else{
-            return;
-     }
-  
   const downloadSingleImage = (base64, index) => {
     const link = document.createElement('a');
     link.href = base64;
     link.download = `image_${index + 1}.jpg`;
     link.click();
   };
+  
+  const resendPromptData = () =>{
+    const confirmed = window.confirm("確定要重新產生圖片嗎");
+    if(confirmed){
+       console.log(promptData)
+       const postSDimg = async() =>{
+         setLoading(true);
+         try{
+           const token = localStorage.getItem("jwtToken");
+           const response = await axios.post(`${imgComplete}`,promptData, {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            }
+           });
+           console.log(response.data); // 這邊應該會是base64的圖片字串
+           const newBase64Data = response.data;
+           setImages([newBase64Data]);
+           setLoading(false);
+
+           }
+           catch (error){
+           console.error("Error sending data to backend:", error);
+           }
+       }
+       postSDimg();
+    }
+    else{
+           return;
+    }
+ }
+
+  useEffect(() =>{
+    console.log(promptData);
+    setImages(base64Data);
+    setLoading(false);
+  },[base64Data])
+
   return (
     <div style={{ backgroundColor: 'white' }}>
       <Navbar style={{ backgroundColor: 'WHITE', boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)' }}>
@@ -119,6 +117,5 @@ const ImageDisplay = () => {
       )}
     </div>
   );
- }
-};
+}
 export default ImageDisplay;

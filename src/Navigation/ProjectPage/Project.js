@@ -59,7 +59,28 @@ function Project() {
     fetchData();
   }, [g_r,id,type,userid]);
 
+  const ProjectCard = ({ project, index, handleDeleteProject, handleNavigate }) => (
+    <div className="col-lg-2 col-md-3 mb-4 mt-3 project" key={index}>
+      <div className="project-list-grid">
+        <h2 className="project-Name">{project.name}</h2>
+        <div className="projectNavLink">
+          <p className="project-Detial">{project.desc}</p>
+        </div>
+        <div className="project-Delete">
+          <button className="btn deleteButton" onClick={() => handleDeleteProject(index)}>刪除專案</button>
+        </div>
+        <div className="project-Nav" style={{ marginLeft: '110px' }}>
+          <button className="btn deleteButton" onClick={() => handleNavigate(project.name)}>進入專案</button>
+        </div> 
+      </div>
+    </div>
+  );
   
+  const Loading = () => (
+    <div className="loading" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+      <BounceLoader color={'black'} loading={isLoading} size={120} /> 
+    </div>
+  );
   
   const handleDeleteProject = async (index) => {
     const confirmDelete = window.confirm("確定要刪除專案?");
@@ -170,28 +191,7 @@ function Project() {
     </div>
 
     <div className="row ml-3" style={{ marginLeft: 3 }}>
-    {isLoading ? (
-       <div className="loading" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-       <BounceLoader color={'black'} loading={isLoading} size={120} /> 
-     </div>
-    ) : (
-      filteredProjects.map((project, index) => (
-        <div className="col-lg-2 col-md-3 mb-4 mt-3 project" key={index}>
-          <div className="project-list-grid">
-            <h2 className="project-Name">{project.name}</h2>
-            <div className="projectNavLink">
-              <p className="project-Detial">{project.desc}</p>
-            </div>
-            <div className="project-Delete">
-              <button className="btn deleteButton" onClick={() => handleDeleteProject(index)}>刪除專案</button>
-            </div>
-            <div className="project-Nav" style={{ marginLeft: '110px' }}>
-              <button className="btn deleteButton" onClick={() => handleNavigate(project.name)}>進入專案</button>
-            </div> 
-          </div>
-        </div>
-      ))
-    )}
+    {isLoading ? <Loading /> : filteredProjects.map((project, index) => <ProjectCard project={project} index={index} handleDeleteProject={handleDeleteProject} handleNavigate={handleNavigate} />)}
   </div>
     {showLogoutPrompt && (
       <div className="logout-prompt">
