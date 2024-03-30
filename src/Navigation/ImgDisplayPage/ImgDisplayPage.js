@@ -16,7 +16,13 @@ const ImageDisplay = () => {
   const [images, setImages] = useState([]);
   const base64Data = location.state?.base64Data ?? "";
   const promptData = location.state?.promptData ?? "";
-
+  const [times , setTimes]= useState(1);
+  const [order, setOrder] = useState({
+    order1: { img: location.state?.base64Data ?? "" },
+    order2: { img:{} },
+    order3: { img:{} },
+    order4: { img:{} },
+  });
   const downloadSingleImage = (base64, index) => {
     const link = document.createElement('a');
     link.href = base64;
@@ -40,6 +46,11 @@ const ImageDisplay = () => {
            });
            console.log(response.data); // 這邊應該會是base64的圖片字串
            const newBase64Data = response.data;
+           setTimes(prevTimes => prevTimes + 1);
+           setOrder(prevOrder => ({
+            ...prevOrder,
+            [`order${times + 1}`]: { img: newBase64Data }
+          }));
            setImages([newBase64Data]);
            setLoading(false);
 
@@ -59,7 +70,7 @@ const ImageDisplay = () => {
     console.log(promptData);
     setImages(base64Data);
     setLoading(false);
-  },[base64Data])
+  },[base64Data,order,times])
 
   return (
     <div style={{ backgroundColor: 'white' }}>

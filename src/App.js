@@ -39,6 +39,9 @@ const PromptInputPage = lazy(() => import("./Navigation/PromptInputPage/PromptIn
 const ImageDisplay = lazy(() => import("./Navigation/ImgDisplayPage/ImgDisplayPage"));
 const Txt2ImgPage = lazy(() => import("./StableDiffusion/txt2txt/TXTtoIMG"));
 
+const Alert = lazy(() => import("./Navigation/AlertComponent/Reminder"));
+const Confirm = lazy(()=>import("./Navigation/AlertComponent/Confirm"));
+
 function AppDev() {
   const setUserState= useState({});
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -80,6 +83,7 @@ function AppDev() {
     <div className="loading" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
        <BounceLoader color={'#black'} size={120} /> 
      </div>}>
+      
           <Routes>
             {isLoggedIn ? (
               <>
@@ -103,6 +107,9 @@ function AppDev() {
                 <Route path="/PromptInputPage" element={<PromptInputPage/>}/>
                 <Route path ="/ImgDisplayPage" element={<ImageDisplay/>}/>
                 <Route path ="/Txt2ImgPage" element={<Txt2ImgPage/>}/>
+                <Route path="/Alert" element={<Alert/>}/>
+                <Route path="/Confirm" element={<Confirm/>}/>
+                
               </>
             ) : (
               <>
@@ -111,6 +118,7 @@ function AppDev() {
               </>
             )}
           </Routes>
+          
         </Suspense>
       
     </div>

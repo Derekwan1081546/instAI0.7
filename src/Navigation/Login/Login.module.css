@@ -6,7 +6,13 @@
 
 
 
-
+.alertComponent {
+    position: absolute;
+    top: 0;
+    right: 0;
+    /* 其他您需要的樣式 */
+  }
+  
 
 
 
