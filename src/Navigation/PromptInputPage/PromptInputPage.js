@@ -97,7 +97,7 @@ export default function ImgPrompt(){
         console.log(response.data); // 這邊應該會是base64的圖片字串
         const base64Data = response.data;
         const promptData = formData;
-        navigate(`ImgDisplayPage`,{ state: { base64Data , promptData} });
+        navigate(`/ImgDisplayPage`,{ state: { base64Data , promptData} });
         }catch (error){
         console.error("Error sending data to backend:", error);
         }
