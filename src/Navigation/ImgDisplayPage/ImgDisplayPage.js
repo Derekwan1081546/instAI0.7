@@ -13,16 +13,19 @@ const ImageDisplay = () => {
   const p = process.env;
   const imgComplete = p.REACT_APP_PROCESS_PROMPT; //resened prompt to sd for img generation 
   const id = localStorage.getItem("userId");
-  const [images, setImages] = useState([]);
   const base64Data = location.state?.base64Data ?? "";
+  const [images, setImages] = useState([base64Data]);
   const promptData = location.state?.promptData ?? "";
-  const [times , setTimes]= useState(1);
-  const [order, setOrder] = useState({
-    order1: { img: location.state?.base64Data ?? "" },
-    order2: { img:{} },
-    order3: { img:{} },
-    order4: { img:{} },
-  });
+  const [times , setTimes]= useState(1); // 用來計算第幾次存取
+  const [load , setLoad] =useState(1);
+  const [order, setOrder] = useState([
+    { img: location.state?.base64Data ?? "" },
+    { img: {} },
+    { img: {} },
+    { img: {} },
+  ]); 
+
+  // 用來存取每一次sd生成的base64 string 
   const downloadSingleImage = (base64, index) => {
     const link = document.createElement('a');
     link.href = base64;
@@ -30,47 +33,48 @@ const ImageDisplay = () => {
     link.click();
   };
   
-  const resendPromptData = () =>{
-    const confirmed = window.confirm("確定要重新產生圖片嗎");
-    if(confirmed){
-       console.log(promptData)
-       const postSDimg = async() =>{
-         setLoading(true);
-         try{
-           const token = localStorage.getItem("jwtToken");
-           const response = await axios.post(`${imgComplete}`,promptData, {
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-            }
-           });
-           console.log(response.data); // 這邊應該會是base64的圖片字串
-           const newBase64Data = response.data;
-           setTimes(prevTimes => prevTimes + 1);
-           setOrder(prevOrder => ({
-            ...prevOrder,
-            [`order${times + 1}`]: { img: newBase64Data }
-          }));
-           setImages([newBase64Data]);
-           setLoading(false);
+    const resendPromptData = () =>{
+      const confirmed = window.confirm("確定要重新產生圖片嗎");
+      if(confirmed){
+         console.log(promptData)
+         const postSDimg = async() =>{
+           setLoading(true);
+           try{
+             const token = localStorage.getItem("jwtToken");
+             const response = await axios.post(`${imgComplete}`,promptData, {
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+              }
+             });
+             console.log(response.data); // 這邊應該會是base64的圖片字串
+             const newBase64Data = response.data;
 
-           }
-           catch (error){
-           console.error("Error sending data to backend:", error);
-           }
-       }
-       postSDimg();
-    }
-    else{
-           return;
-    }
- }
-
-  useEffect(() =>{
-    console.log(promptData);
-    setImages(base64Data);
-    setLoading(false);
-  },[base64Data,order,times])
+             setTimes(prevTimes => prevTimes + 1); //新資料型態 使用1 order matrix solve the problem of multiple sd data
+             setOrder(prevOrder => {
+              let newOrder = [...prevOrder];
+              newOrder[times] = { img: newBase64Data };
+              return newOrder;
+            });
+             setLoading(false);
+             console.log(order.order1);
+  
+             }
+             catch (error){
+             console.error("Error sending data to backend:", error);
+             }
+         }
+         postSDimg();
+      }
+      else{
+             return;
+      }}
+     
+      const handleButtonClick = (index) => {
+        setLoading(true);
+        setImages([order[index].img]);
+        setLoading(false);
+      };
 
   return (
     <div style={{ backgroundColor: 'white' }}>
@@ -121,7 +125,12 @@ const ImageDisplay = () => {
               <Card.Body className="d-flex justify-content-center">
               <Button variant="secondary" style={{ width: '30%',height:'40px', marginLeft: "10px" }}onClick={resendPromptData}>try again (3 attempts left)</Button>
               <Button style={{ width: '30%', height:'40px',backgroundColor: 'blueviolet', borderColor: 'blueviolet', marginLeft: "10px" }}>use 20 img for model training</Button>
-             </Card.Body>
+              <Button onClick={() => handleButtonClick(0)}>Batch 1</Button>
+              <Button onClick={() => handleButtonClick(1)}>Batch 2</Button>
+              <Button onClick={() => handleButtonClick(2)}>Batch 3</Button>
+              <Button onClick={() => handleButtonClick(3)}>Batch 4</Button>
+
+              </Card.Body>
              </Card> 
           </Row>
         </Container>
