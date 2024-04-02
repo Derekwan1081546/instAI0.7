@@ -17,6 +17,7 @@ export default function ImgPrompt(){
     const [state , setState] = useState(false); //處理頁面渲染 如果提交PROMPT表單則會變成等待Page
     const p = process.env;
     const prompt = p.REACT_APP_PROCESS_PROMPT;   // 提交prompt的api 
+    const modelTitle = location.state?.model ?? "";
     
     const [formData, setFormData] = useState({
       enable_hr: false,
@@ -29,7 +30,7 @@ export default function ImgPrompt(){
       prompt: "A cat",
       styles: [],
       seed: -1,
-      batch_size: 20,
+      batch_size: 3,
       n_iter: 1,
       steps: 20,
       cfg_scale: 7,
@@ -109,6 +110,19 @@ export default function ImgPrompt(){
         }
     };    
       
+
+    useEffect(() => {
+      console.log(modelTitle)
+      setFormData(prevState => ({
+        ...prevState,
+        prompt: content,
+        override_settings:{
+          sd_model_checkpoint : modelTitle,
+        }
+      }));
+      console.log(formData.override_settings.sd_model_checkpoint)
+    }, [content,modelTitle]);
+
   return (
           <>
           {state ? (
