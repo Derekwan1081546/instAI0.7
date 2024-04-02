@@ -1,24 +1,28 @@
 import React, { useState, useEffect } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import { Navbar, Nav, Card, Container, Row, Col, Button } from "react-bootstrap";
+import { Navbar, Nav, Card, Container, Row, Col, Button ,Form,} from "react-bootstrap";
 import InstAI_icon from "../../image/instai_icon.png";
-import { BounceLoader } from "react-spinners";
+
 import axios from "axios";
 import { FaRegClock } from 'react-icons/fa'; 
 
+
 const ImageDisplay = () => {
   const [imagePreviews, setImagePreviews] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const p = process.env;
   const imgComplete = p.REACT_APP_PROCESS_PROMPT; //resened prompt to sd for img generation 
   const id = localStorage.getItem("userId");
   const base64Data = location.state?.base64Data ?? "";
-  const [images, setImages] = useState([base64Data]);
+  const testPhoto = location.state.realisticPhoto;
+  const [images, setImages] = useState([base64Data,testPhoto]); 
   const promptData = location.state?.promptData ?? "";
+
+  const [selectImg , setSelectImg] = useState([]);
+
   const [times , setTimes]= useState(1); // 用來計算第幾次存取
-  const [load , setLoad] =useState(1);
   const [order, setOrder] = useState([
     { img: location.state?.base64Data ?? "" },
     { img: {} },
@@ -76,6 +80,7 @@ const ImageDisplay = () => {
         setImages([order[index].img]);
         setLoading(false);
       };
+
       const handleChangeState =() =>{
         const confirm = window.confirm("sure to give up?");
         if(confirm){
@@ -88,8 +93,27 @@ const ImageDisplay = () => {
       }
 
   const submitBatch =() =>{
+    const confirm = window.confirm("確定要傳送照片了嗎");
+    if(!confirm){
+      return;
+    }
+  else{
+    navigate(`/專案位子`,{state:{selectImg}});
     
   }
+}
+const handleCheck = (e, base64) => {
+  if (e.target.checked) {
+    setSelectImg(prevState => [...prevState, base64]);
+  } else {
+    setSelectImg(prevState => prevState.filter(img => img !== base64));
+  }
+};
+useEffect(() => {
+  console.log(selectImg);
+}, [selectImg]);
+
+
   return (
     <div style={{ backgroundColor: 'white' }}>
       <Navbar style={{ backgroundColor: 'WHITE', boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)' }}>
@@ -130,30 +154,42 @@ const ImageDisplay = () => {
        </Container>
       ) : (
         <Container>
+           <Card className="mb-4">
+           <Card.Body className="d-flex justify-content-between">
+           <Button style = {{width:'18%'}} onClick={() => handleButtonClick(0)}>Batch 1</Button>
+           <Button style = {{width:'18%'}} onClick={() => handleButtonClick(1)}>Batch 2</Button>
+           <Button style = {{width:'18%'}} onClick={() => handleButtonClick(2)}>Batch 3</Button>
+           <Button style = {{width:'18%'}} onClick={() => handleButtonClick(3)}>Batch 4</Button>
+           </Card.Body>
+
+    </Card>
           <Row>
           {images.map((base64, index) => (
-            <Col sm={6} md={4} lg={3} key={index} style={{ marginTop: '20px' }}>
-              <Card className="mb-4">
-                {`data:image/png;base64,${base64}` ? (
-                  <Card.Img variant="top" src={`data:image/png;base64,${base64}`} />
-                ) : (
-                  <p>Error loading image</p>
-                )}
-                <Card.Body>
-                  <Button variant="primary" onClick={() => downloadSingleImage(`data:image/png;base64,${base64}`, index)}>下載</Button>
-                </Card.Body>
-              </Card>
-            </Col>
-          ))}
+      <Col sm={6} md={4} lg={3} key={index} style={{ marginTop: '20px' }}>
+        <Card className="mb-4">
+          {`data:image/png;base64,${base64}` ? (
+            <Card.Img variant="top" src={`data:image/png;base64,${base64}`} />
+          ) : (
+            <p>Error loading image</p>
+          )}
+          <Card.Body>
+            <Form.Check 
+              type="checkbox"
+              id={`check-api-${index}`}
+              label="select"
+              style={{position: 'absolute', top: 0, right: 0}}
+              onChange={e => handleCheck(e, base64)}
+            />
+         {/* <Button variant="primary" style={{width:'100%'}} onClick={() => downloadSingleImage(`data:image/png;base64,${base64}`, index)}>下載</Button> */}
+      </Card.Body>
+    </Card>
+  </Col>
+))}
+
              <Card className>
               <Card.Body className="d-flex justify-content-center">
               <Button variant="secondary" style={{ width: '30%',height:'40px', marginLeft: "10px" }}onClick={resendPromptData}>try again (3 attempts left)</Button>
-              <Button style={{ width: '30%', height:'40px',backgroundColor: 'blueviolet', borderColor: 'blueviolet', marginLeft: "10px" }}>use 20 img for model training</Button>
-              <Button onClick={() => handleButtonClick(0)}>Batch 1</Button>
-              <Button onClick={() => handleButtonClick(1)}>Batch 2</Button>
-              <Button onClick={() => handleButtonClick(2)}>Batch 3</Button>
-              <Button onClick={() => handleButtonClick(3)}>Batch 4</Button>
-
+              <Button onClick={submitBatch} style={{ width: '30%', height:'40px',backgroundColor: 'blueviolet', borderColor: 'blueviolet', marginLeft: "10px" }}>use  img for model training</Button>
               </Card.Body>
              </Card> 
           </Row>

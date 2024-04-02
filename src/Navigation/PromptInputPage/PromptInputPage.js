@@ -6,6 +6,7 @@ import InstAI_icon from "../../image/instai_icon.png";
 import { FaRegClock } from 'react-icons/fa'; 
 // import Autosuggest from 'react-autosuggest';    之後可以加入一些提示詞語 方便下更好的prompt
 import "./PromptInputPage.css";
+import realisticPhoto from "../../image/realistic_model.png";
 
 export default function ImgPrompt(){
     const location = useLocation();
@@ -109,7 +110,10 @@ export default function ImgPrompt(){
           return ;
         }
     };    
-      
+    
+    const testButton = () =>{
+      navigate(`/ImgDisplayPage`,{state:{realisticPhoto}});
+    }
 
     useEffect(() => {
       console.log(modelTitle)
@@ -157,6 +161,7 @@ export default function ImgPrompt(){
         <Button variant="primary" style={{ width: '50%', marginLeft: '25%' , marginTop:"30px"}} onClick={handleChangeState}>
           Cancel Request
         </Button>
+        <Button onClick={testButton}>測是</Button>
       </Container>
             </>
           ) : (
