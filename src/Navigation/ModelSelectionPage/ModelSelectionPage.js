@@ -3,12 +3,11 @@ import { useNavigate, useLocation, NavLink } from "react-router-dom";
 import axios from "axios"
 import InstAI_icon from "../../image/instai_icon.png";
 import { Navbar, Nav, Container, Row, Col, Card, Button } from 'react-bootstrap';
-import yolov3Tiny from "../../image/yoloV3_tiny-m.jpg";
-import yolov3Spp from "../../image/SPP-module-YOLOv3.png";
-import yoloV3 from '../../image/yoloV3.jpg';
-import yoloV5 from "../../image/yoloV5.jpg";
-import yolov7 from "../../image/yoloV7.jpg";
-import yolov8 from "../../image/yoloV8.jpg";
+
+import  default_style from "../../image/default_model.png";
+import anime_style from "../../image/Anime_model.png";
+import pixart_style from "../../image/Pixart_model.png";
+import realistic_style from "../../image/realistic_model.png";
 
 export default function ModelStyle() {
   const location = useLocation();
@@ -24,25 +23,25 @@ export default function ModelStyle() {
       title: 'Default Style', 
       modelName :'v1-5-pruned-emaonly.safetensors [6ce0161689]',
       content: 'This is the default model on Stable diffusion',
-      img: yolov3Tiny, link: '/PromptInputPage'
+      img: default_style, link: '/PromptInputPage'
     },
     model2: {
       title: 'Anime Style',
       modelName : 'VTBCkpt_v10.safetensors [85d06f5f3d]',
       content: 'This is a model for generate Anime style imgs',
-      img: yolov3Spp, link: '/PromptInputPage'
+      img: anime_style, link: '/PromptInputPage'
     },
     model3: {
       title: 'Pixart_Style', 
       modelName : 'model.safetensors [a54ec249cb]',
-      content: 'This is a model for Pixart style ',
-      img: yoloV3, link: '/PromptInputPage'
+      content: "This is a model for Pixart style,it's colot is only black and white ",
+      img: pixart_style, link: '/PromptInputPage'
     },
     model4: {
       title: 'Realisitic Style',
       modelName : 'realisticVisionV60B1_v51VAE.safetensors [ef76aa2332]',
       content: 'This is a model for realistic human style.',
-      img: yoloV5, link: '/PromptInputPage'
+      img: realistic_style, link: '/PromptInputPage'
     },
 
   });
@@ -123,20 +122,22 @@ export default function ModelStyle() {
         <Row className="justify-content-start">
           {Object.keys(models).map(modelKey => (
             
-            <Col md={4} className="mb-4">
+            <Col md={3} className="mb-4">
               <div style={{ cursor: 'pointer' }} onClick={() => handleModelClick(models[modelKey].title)}>
-                <Card>
+                <Card  >
                   {/* <NavLink to = {models[modelKey].link}> */}
-                  <Card.Img variant="top" src={models[modelKey].img} loading="lazy" style={{ width: '250px', height: '150px' }} />
+                  <Card.Img variant="top" src={models[modelKey].img} loading="lazy" style={{ width: '100%', height: '75%' }} />
                   <Card.Body>
                   
-                  <Button onClick={() => handleModelSelect(modelKey)}>
-                  {models[modelKey].title}
-                  </Button>
+                  <div className="d-flex justify-content-center" style={{ margin: 'auto'}}>
+                   <Button style={{width:'80%', backgroundColor:'black'}} onClick={() => handleModelSelect(modelKey)}>
+                   {models[modelKey].title}
+                   </Button>
+                   </div>
                     {/* <NavLink to={{ pathname: models[modelKey].link, state: { model: models[modelKey].title } }}>
                       <Card.Title>{models[modelKey].title}</Card.Title>
                     </NavLink> */}
-                    <Card.Text>{models[modelKey].content}</Card.Text>
+                    <Card.Text style={{marginTop:'10px'}}>{models[modelKey].content}</Card.Text>
                   </Card.Body>
                   {/* </NavLink> */}
                 </Card>

@@ -24,7 +24,7 @@ format : use img from <set manually> ${image}
 4. 可以跳過照片不進行標註操作 分成skip || update 
 5. 左上角有跳回去的按鈕 只對以操作過的進行資料跳躍 => 只對已經selectFiles進行二次操作
 6. 依照圖片上傳順序進行命名
-7. skip 在console 裡面為2 update 為 1 並且會顯示在預覽操作葉面 顯示圖片的處理
+7. skip 在console 裡面為2 update 為 1 並且會顯示在預覽操作頁面 顯示圖片的處理
 
 五. 預覽操作葉面
 1. 針對實際有label的圖片 會顯示complete 

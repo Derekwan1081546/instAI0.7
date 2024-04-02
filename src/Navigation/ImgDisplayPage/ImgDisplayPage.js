@@ -4,6 +4,7 @@ import { Navbar, Nav, Card, Container, Row, Col, Button } from "react-bootstrap"
 import InstAI_icon from "../../image/instai_icon.png";
 import { BounceLoader } from "react-spinners";
 import axios from "axios";
+import { FaRegClock } from 'react-icons/fa'; 
 
 const ImageDisplay = () => {
   const [imagePreviews, setImagePreviews] = useState([]);
@@ -24,7 +25,7 @@ const ImageDisplay = () => {
     { img: {} },
     { img: {} },
   ]); 
-
+   
   // 用來存取每一次sd生成的base64 string 
   const downloadSingleImage = (base64, index) => {
     const link = document.createElement('a');
@@ -75,7 +76,20 @@ const ImageDisplay = () => {
         setImages([order[index].img]);
         setLoading(false);
       };
+      const handleChangeState =() =>{
+        const confirm = window.confirm("sure to give up?");
+        if(confirm){
+          setLoading(!loading);
+        }
+        else{
+          return;
+        }
+        // 確認是否submit 決定是否要變更狀態
+      }
 
+  const submitBatch =() =>{
+    
+  }
   return (
     <div style={{ backgroundColor: 'white' }}>
       <Navbar style={{ backgroundColor: 'WHITE', boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)' }}>
@@ -101,9 +115,19 @@ const ImageDisplay = () => {
         </Navbar.Brand>
       </Navbar>
       {loading ? (
-        <div className="loading" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-          <BounceLoader color={'#black'} size={120} />
-        </div>
+       <Container className="d-flex flex-column justify-content-center" style={{ minHeight: '60vh', maxWidth: '50rem', margin: '50px auto', backgroundColor: 'white', 
+       borderRadius: '15px', boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)', padding: '20px' }}>
+       <h2 className="text-center mb-4">Generative model is processing your request.</h2>
+       <p className="text-center mb-4">Estimated time: </p>
+       <h2 className="text-center mb-4">5 minutes</h2>
+       <div className="text-center">
+           <FaRegClock style={{ animation: 'spin 12s linear infinite' }} size={70} />
+       </div>
+         
+         <Button variant="primary" style={{ width: '50%', marginLeft: '25%' , marginTop:"30px"}} onClick={handleChangeState}>
+           Cancel Request
+         </Button>
+       </Container>
       ) : (
         <Container>
           <Row>

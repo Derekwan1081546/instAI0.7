@@ -63,7 +63,8 @@ function AppDev() {
           navigate(location.pathname);  
         }
       } else {
-        console.error('Invalid token');
+        // console.error('Invalid token');
+        console.log('天俊學長別走QAQ');
       }
     }
     if (token && token !== 'false') {
