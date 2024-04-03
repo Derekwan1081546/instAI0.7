@@ -8,6 +8,7 @@ import InstAI_icon from '../../image/instai_icon.png';
 function Create() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [loading , setLoading] = useState(false);
   const searchParams = new URLSearchParams(location.search);
   const id = localStorage.getItem("userId");
   const [response, setResponse] = useState(null); 
@@ -34,6 +35,7 @@ function Create() {
     if (formData.projectName.trim() === "") {
       alert("請輸入專案名稱");
     } else {
+      setLoading(true);
       console.log("Form submitted:", formData);
       try {
         const token = localStorage.getItem('jwtToken');
@@ -52,6 +54,7 @@ function Create() {
         handleFormDataChange("projectName", "");
         handleFormDataChange("projectDescription", ""); 
         console.log(response);
+        setLoading(false);
         // 導航回去
         navigate(`/Project?&type=1`);
       } catch (error) {
@@ -65,6 +68,11 @@ function Create() {
       navigate(`/Project?&type=1`);
     }
   }, [response]); 
+  
+  useEffect(()=>{
+    console.log("loading state is ",loading);
+  },[loading,setLoading,addProject]);
+
   return (
     <div className="container-fluid mt-3">
       
@@ -80,7 +88,11 @@ function Create() {
         </div>
         <div className="custom-border"></div>
     </div>
-    <div className="card col-xl-5  create-form" style={{height:550}}>
+    {loading?(<>
+      
+      <div className="hourglass"></div>
+    </>):(<>
+      <div className="card col-xl-5  create-form" style={{height:550}}>
       <form onSubmit={(e) => e.preventDefault()} >
         <div>
           <h1 className="display-4  text-center create-title" style={{fontWeight:'bold'}}>Create Projects</h1>
@@ -111,6 +123,8 @@ function Create() {
         </button>
       </form>
     </div>
+    </>)}
+    
   </div>
   );
 }

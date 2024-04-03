@@ -12,6 +12,8 @@ const ImageDisplay = () => {
   const [loading, setLoading] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const chance = location.state?.chance ?? "";
+  const projectname = location.state?.projectname??"";
   const p = process.env;
   const imgComplete = p.REACT_APP_PROCESS_PROMPT; //resened prompt to sd for img generation 
   const id = localStorage.getItem("userId");
@@ -19,9 +21,9 @@ const ImageDisplay = () => {
   const testPhoto = location.state.realisticPhoto;
   const [images, setImages] = useState([base64Data,testPhoto]); 
   const promptData = location.state?.promptData ?? "";
-
+  const storeImg = p.REACT_APP_STORE_IMG;
   const [selectImg , setSelectImg] = useState([]);
-
+  const u = process.env.REACT_APP_UPLOAD;
   const [times , setTimes]= useState(1); // 用來計算第幾次存取
   const [order, setOrder] = useState([
     { img: location.state?.base64Data ?? "" },
@@ -98,10 +100,43 @@ const ImageDisplay = () => {
       return;
     }
   else{
-    navigate(`/專案位子`,{state:{selectImg}});
+    console.log(selectImg);
+    if(chance==4){
+      const transferImg = async() =>{
+        try{
+          const token = localStorage.getItem('jwtToken');
+          const response = await axios.post(`${u}?username=${id}&projectname=${projectname}`,selectImg, {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            }
+        });
+        console.log(response.data);
+      }catch(error){
+        console.log("Error sending", error);
+      }
+      transferImg();
+    } 
+    }else{
+      const transferImg = async() =>{
+        try{
+          const token = localStorage.getItem('jwtToken');
+          const response = await axios.post(`${storeImg}`,selectImg, {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            }
+        });
+        console.log(response.data);
+      }catch(error){
+        console.log("Error sending", error);
+      }
+      transferImg();
+    }
     
-  }
-}
+    // navigate(`/`,{state:{selectImg}});
+  }}}
+
 const handleCheck = (e, base64) => {
   if (e.target.checked) {
     setSelectImg(prevState => [...prevState, base64]);
@@ -109,6 +144,7 @@ const handleCheck = (e, base64) => {
     setSelectImg(prevState => prevState.filter(img => img !== base64));
   }
 };
+
 useEffect(() => {
   console.log(selectImg);
 }, [selectImg]);
@@ -180,7 +216,7 @@ useEffect(() => {
               style={{position: 'absolute', top: 0, right: 0}}
               onChange={e => handleCheck(e, base64)}
             />
-         {/* <Button variant="primary" style={{width:'100%'}} onClick={() => downloadSingleImage(`data:image/png;base64,${base64}`, index)}>下載</Button> */}
+         <Button variant="primary" style={{width:'100%'}} onClick={() => downloadSingleImage(`data:image/png;base64,${base64}`, index)}>下載</Button>
       </Card.Body>
     </Card>
   </Col>
@@ -198,4 +234,5 @@ useEffect(() => {
     </div>
   );
 }
+
 export default ImageDisplay;

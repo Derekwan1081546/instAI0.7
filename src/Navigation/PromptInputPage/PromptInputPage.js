@@ -19,7 +19,8 @@ export default function ImgPrompt(){
     const p = process.env;
     const prompt = p.REACT_APP_PROCESS_PROMPT;   // 提交prompt的api 
     const modelTitle = location.state?.model ?? "";
-    
+    const chance =location.state?.chance??"";
+    const projectname = location.state?.projectname?? "" ;
     const [formData, setFormData] = useState({
       enable_hr: false,
       denoising_strength: 0,
@@ -99,7 +100,7 @@ export default function ImgPrompt(){
         console.log(response.data); // 這邊應該會是base64的圖片字串
         const base64Data = response.data;
         const promptData = formData;
-        navigate(`/ImgDisplayPage`,{ state: { base64Data , promptData} });
+        navigate(`/ImgDisplayPage`,{ state: { base64Data , promptData , chance,projectname} });
         }catch (error){
         console.error("Error sending data to backend:", error);
         }
@@ -161,7 +162,7 @@ export default function ImgPrompt(){
         <Button variant="primary" style={{ width: '50%', marginLeft: '25%' , marginTop:"30px"}} onClick={handleChangeState}>
           Cancel Request
         </Button>
-        <Button onClick={testButton}>測是</Button>
+        <Button onClick={testButton}>測試</Button>
       </Container>
             </>
           ) : (

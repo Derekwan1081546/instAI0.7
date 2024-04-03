@@ -3,7 +3,8 @@ import styles from './UploadImg.css';
 import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
 import InstAI_icon from "../../image/instai_icon.png";
-import barImg from '../../image/bar.png';
+import { FaRegClock } from 'react-icons/fa'; 
+import {Container} from "react-bootstrap";
 
 function UploadImg() {
   const navigate = useNavigate();
@@ -16,10 +17,14 @@ function UploadImg() {
   const u = process.env.REACT_APP_UPLOAD;
   const c_s = process.env.REACT_APP_CONFIRM_STEP;
   const [mode , setMode] = useState(false);
+  const [loading , setLoading] = useState(false);
+  //
+  
   //const [username, setUsername] = useState(""); 
   //const [filename, setFilename] = useState(""); 
   // 文件選擇
   const [imageFiles, setImageFiles] = useState([]);
+
   const handleFileSelect = async (event) => {
     const files = event.target.files;
     const fileArray = Array.from(files);
@@ -59,17 +64,6 @@ function UploadImg() {
     }
   };
   
-  
-  // 文件下載 //modified
-  // const handleDownload = (file) => {
-  //   const a = document.createElement('a');
-  //   a.href = window.URL.createObjectURL(new Blob([file]));
-  //   a.setAttribute("download", file.name);
-  //   document.body.appendChild(a);
-  //   a.click();
-  //   document.body.removeChild(a);
-  // };
-
   // 處理刪除單一圖片
   const handleDeleteImage = (index) => {
     const updatedFiles = [...selectedFiles];
@@ -92,7 +86,7 @@ function UploadImg() {
     setImagePreviews([]);
     setSelectedFiles([]);
   };
-  const selectModle = () => {
+  const selectModel = () => {
     if (mode === false) {
       const confirmation = window.confirm("你想要關掉篩選模式功能並且無限制上傳圖片嗎?");
       if (confirmation) {
@@ -133,15 +127,10 @@ function UploadImg() {
       const confirmDelete = window.confirm('要求已經滿足,確定要上傳圖片?');
       if (!confirmDelete) {
         return;
-      }
-      
+      }  
+      setLoading(true);   
       const uploaded = [...selectedFiles];
       const formData = new FormData();
-
-      // uploaded.forEach((file) => {
-      //   console.log("filename:",file.name);
-      //   formData.append(`file`, file); 
-      // });
       for(let i =0;i<uploaded.length;++i){
         //console.log(uploaded[i]);
         formData.append('file', uploaded[i]);
@@ -160,6 +149,7 @@ function UploadImg() {
           });
         console.log(response.data);
         alert('upload success');
+
         console.log(token);
         const response2 = await axios.post(
           `${c_s}/?step=1&username=${id}&projectname=${projectname}`,
@@ -171,7 +161,7 @@ function UploadImg() {
             }
           }
         );
-        
+        setLoading(false);
         console.log('step updated successfully:', response2.data);
         navigate(`/Step?project=${projectname}`);
         //navigate(`/LabelPage?id=${id}&projectname=${projectname}`);
@@ -180,6 +170,9 @@ function UploadImg() {
       }
     }
   };
+  useEffect(()=>{
+    console.log("loading state test is ",loading);
+  },[loading,setLoading,handleUpload]);
 
   return (
     <div className="container-fluid mt-3">
@@ -210,7 +203,7 @@ function UploadImg() {
         </div>
         <div className="col-4 d-flex  justify-content-end">
           <div>
-            <button className={'btn btn-primary'} onClick={selectModle}>
+            <button className={'btn btn-primary'} onClick={selectModel}>
               Select modes
             </button>
           </div>
@@ -234,62 +227,75 @@ function UploadImg() {
       </div>
 
       <div className="mt-3" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-      <div
-         style={{
-           display: "flex",
-           flexDirection: "row",
-           justifyContent: "space-around",
-           alignItems: "center",
-           width: "100%",
-           marginBottom: "2px",
-           padding: "5px",
-           border: "1px solid black",
-         }}
-       >
-       <p>img id</p>
-       <p>labeled</p>
-       <p>img height</p>
-       <p>img width</p>
-       <p>delete</p>
-       <p>file</p>
-     </div>       
-     {imagePreviews.map((preview, index) => (
-    <div
-    key={index}
-    className="image-previews-wrapper"
-    style={{
-      display: "flex",
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-      width: "100%",
-      marginBottom: "2px",
-      padding: "5px",
-      border: "1px solid black",
-    }}
-  > 
-      {/* Information */}
-      <div className="d-flex flex-row align-items-center" >
-        <p style={{marginLeft:'120px'}}>{index + 1}</p>
-        <p style={{marginLeft:'220px'}}>{selectedFiles[index].isTagged ? 'Yes' : 'No'}</p>
-        <p style={{marginLeft:'230px'}}>512</p>
-        <p style={{marginLeft:'250px'}}>512</p>
-         <button
-          className="btn btn-danger"
-          onClick={handleDeleteImage}
-          style={{marginLeft:'200px'}}>
-          Delete
-        </button>
-      </div>
-      {/* Image */}
-      <img
-        src={preview}
-        alt={`image ${index}`}
-        style={{ width: '100px', height: '120px', marginRight: '50px' }}
-        loading='lazy'
-      />
-    </div>
-))}
+        {loading?(
+       <>
+        <Container className="d-flex flex-column justify-content-center" style={{ minHeight: '60vh', maxWidth: '50rem', margin: '50px auto', backgroundColor: 'white', 
+       borderRadius: '15px', boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)', padding: '20px' }}>
+       <h2 className="text-center mb-4">Data are being processed</h2>
+       <p className="text-center mb-4">Estimated time: </p>
+       <h2 className="text-center mb-4">5 minutes</h2>
+       <div className="text-center">
+           <FaRegClock style={{ animation: 'spin 12s linear infinite' }} size={70} />
+       </div>
+       </Container>
+       </>
+       ):(<><div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-around",
+          alignItems: "center",
+          width: "100%",
+          marginBottom: "2px",
+          padding: "5px",
+          border: "1px solid black",
+        }}
+      >
+      <p>img id</p>
+      <p>labeled</p>
+      <p>img height</p>
+      <p>img width</p>
+      <p>delete</p>
+      <p>file</p>
+    </div>       
+    {imagePreviews.map((preview, index) => (
+   <div
+   key={index}
+   className="image-previews-wrapper"
+   style={{
+     display: "flex",
+     flexDirection: "row",
+     justifyContent: "space-between",
+     alignItems: "center",
+     width: "100%",
+     marginBottom: "2px",
+     padding: "5px",
+     border: "1px solid black",
+   }}
+ > 
+     {/* Information */}
+     <div className="d-flex flex-row align-items-center" >
+       <p style={{marginLeft:'120px'}}>{index + 1}</p>
+       <p style={{marginLeft:'220px'}}>{selectedFiles[index].isTagged ? 'Yes' : 'No'}</p>
+       <p style={{marginLeft:'230px'}}>512</p>
+       <p style={{marginLeft:'250px'}}>512</p>
+        <button
+         className="btn btn-danger"
+         onClick={handleDeleteImage}
+         style={{marginLeft:'200px'}}>
+         Delete
+       </button>
+     </div>
+     {/* Image */}
+     <img
+       src={preview}
+       alt={`image ${index}`}
+       style={{ width: '100px', height: '120px', marginRight: '50px' }}
+       loading='lazy'
+     />
+   </div>
+))}</>)}
+      
 </div>
 
 

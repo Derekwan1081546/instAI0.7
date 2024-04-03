@@ -3,10 +3,12 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import './ConfirmSTR.css'; 
 import InstAI_icon from '../../image/instai_icon.png';
+import { BounceLoader } from 'react-spinners';
 
 function ConfirmReq() {
   const [reqData, setReqData] = useState({});
   const location = useLocation();
+  const [loading , setLoading]=useState(true);
   const [editable, setEditable] = useState(false);
   const searchParams = new URLSearchParams(location.search);
   const projectname = searchParams.get('projectname');
@@ -34,6 +36,7 @@ function ConfirmReq() {
         Object.assign(parsedData, parsedItem);
       });
       setReqData(parsedData);
+      setLoading(false);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -177,64 +180,76 @@ const handleConfirmRequirement = () => {
         <div className="custom-border"></div>
       </div>
 
-
-      <div className="card col-xl-5  view-form" style={{height:600}}>
-        
-         <div>
-          <h1 className="display-5  mb-5 text-center create-title" style={{fontWeight:'bold'}}>Requirement Preview</h1>
-        </div>
-      
-        {reqData.Requirement1 && (
-            <div >
-              <h5 className="mt-5" style={{fontWeight:'bold'}}>Question 1: <br></br> {reqData.Requirement1.question}</h5>
-              <p>
-                Answer 1:{' '}
-                {editable ? (
-                  <span
-                    id="editedAnswer1"
-                    contentEditable
-                    dangerouslySetInnerHTML={{ __html: reqData.Requirement1.answer }}
-                  ></span>
-                ) : (
-                  reqData.Requirement1.answer
-                )}
-              </p>
-            </div>
-          )}
-
-          {reqData.Requirement2 && (
-            <div className="question-answer">
-              <h5 className="mt-5" style={{fontWeight:'bold'}}>Question 2: <br></br> {reqData.Requirement2.question}</h5>
-              <p>
-                Answer 2:{' '}
-                {editable ? (
-                  <span
-                    id="editedAnswer2"
-                    contentEditable
-                    dangerouslySetInnerHTML={{ __html: reqData.Requirement2.answer }}
-                  ></span>
-                ) : (
-                  reqData.Requirement2.answer
-                )}
-              </p>
-            </div>
-          )}
-
-
-          <div className=" d-flex mt-2 mb-3 justify-content-center ">
-          <button className='btn mr-1 btn-danger' onClick={handleConfirmButtonClick} style={{ backgroundColor: confirmed ? 'green' : '' }} disabled={confirmed ? true : false}>
-        {confirmed ? 'Requirement is already confirmed' : 'Requirement is not confirmed'}
-          </button>
-            </div>
-
-            <div className=" d-flex mt-5 justify-content-end ">
-          {!confirmed ? <button className='btn btn-warning' onClick={() => setEditable(!editable)}>{editable ? 'Cancel Edit' : 'Edit'}</button> : <></>}
-          {editable && <button className='btn btn-success' onClick={handleSaveButtonClick}>Save Edition</button>}
-          <button className='btn confirmButton' onClick={handleGoBack}>Go Back</button>
-            </div>
-
-        
+      {loading?(<>
+      <div>
+        <div style={{
+           position: 'fixed', 
+           top: '50%', 
+           left: '50%', 
+           transform: 'translate(-50%, -50%)' 
+    }}>
+      <BounceLoader color={'black'} size={120} />
       </div>
+      </div></>):(<>
+        <div className="card col-xl-5  view-form" style={{height:600}}>
+        
+        <div>
+         <h1 className="display-5  mb-5 text-center create-title" style={{fontWeight:'bold'}}>Requirement Preview</h1>
+       </div>
+     
+       {reqData.Requirement1 && (
+           <div >
+             <h5 className="mt-5" style={{fontWeight:'bold'}}>Question 1: <br></br> {reqData.Requirement1.question}</h5>
+             <p>
+               Answer 1:{' '}
+               {editable ? (
+                 <span
+                   id="editedAnswer1"
+                   contentEditable
+                   dangerouslySetInnerHTML={{ __html: reqData.Requirement1.answer }}
+                 ></span>
+               ) : (
+                 reqData.Requirement1.answer
+               )}
+             </p>
+           </div>
+         )}
+
+         {reqData.Requirement2 && (
+           <div className="question-answer">
+             <h5 className="mt-5" style={{fontWeight:'bold'}}>Question 2: <br></br> {reqData.Requirement2.question}</h5>
+             <p>
+               Answer 2:{' '}
+               {editable ? (
+                 <span
+                   id="editedAnswer2"
+                   contentEditable
+                   dangerouslySetInnerHTML={{ __html: reqData.Requirement2.answer }}
+                 ></span>
+               ) : (
+                 reqData.Requirement2.answer
+               )}
+             </p>
+           </div>
+         )}
+
+
+         <div className=" d-flex mt-2 mb-3 justify-content-center ">
+         <button className='btn mr-1 btn-danger' onClick={handleConfirmButtonClick} style={{ backgroundColor: confirmed ? 'green' : '' }} disabled={confirmed ? true : false}>
+       {confirmed ? 'Requirement is already confirmed' : 'Click here to confirm sending your requirement'}
+         </button>
+           </div>
+
+           <div className=" d-flex mt-5 justify-content-end ">
+         {!confirmed ? <button className='btn btn-warning' onClick={() => setEditable(!editable)}>{editable ? 'Cancel Edit' : 'Edit'}</button> : <></>}
+         {editable && <button className='btn btn-success' onClick={handleSaveButtonClick}>Save Edition</button>}
+         <button className='btn confirmButton' onClick={handleGoBack}>Go Back</button>
+           </div>
+
+       
+     </div>
+      </>)}
+      
 
     </div>
   );

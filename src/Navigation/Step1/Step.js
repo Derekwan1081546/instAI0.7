@@ -11,6 +11,7 @@ function Step() {
   const userid = localStorage.getItem("userId");
   const projectname = searchParams.get('project');
   const g_s = process.env.REACT_APP_GET_STEP;
+  
   const modelLink = `/Model?projectname=${projectname}`;
   const [upload, setUpload] = useState(
     JSON.parse(localStorage.getItem(`firstPage_${userid}_${projectname}`) || 'false')
@@ -24,7 +25,7 @@ function Step() {
   const [confirm2Data, setConfirm2Data] = useState(
     JSON.parse(localStorage.getItem(`confirmStatusReq_${userid}_${projectname}`) || 'false')
   );
-  const [step,setstep] = useState();
+  const [step,setstep] = useState(0);
   const fetchstep = async () => {
     try {
       const token = localStorage.getItem('jwtToken');
@@ -41,14 +42,7 @@ function Step() {
       console.error('Error fetching data:', error);
     }
   };
-  useEffect(() => {
-    // console.log(upload.toString(),requirement.toString(),confirm1Data.toString(),confirm2Data.toString());
-    localStorage.setItem(`firstPage_${userid}_${projectname}`, upload.toString());
-    localStorage.setItem(`secondPage_${userid}_${projectname}`, requirement.toString());
-    localStorage.setItem(`confirmStatusImg_${userid}_${projectname}`, confirm1Data.toString());
-    localStorage.setItem(`confirmStatusReq_${userid}_${projectname}`, confirm2Data.toString());
-    fetchstep();
-  }, [upload, requirement, confirm1Data, confirm2Data , step]); 
+  
 
   /*const response =  來自後端回傳的檢查 可能使用axios 當這個頁面被點及進入時 後端會回傳說相對應的data以及req資料夾是否是空的 如果都是有一定資料量的話 回傳true */
   const navigate = useNavigate();
@@ -92,7 +86,8 @@ function Step() {
         }
       } else {
         console.log("upload 已經確定");
-        navigate(`/ViewData?projectname=${projectname}`);
+        alert('資料已經上傳完畢');
+        // navigate(`/ViewData?projectname=${projectname}`);
       }
     }
   };
@@ -134,29 +129,6 @@ function Step() {
         alert("請照步驟執行");
       }
   }
-  };
-  const devBack = () => {
-    const confirm = window.confirm("確定要還原所有設定嗎?");
-    
-    if (confirm) {
-      // Reset all states to their initial values
-      setUpload(false);
-      setRequirement(false);
-      setConfirm1Data(false);
-      setConfirm2Data(false);
-  
-      // Reset corresponding localStorage values
-      localStorage.setItem(`firstPage_${userid}_${projectname}`, 'false');
-      localStorage.setItem(`secondPage_${userid}_${projectname}`, 'false');
-      localStorage.setItem(`confirmStatusImg_${userid}_${projectname}`, 'false');
-      localStorage.setItem(`confirmStatusReq_${userid}_${projectname}`, 'false');
-  
-      // Optional: You might want to reset the step state to 0 as well
-      setstep(0);
-      
-      alert("已還原所有設定");
-      fetchstep();
-    }
   };
 
   const handleForm2DataChange = () => {
@@ -217,6 +189,16 @@ function Step() {
       return;
     }
   }
+
+  useEffect(() => {
+    // console.log(upload.toString(),requirement.toString(),confirm1Data.toString(),confirm2Data.toString());
+    localStorage.setItem(`firstPage_${userid}_${projectname}`, upload.toString());
+    localStorage.setItem(`secondPage_${userid}_${projectname}`, requirement.toString());
+    localStorage.setItem(`confirmStatusImg_${userid}_${projectname}`, confirm1Data.toString());
+    localStorage.setItem(`confirmStatusReq_${userid}_${projectname}`, confirm2Data.toString());
+    fetchstep();
+  }, [upload, requirement, confirm1Data, confirm2Data , step,Green1,Green2,handleFormDataChange,handleForm2DataChange]); 
+  
   return (
     // <div className="app">
     <div className="container-fluid mt-3">
@@ -294,7 +276,7 @@ function Step() {
         <button onClick={navigateLogic} className={step === 3 ? 'upload-buttonNo5-active' : 'upload-buttonNo5'}>Start Training</button>
       </div>
      <div className='col auto'>
-     <button onClick={devBack} style={{backgroundColor: 'white',fontWeight: "inherit", boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.5)', border: 'none'}}>還原設定</button>
+     {/* <button onClick={devBack} style={{backgroundColor: 'white',fontWeight: "inherit", boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.5)', border: 'none'}}>還原設定</button> */}
      </div>
     </div>
   );

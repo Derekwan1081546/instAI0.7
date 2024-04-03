@@ -3,11 +3,14 @@ import axios from 'axios';
 import { useNavigate ,useLocation } from 'react-router-dom';
 import './ConfirmIMG.css';
 import InstAI_icon from '../../image/instai_icon.png';
+import { BounceLoader } from 'react-spinners';
 
 function ConfirmImg() {
   const [imagePreviews, setImagePreviews] = useState([]);
   const [imagePreviews2, setImagePreviews2] = useState([]);
+  const [loading , setLoading] = useState(true);
   const location = useLocation();
+  const chance = 4;
   const searchParams = new URLSearchParams(location.search);
   const id = localStorage.getItem("userId");
   const projectname = searchParams.get('projectname');
@@ -20,6 +23,7 @@ function ConfirmImg() {
   const upload = p.UPLOAD;
   const confirm_img = p.REACT_APP_AWS_CONFIRM_IMG;
   console.log("現在狀態",confirmed2);
+
   const fetchData = async () => {
     try {
       const token = localStorage.getItem("jwtToken");
@@ -31,6 +35,7 @@ function ConfirmImg() {
       });
       console.log(response.data.images);
       setImagePreviews(response.data.images);
+      setLoading(false);
     } catch (error) {
       console.error('Error fetching image previews:', error);
     }
@@ -89,22 +94,7 @@ function ConfirmImg() {
 
   const handleConfirmButtonClick = () => {
     console.log('handleConfirmButtonClick triggered');
-    //const confirmeState = window.confirm("do you want to change confirm state");
   
-    // if (confirmeState) {
-    //   if(confirmed2){
-    //     console.log("取消確認狀態");
-    //     handleCancelConfirmation();
-    //   }
-    //   else{
-    //     console.log("確認狀態");
-    //     handleConfirmRequirement();
-    //   }
-    // } else {
-    //   console.log("取消變更");
-    //   return;
-    // }
-
     if(confirmed2){
       console.log("取消確認狀態");
       handleCancelConfirmation();
@@ -135,10 +125,9 @@ function ConfirmImg() {
     if (!confirmed2) {
       const userConfirmed = window.confirm('You have not confirmed the requirement. Are you sure you want to go back?');
       if (!userConfirmed) {
-        return; // Do not proceed if the user cancels
+        return;
       }
     }
-
     if (confirmed2) {
       window.alert('See your model later');
     }
@@ -183,6 +172,15 @@ function ConfirmImg() {
     }
   };
 
+  const handleSDlogic = () =>{
+     const confirmed = window.confirm("生圖次數總共4次");
+     if(!confirmed){
+      return
+     }else{
+      navigate(`/PromptInputPage`,{state:{chance,projectname}});
+     }
+  }
+
   return (
 
     // <div className="review-container">
@@ -199,7 +197,19 @@ function ConfirmImg() {
           <h1 className="display-4  text-center create-title" style={{fontWeight:'bold'}}>Image Preview</h1>
         </div>
       
-      <div className="image-previews">
+      {loading?(
+      <div>
+        <div style={{
+           position: 'fixed', 
+           top: '50%', 
+           left: '50%', 
+           transform: 'translate(-50%, -50%)' 
+    }}>
+      <BounceLoader color={'black'} size={120} />
+      </div>
+      </div>):(<div>
+        <div className="image-previews">
+        
         {imagePreviews.map((preview, index) => (
           
           <div key={index} className="image-preview">
@@ -211,7 +221,7 @@ function ConfirmImg() {
               loading="lazy"
             />
             {!confirmed2 ? <button className="delete-button" onClick={() => handleDeleteImage(index)}>
-              刪除
+              delere
             </button> : false}
           </div>
         ))}
@@ -224,10 +234,11 @@ function ConfirmImg() {
               loading="lazy"
             />
             {!confirmed2 ? <button className="delete-button" onClick={() => handleDeletepreviewImage(index)}>
-              刪除
+              delete
               </button> : <></>}
         </div>
         ))}
+        
       </div>
 
       <div className=" d-flex mt-4 mb-3 justify-content-center ">
@@ -237,7 +248,7 @@ function ConfirmImg() {
         style={{ backgroundColor: confirmed2 ? 'green' : '' }}
         disabled={confirmed2 ? true : false}
       >
-        {confirmed2 ? 'Image is already confirmed' : 'Image is not confirmed'}
+        {confirmed2 ? 'go to next step' : 'Clcik to confirm sending img'}
         </button>
         </div>
 
@@ -254,13 +265,18 @@ function ConfirmImg() {
             {!confirmed2 ? <button className='btn btn-warning' onClick={handleUpload} >Change</button> : <></>}
              {/* <button onClick={handleUpload} disabled = {confirmed2 ? true : false}>Change</button> */}
             </div>
-           
+           <div>
+            <button className='btn confirmButton ' style={{marginRight:'15px'}} onClick={handleSDlogic}>use model to generate img</button>
+           </div>
             <div >
              <button className='btn confirmButton ' onClick={handleGoBack}>Go Back</button>
             </div>
 
          </div>
       </div>
+      </div>)}
+
+     
 
     </div>
   );
