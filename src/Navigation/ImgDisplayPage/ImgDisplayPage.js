@@ -23,8 +23,10 @@ const ImageDisplay = () => {
   const promptData = location.state?.promptData ?? "";
   const storeImg = p.REACT_APP_STORE_IMG;
   const [selectImg , setSelectImg] = useState([]);
+  const [selectSDImg, setSelectSDImg] = useState([]);
   const u = process.env.REACT_APP_UPLOAD;
   const [times , setTimes]= useState(1); // 用來計算第幾次存取
+  
   const [order, setOrder] = useState([
     { img: location.state?.base64Data ?? "" },
     { img: {} },
@@ -105,7 +107,8 @@ const ImageDisplay = () => {
       const transferImg = async() =>{
         try{
           const token = localStorage.getItem('jwtToken');
-          const response = await axios.post(`${u}?username=${id}&projectname=${projectname}`,selectImg, {
+
+          const response = await axios.post(`${u}?username=${id}&projectname=${projectname}`,selectSDImg, {
             headers: {
               'Content-Type': 'application/json',
               'Authorization': `Bearer ${token}`
@@ -139,11 +142,17 @@ const ImageDisplay = () => {
 
 const handleCheck = (e, base64) => {
   if (e.target.checked) {
+    const img = new Image();
+    img.src = base64;
+    img.onload = () => {
+      setSelectSDImg(prevState => [...prevState, img]);
+    };
     setSelectImg(prevState => [...prevState, base64]);
   } else {
     setSelectImg(prevState => prevState.filter(img => img !== base64));
+    setSelectSDImg(prevState => prevState.filter(img => img.src !== base64));
   }
-};
+} 
 
 useEffect(() => {
   console.log(selectImg);
