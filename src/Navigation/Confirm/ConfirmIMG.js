@@ -177,7 +177,7 @@ function ConfirmImg() {
      if(!confirmed){
       return
      }else{
-      navigate(`/PromptInputPage`,{state:{chance,projectname}});
+      navigate(`/PromptInputPage?project=${projectname}`,{state:{chance,projectname}});
      }
   }
 

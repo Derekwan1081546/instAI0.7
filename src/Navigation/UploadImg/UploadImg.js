@@ -148,7 +148,7 @@ function UploadImg() {
             }
           });
         console.log(response.data);
-        alert('upload success');
+        alert(response.data.message);
 
         console.log(token);
         const response2 = await axios.post(

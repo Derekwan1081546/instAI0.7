@@ -39,6 +39,9 @@ const PromptInputPage = lazy(() => import("./Navigation/PromptInputPage/PromptIn
 const ImageDisplay = lazy(() => import("./Navigation/ImgDisplayPage/ImgDisplayPage"));
 const Txt2ImgPage = lazy(() => import("./StableDiffusion/txt2txt/TXTtoIMG"));
 
+const AdminPage = lazy(()=> import(`./Navigation/AdminPath/AdminPage`));
+const AdminControl = lazy(()=> import(`./Navigation/AdminPath/AdminControl`));
+
 const Alert = lazy(() => import("./Navigation/AlertComponent/Reminder"));
 const Confirm = lazy(()=>import("./Navigation/AlertComponent/Confirm"));
 
@@ -111,6 +114,8 @@ function AppDev() {
                 <Route path ="/Txt2ImgPage" element={<Txt2ImgPage/>}/>
                 <Route path="/Alert" element={<Alert/>}/>
                 <Route path="/Confirm" element={<Confirm/>}/>
+                <Route path="/AdminPage" element={<AdminPage/>}/>
+                <Route path="/AdminControl" element={<AdminControl/>}/>
                 
               </>
             ) : (

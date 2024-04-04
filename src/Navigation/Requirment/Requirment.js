@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Prompt from "../../Components/Prompt/Prompt2";
@@ -10,7 +11,7 @@ function Requirement() {
   const [reqData, setReqData] = useState({
     Requirement1: {
       question: "What is the type of location/environment that the AI model will be used?",
-      answer: "1561561561566165156",
+      answer: "",
     },
     Requirement2: {
       question: "What is the type of location/environment that the AI model will be used?",
@@ -94,13 +95,17 @@ function Requirement() {
         });
       
       console.log("server response:", response.data);
+      
       const response2 = await axios.post(
-        `${c_s}/?step=2&username=${id}&projectname=${projectname}`, {
-          headers: {
-            'Content-Type':'application/json',
-            'Authorization': `Bearer ${token}`
-          }
-        });
+          `${c_s}/?step=2&username=${id}&projectname=${projectname}`, 
+          null,
+          {
+            headers: {
+              'Content-Type':'application/json',
+              'Authorization': `Bearer ${token}`
+            }
+          });
+      
       console.log('step updated successfully:', response2.data);
       alert("Requirement submitted successfully!");
       // Reset form data

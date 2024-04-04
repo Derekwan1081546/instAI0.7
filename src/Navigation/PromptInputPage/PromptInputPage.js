@@ -1,12 +1,11 @@
 import React,{useState,useEffect} from "react";
 import axios from "axios";
-import {useNavigate , useLocation} from "react-router-dom";
+import {NavLink, useNavigate , useLocation} from "react-router-dom";
 import {  Navbar, Nav, Container, Button,Form} from "react-bootstrap";
 import InstAI_icon from "../../image/instai_icon.png";
 import { FaRegClock } from 'react-icons/fa'; 
 // import Autosuggest from 'react-autosuggest';    之後可以加入一些提示詞語 方便下更好的prompt
 import "./PromptInputPage.css";
-import realisticPhoto from "../../image/realistic_model.png";
 
 export default function ImgPrompt(){
     const location = useLocation();
@@ -29,7 +28,7 @@ export default function ImgPrompt(){
       hr_second_pass_steps: 0,
       hr_resize_x: 0,
       hr_resize_y: 0,
-      prompt: "A cat",
+      prompt: "A shibar",
       styles: [],
       seed: -1,
       batch_size: 3,
@@ -112,9 +111,9 @@ export default function ImgPrompt(){
         }
     };    
     
-    const testButton = () =>{
-      navigate(`/ImgDisplayPage`,{state:{realisticPhoto}});
-    }
+    // const testButton = () =>{
+    //   navigate(`/ImgDisplayPage`,{state:{realisticPhoto}});
+    // }
 
     useEffect(() => {
       console.log(modelTitle)
@@ -135,7 +134,14 @@ export default function ImgPrompt(){
               <Navbar bg="white" style={{ boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)' }}>
         <Nav className="mr-auto">
         <Nav className="mr-auto" style={{marginLeft:"10px"}}>
-             <h3 onClick={handleBack}>←Back</h3>
+          <div className="col-auto mt-4">
+              <NavLink to={`/ModelSelectionPage`} className="ModelSelectPageLink">
+                <button className="btn ModelSelectPageButton" style={{ marginLeft: "10px", fontFamily: 'Lato' }}>
+                  <h3 style={{ marginLeft: "10px" }}>←Back</h3>
+                </button>
+              </NavLink>
+          </div>
+             {/* <h3 onClick={handleBack}>←Back</h3> */}
             </Nav>
         </Nav>
         <Navbar.Brand href="#home" className="mx-auto">
@@ -162,7 +168,7 @@ export default function ImgPrompt(){
         <Button variant="primary" style={{ width: '50%', marginLeft: '25%' , marginTop:"30px"}} onClick={handleChangeState}>
           Cancel Request
         </Button>
-        <Button onClick={testButton}>測試</Button>
+        {/* <Button onClick={testButton}>測試</Button> */}
       </Container>
             </>
           ) : (
@@ -171,7 +177,14 @@ export default function ImgPrompt(){
               <div style={{ backgroundColor: 'WHITE' }}>
           <Navbar style={{ backgroundColor: 'WHITE', boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)' }}>
             <Nav className="mr-auto" style={{marginLeft:"10px"}}>
-             <h3 onClick={handleBack}>Back</h3>
+            <div className="col-auto mt-4">
+              <NavLink to={`/ModelSelectionPage`} className="ModelSelectPageLink">
+                <button className="btn ModelSelectPageButton" style={{ marginLeft: "10px", fontFamily: 'Lato' }}>
+                  <h3 style={{ marginLeft: "10px" }}>←Back</h3>
+                </button>
+              </NavLink>
+            </div>
+             {/* <h3 onClick={handleBack}>Back</h3> */}
             </Nav>
             <Navbar.Brand href="#home" className="mx-auto">
               <img

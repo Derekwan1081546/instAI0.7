@@ -14,12 +14,13 @@ const ImageDisplay = () => {
   const navigate = useNavigate();
   const chance = location.state?.chance ?? "";
   const projectname = location.state?.projectname??"";
+  //const projectname = searchParams.get('project');
   const p = process.env;
   const imgComplete = p.REACT_APP_PROCESS_PROMPT; //resened prompt to sd for img generation 
   const id = localStorage.getItem("userId");
   const base64Data = location.state?.base64Data ?? "";
   const testPhoto = location.state.realisticPhoto;
-  const [images, setImages] = useState([base64Data,testPhoto]); 
+  const [images, setImages] = useState([base64Data]); 
   const promptData = location.state?.promptData ?? "";
   const storeImg = p.REACT_APP_STORE_IMG;
   const [selectImg , setSelectImg] = useState([]);
@@ -28,7 +29,7 @@ const ImageDisplay = () => {
   const [times , setTimes]= useState(1); // 用來計算第幾次存取
   
   const [order, setOrder] = useState([
-    { img: location.state?.base64Data ?? "" },
+    { img: base64Data },
     { img: {} },
     { img: {} },
     { img: {} },
@@ -81,7 +82,11 @@ const ImageDisplay = () => {
      
       const handleButtonClick = (index) => {
         setLoading(true);
-        setImages([order[index].img]);
+        if(order[index].img===""){
+
+        }
+        setImages(order[index].img);
+        //setImages(base64Data);
         setLoading(false);
       };
 
@@ -96,67 +101,133 @@ const ImageDisplay = () => {
         // 確認是否submit 決定是否要變更狀態
       }
 
-  const submitBatch =() =>{
+//   const submitBatch =() =>{
+//     const confirm = window.confirm("確定要傳送照片了嗎");
+//     if(!confirm){
+//       return;
+//     }
+//     else{
+//       console.log(selectImg);
+//       if(chance==4){
+//         const transferImg = async() =>{
+//           try{
+//             const token = localStorage.getItem('jwtToken');
+
+//             const response = await axios.post(`${u}?username=${id}&projectname=${projectname}`,selectSDImg, {
+//               headers: {
+//                 'Content-Type': 'application/json',
+//                 'Authorization': `Bearer ${token}`
+//               }
+//           });
+//           console.log(response.data);
+//         }catch(error){
+//           console.log("Error sending", error);
+//         }
+//         transferImg();
+//       } 
+//       }else{
+//         const transferImg = async() =>{
+//           try{
+//             const token = localStorage.getItem('jwtToken');
+//             const response = await axios.post(`${storeImg}`,selectImg, {
+//               headers: {
+//                 'Content-Type': 'application/json',
+//                 'Authorization': `Bearer ${token}`
+//               }
+//           });
+//           console.log(response.data);
+//           }catch(error){
+//           console.log("Error sending", error);
+//           }
+//           transferImg();
+//         }
+      
+//       // navigate(`/`,{state:{selectImg}});
+//       }
+//     }
+//   }
+
+// const handleCheck = (e, base64) => {
+//   if (e.target.checked) {
+//     const img = new Image();
+//     img.src = base64;
+//     img.onload = () => {
+//       setSelectSDImg(prevState => [...prevState, img]);
+//     };
+//     setSelectImg(prevState => [...prevState, base64]);
+//   } else {
+//     setSelectImg(prevState => prevState.filter(img => img !== base64));
+//     setSelectSDImg(prevState => prevState.filter(img => img.src !== base64));
+//   }
+// } 
+
+
+  const submitBatch = () => {
     const confirm = window.confirm("確定要傳送照片了嗎");
-    if(!confirm){
+    if (!confirm) {
       return;
-    }
-  else{
-    console.log(selectImg);
-    if(chance==4){
-      const transferImg = async() =>{
-        try{
-          const token = localStorage.getItem('jwtToken');
+    } else {
+      const formData = new FormData();
 
-          const response = await axios.post(`${u}?username=${id}&projectname=${projectname}`,selectSDImg, {
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-            }
-        });
-        console.log(response.data);
-      }catch(error){
-        console.log("Error sending", error);
-      }
-      transferImg();
-    } 
-    }else{
-      const transferImg = async() =>{
-        try{
-          const token = localStorage.getItem('jwtToken');
-          const response = await axios.post(`${storeImg}`,selectImg, {
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-            }
-        });
-        console.log(response.data);
-      }catch(error){
-        console.log("Error sending", error);
-      }
-      transferImg();
-    }
-    
-    // navigate(`/`,{state:{selectImg}});
-  }}}
+      // 將 selectImg 中的 base64 字串轉換為 Blob 物件並添加到 FormData 中
+      // selectImg.forEach((base64, index) => {
+      //   const blob = dataURItoBlob(base64);
+      //   formData.append('file', blob, `image_${index + 1}.jpg`);
+      // });
 
-const handleCheck = (e, base64) => {
-  if (e.target.checked) {
-    const img = new Image();
-    img.src = base64;
-    img.onload = () => {
+      // 將 selectSDImg 中的圖片 Blob 物件添加到 FormData 中
+      selectSDImg.forEach((img, index) => {
+        const timestamp = new Date().getTime(); // 取得當前時間的時間戳記
+        formData.append('file', img, `sd_image_${index + 1}_${timestamp}.jpg`);
+      });
+      console.log(formData);
+      // 透過 axios 將 FormData 傳送到後端
+      const token = localStorage.getItem('jwtToken');
+      axios.post(`${u}?username=${id}&projectname=${projectname}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'Authorization': `Bearer ${token}`
+        }
+      }).then(response => {
+        console.log(response.data);
+        alert(response.data.message);
+        // 處理後端回傳的資料
+      }).catch(error => {
+        console.error("Error sending:", error);
+        // 處理錯誤
+      });
+    }
+  };
+
+  const handleCheck = (e, base64) => {
+    if (e.target.checked) {
+      const img = dataURItoBlob(base64);
       setSelectSDImg(prevState => [...prevState, img]);
-    };
-    setSelectImg(prevState => [...prevState, base64]);
-  } else {
-    setSelectImg(prevState => prevState.filter(img => img !== base64));
-    setSelectSDImg(prevState => prevState.filter(img => img.src !== base64));
-  }
-} 
+      setSelectImg(prevState => [...prevState, base64]);
+    } else {
+      setSelectImg(prevState => prevState.filter(img => img !== base64));
+      setSelectSDImg(prevState => prevState.filter(img => img !== base64));
+    }
+  };
 
-useEffect(() => {
-  console.log(selectImg);
-}, [selectImg]);
+  // 將 base64 字串轉換為 Blob 物件的函式
+  const dataURItoBlob = (base64) => {
+    const byteString = atob(base64.split(',')[1]);
+    const mimeString = base64.split(',')[0].split(':')[1].split(';')[0];
+    const ab = new ArrayBuffer(byteString.length);
+    const ia = new Uint8Array(ab);
+
+    for (let i = 0; i < byteString.length; i++) {
+      ia[i] = byteString.charCodeAt(i);
+    }
+
+    return new Blob([ab], { type: mimeString });
+  };
+
+  useEffect(() => {
+    console.log(selectImg,projectname);
+    setImages(order[0].img);
+  }, [selectImg]);
 
 
   return (
@@ -209,27 +280,65 @@ useEffect(() => {
 
     </Card>
           <Row>
-          {images.map((base64, index) => (
-      <Col sm={6} md={4} lg={3} key={index} style={{ marginTop: '20px' }}>
-        <Card className="mb-4">
-          {`data:image/png;base64,${base64}` ? (
-            <Card.Img variant="top" src={`data:image/png;base64,${base64}`} />
-          ) : (
-            <p>Error loading image</p>
-          )}
-          <Card.Body>
-            <Form.Check 
-              type="checkbox"
-              id={`check-api-${index}`}
-              label="select"
-              style={{position: 'absolute', top: 0, right: 0}}
-              onChange={e => handleCheck(e, base64)}
-            />
-         <Button variant="primary" style={{width:'100%'}} onClick={() => downloadSingleImage(`data:image/png;base64,${base64}`, index)}>下載</Button>
-      </Card.Body>
-    </Card>
-  </Col>
-))}
+              {images.length > 0 && images.map((base64, index) => (
+                <Col sm={6} md={4} lg={3} key={index} style={{ marginTop: '20px' }}>
+                  <Card className="mb-4">
+                    {`data:image/png;base64,${base64}` ? (
+                      <Card.Img variant="top" src={`data:image/png;base64,${base64}`} />
+                    ) : (
+                      <p>Error loading image</p>
+                    )}
+                    <Card.Body>
+                      <Form.Check 
+                        type="checkbox"
+                        id={`check-api-${index}`}
+                        label="select"
+                        style={{position: 'absolute', top: 0, right: 0}}
+                        onChange={e => handleCheck(e, `data:image/png;base64,${base64}`)}
+                      />
+                      <Button variant="primary" style={{width:'100%'}} onClick={() => downloadSingleImage(`data:image/png;base64,${base64}`, index)}>下載</Button>
+                    </Card.Body>
+                  </Card>
+                </Col>
+              ))}
+              {/* {images.map((base64Data, index) => (
+                <span key={index} className="image-item">
+                  {`data:image/png;base64,${base64Data}` ? ( // Check if dataURL is not empty
+                    <img src={`data:image/png;base64,${base64Data}`} alt={`Image ${index}`} loading="lazy" />
+                  ) : (
+                    <p>Error loading image</p>
+                  )}
+                  <button onClick={() => downloadSingleImage(`data:image/png;base64,${base64Data}`, index)}>下載</button>
+                </span>
+              ))} */}
+
+              {/* {order.map((item, index) => (
+                <Col sm={6} md={4} lg={3} key={index} style={{ marginTop: '20px' }}>
+                  <Card className="mb-4">
+                    {item.img ? (
+                      <Card.Img variant="top" src={`data:image/png;base64,${item.img}`} />
+                    ) : (
+                      <p>Error loading image</p>
+                    )}
+                    <Card.Body>
+                      <Form.Check 
+                        type="checkbox"
+                        id={`check-api-${index}`}
+                        label="select"
+                        style={{position: 'absolute', top: 0, right: 0}}
+                        onChange={e => handleCheck(e, item.img)}
+                      />
+                      <Button 
+                        variant="primary" 
+                        style={{width:'100%'}} 
+                        onClick={() => downloadSingleImage(`data:image/png;base64,${item.img}`, index)}
+                      >
+                        下載
+                      </Button>
+                    </Card.Body>
+                  </Card>
+                </Col>
+              ))} */}
 
              <Card className>
               <Card.Body className="d-flex justify-content-center">

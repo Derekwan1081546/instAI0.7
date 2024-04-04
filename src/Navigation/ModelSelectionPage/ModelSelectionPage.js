@@ -50,13 +50,14 @@ export default function ModelStyle() {
     const fetchData = async () => {
       try {
         const token = localStorage.getItem("jwtToken");
-        const response = await axios.get(`${modelInformation}${id}`, {
+        const response = await axios.get(`${modelInformation}`, {
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
           }
         });
         console.log(response.data);
+        //setModels(response.data);
       } catch (error) {
 
       }
@@ -80,7 +81,7 @@ export default function ModelStyle() {
     const response = async () => {
       try {
         const token = localStorage.getItem("jwtToken");
-        const response = await axios.post(`${modelSelect}${id}`, formData, {
+        const response = await axios.post(`${modelSelect}`, formData, {
           headers: {
             'Content-Type': 'application/json',
             'Authorization':`Bearer ${token}`
