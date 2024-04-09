@@ -10,6 +10,8 @@ const Login = ({ setUserState }) => {
   const [formErrors, setFormErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
   const log_in = process.env.REACT_APP_LOG_IN;
+  const admin_password = process.env.REACT_APP_PASSWORD;
+  const admin_email = process.env.REACT_APP_EMAIL;
   const [user, setUserDetails] = useState({
     email: "",
     password: "",
@@ -23,26 +25,30 @@ const Login = ({ setUserState }) => {
           console.log(response.data);
           if (response.data && response.data.message && typeof response.data === 'object' && response.data.message.includes("Failed")) {
             alert("登錄失敗！");
-          } else {
-            alert("登錄成功！");
-            const token = response.data.token;
-            localStorage.setItem("jwtToken", token);
-            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-            const remove = "Success";
-            const id = response.data.message.replace(remove, "");
-            const payload = JSON.parse(atob(token.split('.')[1]));
-            const userId = localStorage.setItem("userId",payload.user);
-            console.log(userId);
-            console.log(id);
-            navigate("/Project", { state: id, replace: true });
-          }
+          } 
+            else{
+              alert("登錄成功！");
+              const token = response.data.token;
+              localStorage.setItem("jwtToken", token);
+              axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+              const remove = "Success";
+              const id = response.data.message.replace(remove, "");
+              const payload = JSON.parse(atob(token.split('.')[1]));
+              const userId = localStorage.setItem("userId",payload.user);
+              if(user.email === admin_email && user.password === admin_password){
+                navigate("/AdminPage", { state: id, replace: true });
+              }else{
+                navigate("/Project", { state: id, replace: true });
+              }
+            }
+           
         } catch (error) {
           console.error('登錄時出錯', error);
         }
       };
       login();
     }
-  }, [isSubmit, formErrors]);
+  }, [isSubmit]);
 
   const changeHandler = (e) => {
     const { name, value } = e.target;
@@ -91,7 +97,7 @@ const Login = ({ setUserState }) => {
          <div className={`card rounded-5 ${loginstyle.logincard}`} >
             <div className="card-body">
           <h3 className="card-title text-center " style={{fontWeight:'bold'}}>Sign in</h3>
-          <form>
+          <form onSubmit={loginHandler}>
            <label className="form-label fs-6 mt-2 mb-1 fw-bold">Email</label>
            <input
              type="email"
@@ -112,30 +118,24 @@ const Login = ({ setUserState }) => {
              className="form-control fs-6  mt-1 mb-1"
            />
            <p className={`text-center ${basestyle.error}`}>{formErrors.password}</p>
-           <button type="button" className={`btn ${basestyle.button_common}`} onClick={loginHandler}>
+           <button type="submit" className={`btn ${basestyle.button_common}`}>
              SIGN IN
            </button>
            <NavLink className={`nav-link text-center text-primary `} style={{fontWeight:'bold'}} to="/">
              Create a new account
            </NavLink>
          </form>
-         
             </div>
             </div>
-
             <div className="text-center mt-3">
               Have questions? Send email to <b>support@instai.co</b>
             </div>
-
           </div>
         </div>
-
-
       </div>
-
-
     </Fragment>
   );
+
 };
 
 export default Login;

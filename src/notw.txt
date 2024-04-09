@@ -36,3 +36,14 @@ format : use img from <set manually> ${image}
 1. 格式: json , json-min , csv , tsv , coco
 2. 輸出後之json檔案會顯示多種操作 包括id , annotations(操作完成是使用update || skip) 以及原本圖片的長寬 使否有圖片旋轉 標註的x ,y,長度,寬度
 標註方式,使用的標籤的名字,上傳時間,操作完成時間
+
+
+4/9 
+生圖那邊 (imgdisplaypage)
+1. 現在點任何一張的select 會讓圖片顯示全部改成batch1的圖片 (看起來應該是因為useffect)
+2. 因為現在生圖前面的流程還沒有create project 沒有帶專案名稱到url 查詢字串
+   所以會是往一個名稱為空的project去上傳圖片
+3. try again 裡面剩餘次數現在是寫死的 會需要再串後端的count
+4.新增adminPage
+5.連結彥君的後端版本功能
+6.生徒新流程 => 選擇img generation => 先創建新專案 => 將projectname 導入到img generation process 可以讓圖片直接傳入

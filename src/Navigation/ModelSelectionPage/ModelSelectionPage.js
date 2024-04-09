@@ -18,6 +18,8 @@ export default function ModelStyle() {
   const p = process.env;
   const modelSelect = p.REACT_APP_MODEL_SELECT;
   const modelInformation = p.REACT_APP_MODEL_INFORMATION;
+  const projectName = location.state?.projectName??'';
+ 
   const [models, setModels] = useState({
     model1: {
       title: 'Default Style', 
@@ -67,7 +69,7 @@ export default function ModelStyle() {
 
   const handleModelSelect =(modelKey) =>{
     const model =models[modelKey].modelName
-    navigate(`/PromptInputPage`,{ state: { model} });
+    navigate(`/PromptInputPage`,{ state: { model , projectName} });
   }
 
   const handleModelClick = (modelKey) => {

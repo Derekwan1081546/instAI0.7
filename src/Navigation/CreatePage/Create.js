@@ -19,6 +19,9 @@ function Create() {
     projectDescription:""
   });
 
+  const processValue = location.state?.processValue??1; // for img geneation 
+  console.log('process state is',processValue);
+
   const handleFormDataChange = (fieldName, value) => {
     if (fieldName === "projectDescription" && value.length > 30) {
       window.confirm("限制字數在30字內");
@@ -50,13 +53,18 @@ function Create() {
               'Authorization': `Bearer ${token}`
             }
           });
+        const projectName = formData.projectName.trim();
         setResponse(response.data);    
         handleFormDataChange("projectName", "");
         handleFormDataChange("projectDescription", ""); 
         console.log(response);
         setLoading(false);
         // 導航回去
-        navigate(`/Project?&type=1`);
+        if(processValue == 1){
+          navigate(`/Project?&type=1`);
+        }else{
+          navigate(`/ModelSelectionPage`,{state:{projectName}})
+        }   
       } catch (error) {
         console.error("Error sending data to backend:", error);
       }

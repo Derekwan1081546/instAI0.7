@@ -13,7 +13,10 @@ function DecisionPage (){
     const id = localStorage.getItem("userId");
     const searchParams = new URLSearchParams(location.search);
     const type = searchParams.get("type");
+    const [processValue, setProcessValue] = useState(2);
     const p = process.env;
+    
+
     useEffect(()=>{
     const fetchData = async() =>{
      try{
@@ -41,7 +44,7 @@ function DecisionPage (){
     const navigateImg = () =>{
       const y = window.confirm("確定前往圖片生成?");
       if(y){
-        navigate(`/ModelSelectionPage`);
+        navigate(`/CreatePage`,{state:{ processValue}});
       }
       return ;
     }

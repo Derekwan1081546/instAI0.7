@@ -12,14 +12,12 @@ const ImageDisplay = () => {
   const [loading, setLoading] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const chance = location.state?.chance ?? "";
-  const projectname = location.state?.projectname??"";
-  //const projectname = searchParams.get('project');
+  const projectname_confirm = location.state?.projectname??"";
+  const projectName_process2 = location.state?.projectName??"";
   const p = process.env;
   const imgComplete = p.REACT_APP_PROCESS_PROMPT; //resened prompt to sd for img generation 
   const id = localStorage.getItem("userId");
   const base64Data = location.state?.base64Data ?? "";
-  const testPhoto = location.state.realisticPhoto;
   const [images, setImages] = useState([base64Data]); 
   const promptData = location.state?.promptData ?? "";
   const storeImg = p.REACT_APP_STORE_IMG;
@@ -27,14 +25,35 @@ const ImageDisplay = () => {
   const [selectSDImg, setSelectSDImg] = useState([]);
   const u = process.env.REACT_APP_UPLOAD;
   const [times , setTimes]= useState(1); // 用來計算第幾次存取
-  
+  const get_count = p.REACT_APP_GET_IMGCOUNT;
+  const modify_count = p.REACT_APP_MODIFY_IMGCOUNT;
+
+    useEffect(() =>{
+      const fetchData = async() =>{
+        try{
+          const token = localStorage.getItem('jwtToken');
+          const projectName = projectname_confirm || projectName_process2 || "";
+          const response = await axios.get(`${get_count}username=${id}projectName=${projectName}`, {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            }
+           });
+        }catch(error){
+          console.log("error is ",error);
+        }
+        fetchData();
+      }
+    },[resendPromptData,submitBatch])
+
   const [order, setOrder] = useState([
     { img: base64Data },
     { img: {} },
     { img: {} },
     { img: {} },
   ]); 
-   
+
+  
   // 用來存取每一次sd生成的base64 string 
   const downloadSingleImage = (base64, index) => {
     const link = document.createElement('a');
@@ -42,125 +61,76 @@ const ImageDisplay = () => {
     link.download = `image_${index + 1}.jpg`;
     link.click();
   };
-  
-    const resendPromptData = () =>{
-      const confirmed = window.confirm("確定要重新產生圖片嗎");
-      if(confirmed){
-         console.log(promptData)
-         const postSDimg = async() =>{
-           setLoading(true);
-           try{
-             const token = localStorage.getItem("jwtToken");
-             const response = await axios.post(`${imgComplete}`,promptData, {
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-              }
-             });
-             console.log(response.data); // 這邊應該會是base64的圖片字串
-             const newBase64Data = response.data;
 
-             setTimes(prevTimes => prevTimes + 1); //新資料型態 使用1 order matrix solve the problem of multiple sd data
-             setOrder(prevOrder => {
-              let newOrder = [...prevOrder];
-              newOrder[times] = { img: newBase64Data };
-              return newOrder;
-            });
-             setLoading(false);
-             console.log(order.order1);
-  
-             }
-             catch (error){
-             console.error("Error sending data to backend:", error);
-             }
-         }
-         postSDimg();
-      }
-      else{
-             return;
-      }}
-     
-      const handleButtonClick = (index) => {
+
+  // 重新下prompt 或者是使用重樣的prompt再生圖一次 => 需要夾帶2種process的projectname以及呼叫後端api 來達成ImgGernation的完成
+  const resendPromptData = () => {
+    const confirmed = window.confirm("需要重新撰寫prompt嗎?");
+    if (!confirmed) {
+      console.log(promptData)
+      const postSDimg = async () => {
         setLoading(true);
-        if(order[index].img===""){
-
+        try {
+          const token = localStorage.getItem("jwtToken");
+          const response = await axios.post(`${imgComplete}`, promptData, {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            }
+          });
+  
+          console.log(response.data); // 這邊應該會是base64的圖片字串
+          const newBase64Data = response.data;
+          setTimes(prevTimes => prevTimes + 1); //新資料型態 使用1 order matrix solve the problem of multiple sd data
+          setOrder(prevOrder => {
+            let newOrder = [...prevOrder];
+            newOrder[prevOrder.length] = { img: newBase64Data };
+            return newOrder;
+          });
+          setLoading(false);
+          console.log(order.order1);
+          const projectName = projectname_confirm || projectName_process2 || "";
+          const countResponse = await axios.post(`${modify_count}?userName=${id}&projectName=${projectName}`, {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            }
+          });
+          console.log(countResponse.data);
         }
-        setImages(order[index].img);
-        //setImages(base64Data);
-        setLoading(false);
-      };
-
-      const handleChangeState =() =>{
-        const confirm = window.confirm("sure to give up?");
-        if(confirm){
-          setLoading(!loading);
+        catch (error) {
+          console.error("Error sending data to backend:", error);
+          setLoading(false);
         }
-        else{
-          return;
-        }
-        // 確認是否submit 決定是否要變更狀態
       }
+      postSDimg();
+    }
+    else {
+      navigate(`/PromptInputPage`, { state: { order, times, projectName_process2, projectname_confirm } });
+    }
+  }
+  
 
-//   const submitBatch =() =>{
-//     const confirm = window.confirm("確定要傳送照片了嗎");
-//     if(!confirm){
-//       return;
-//     }
-//     else{
-//       console.log(selectImg);
-//       if(chance==4){
-//         const transferImg = async() =>{
-//           try{
-//             const token = localStorage.getItem('jwtToken');
 
-//             const response = await axios.post(`${u}?username=${id}&projectname=${projectname}`,selectSDImg, {
-//               headers: {
-//                 'Content-Type': 'application/json',
-//                 'Authorization': `Bearer ${token}`
-//               }
-//           });
-//           console.log(response.data);
-//         }catch(error){
-//           console.log("Error sending", error);
-//         }
-//         transferImg();
-//       } 
-//       }else{
-//         const transferImg = async() =>{
-//           try{
-//             const token = localStorage.getItem('jwtToken');
-//             const response = await axios.post(`${storeImg}`,selectImg, {
-//               headers: {
-//                 'Content-Type': 'application/json',
-//                 'Authorization': `Bearer ${token}`
-//               }
-//           });
-//           console.log(response.data);
-//           }catch(error){
-//           console.log("Error sending", error);
-//           }
-//           transferImg();
-//         }
-      
-//       // navigate(`/`,{state:{selectImg}});
-//       }
-//     }
-//   }
+  const handleButtonClick = (index) => {
+    setLoading(true);
+    if(order[index].img===""){
+        }
+    setImages(order[index].img);
+    //setImages(base64Data);
+    setLoading(false);
+    };
 
-// const handleCheck = (e, base64) => {
-//   if (e.target.checked) {
-//     const img = new Image();
-//     img.src = base64;
-//     img.onload = () => {
-//       setSelectSDImg(prevState => [...prevState, img]);
-//     };
-//     setSelectImg(prevState => [...prevState, base64]);
-//   } else {
-//     setSelectImg(prevState => prevState.filter(img => img !== base64));
-//     setSelectSDImg(prevState => prevState.filter(img => img.src !== base64));
-//   }
-// } 
-
+  const handleChangeState =() =>{
+    const confirm = window.confirm("sure to give up?");
+    if(confirm){
+    setLoading(!loading);
+    }
+    else{
+    return;
+    }
+    // 確認是否submit 決定是否要變更狀態
+    }
 
   const submitBatch = () => {
     const confirm = window.confirm("確定要傳送照片了嗎");
@@ -168,14 +138,6 @@ const ImageDisplay = () => {
       return;
     } else {
       const formData = new FormData();
-
-      // 將 selectImg 中的 base64 字串轉換為 Blob 物件並添加到 FormData 中
-      // selectImg.forEach((base64, index) => {
-      //   const blob = dataURItoBlob(base64);
-      //   formData.append('file', blob, `image_${index + 1}.jpg`);
-      // });
-
-      // 將 selectSDImg 中的圖片 Blob 物件添加到 FormData 中
       selectSDImg.forEach((img, index) => {
         const timestamp = new Date().getTime(); // 取得當前時間的時間戳記
         formData.append('file', img, `sd_image_${index + 1}_${timestamp}.jpg`);
@@ -183,7 +145,8 @@ const ImageDisplay = () => {
       console.log(formData);
       // 透過 axios 將 FormData 傳送到後端
       const token = localStorage.getItem('jwtToken');
-      axios.post(`${u}?username=${id}&projectname=${projectname}`, formData, {
+      const projectName = projectname_confirm || projectName_process2 || "";
+      axios.post(`${u}?username=${id}&projectname=${projectName}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           'Authorization': `Bearer ${token}`
@@ -216,19 +179,16 @@ const ImageDisplay = () => {
     const mimeString = base64.split(',')[0].split(':')[1].split(';')[0];
     const ab = new ArrayBuffer(byteString.length);
     const ia = new Uint8Array(ab);
-
     for (let i = 0; i < byteString.length; i++) {
       ia[i] = byteString.charCodeAt(i);
     }
-
     return new Blob([ab], { type: mimeString });
   };
 
   useEffect(() => {
-    console.log(selectImg,projectname);
+    console.log(selectImg,projectname_confirm);
     setImages(order[0].img);
   }, [selectImg]);
-
 
   return (
     <div style={{ backgroundColor: 'white' }}>
@@ -301,48 +261,10 @@ const ImageDisplay = () => {
                   </Card>
                 </Col>
               ))}
-              {/* {images.map((base64Data, index) => (
-                <span key={index} className="image-item">
-                  {`data:image/png;base64,${base64Data}` ? ( // Check if dataURL is not empty
-                    <img src={`data:image/png;base64,${base64Data}`} alt={`Image ${index}`} loading="lazy" />
-                  ) : (
-                    <p>Error loading image</p>
-                  )}
-                  <button onClick={() => downloadSingleImage(`data:image/png;base64,${base64Data}`, index)}>下載</button>
-                </span>
-              ))} */}
-
-              {/* {order.map((item, index) => (
-                <Col sm={6} md={4} lg={3} key={index} style={{ marginTop: '20px' }}>
-                  <Card className="mb-4">
-                    {item.img ? (
-                      <Card.Img variant="top" src={`data:image/png;base64,${item.img}`} />
-                    ) : (
-                      <p>Error loading image</p>
-                    )}
-                    <Card.Body>
-                      <Form.Check 
-                        type="checkbox"
-                        id={`check-api-${index}`}
-                        label="select"
-                        style={{position: 'absolute', top: 0, right: 0}}
-                        onChange={e => handleCheck(e, item.img)}
-                      />
-                      <Button 
-                        variant="primary" 
-                        style={{width:'100%'}} 
-                        onClick={() => downloadSingleImage(`data:image/png;base64,${item.img}`, index)}
-                      >
-                        下載
-                      </Button>
-                    </Card.Body>
-                  </Card>
-                </Col>
-              ))} */}
-
+              
              <Card className>
               <Card.Body className="d-flex justify-content-center">
-              <Button variant="secondary" style={{ width: '30%',height:'40px', marginLeft: "10px" }}onClick={resendPromptData}>try again (3 attempts left)</Button>
+              <Button variant="secondary" style={{ width: '30%',height:'40px', marginLeft: "10px" }}onClick={resendPromptData}>try again ({p} attempts left)</Button>
               <Button onClick={submitBatch} style={{ width: '30%', height:'40px',backgroundColor: 'blueviolet', borderColor: 'blueviolet', marginLeft: "10px" }}>use  img for model training</Button>
               </Card.Body>
              </Card> 
