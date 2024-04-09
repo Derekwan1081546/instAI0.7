@@ -18,8 +18,11 @@ export default function ImgPrompt(){
     const p = process.env;
     const prompt = p.REACT_APP_PROCESS_PROMPT;   // 提交prompt的api 
     const modelTitle = location.state?.model ?? "";
-    const projectname_confirm = location.state?.projectname_confirm??"";
-    const projectName_process2 = location.state?.projectName_process2?? "" ;
+
+    const projectname_confirm1 = location.state?.projectname_confirm1??'unknown_process';
+    const projectName_process2 = location.state?.projectName_process2??"unknown_process";
+    console.log("state is 1",projectname_confirm1 , "is 2" , projectName_process2);
+    
     const [formData, setFormData] = useState({
       enable_hr: false,
       denoising_strength: 0,
@@ -31,7 +34,7 @@ export default function ImgPrompt(){
       prompt: "A shibar",
       styles: [],
       seed: -1,
-      batch_size: 3,
+      batch_size: 10,
       n_iter: 1,
       steps: 20,
       cfg_scale: 7,
@@ -99,7 +102,7 @@ export default function ImgPrompt(){
         console.log(response.data); // 這邊應該會是base64的圖片字串
         const base64Data = response.data;
         const promptData = formData;
-        navigate(`/ImgDisplayPage`,{ state: { base64Data , promptData , projectName_process2 , projectname_confirm} });
+        navigate(`/ImgDisplayPage`,{ state: { base64Data , promptData , projectName_process2 , projectname_confirm1} });
         }catch (error){
         console.error("Error sending data to backend:", error);
         }

@@ -11,6 +11,7 @@ import realistic_style from "../../image/realistic_model.png";
 
 export default function ModelStyle() {
   const location = useLocation();
+  
   const navigate = useNavigate();
   const id = localStorage.getItem("userId");
   const searchParams = new URLSearchParams(location.search);
@@ -18,7 +19,9 @@ export default function ModelStyle() {
   const p = process.env;
   const modelSelect = p.REACT_APP_MODEL_SELECT;
   const modelInformation = p.REACT_APP_MODEL_INFORMATION;
-  const projectName = location.state?.projectName??'';
+  const projectname_confirm1 = location.state?.projectname_confirm1??'unknown_process1';
+  const projectName_process2 = location.state?.projectName_process2??"unknown_process2";
+  console.log("state is 1",projectname_confirm1 , "is 2" , projectName_process2);
  
   const [models, setModels] = useState({
     model1: {
@@ -69,7 +72,7 @@ export default function ModelStyle() {
 
   const handleModelSelect =(modelKey) =>{
     const model =models[modelKey].modelName
-    navigate(`/PromptInputPage`,{ state: { model , projectName} });
+    navigate(`/PromptInputPage`,{ state: { model ,projectname_confirm1 ,projectName_process2 } });
   }
 
   const handleModelClick = (modelKey) => {

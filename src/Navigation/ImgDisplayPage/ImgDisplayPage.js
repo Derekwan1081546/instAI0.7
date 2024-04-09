@@ -2,61 +2,46 @@ import React, { useState, useEffect } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { Navbar, Nav, Card, Container, Row, Col, Button ,Form,} from "react-bootstrap";
 import InstAI_icon from "../../image/instai_icon.png";
-
 import axios from "axios";
 import { FaRegClock } from 'react-icons/fa'; 
-
 
 const ImageDisplay = () => {
   const [imagePreviews, setImagePreviews] = useState([]);
   const [loading, setLoading] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const projectname_confirm = location.state?.projectname??"";
+  const projectname_confirm1 = location.state?.projectname??"";
   const projectName_process2 = location.state?.projectName??"";
+  const[projectName,setProjectName] =useState('unknown');
+  useEffect(()=>{
+    if(projectName_process2 ==""){
+      setProjectName(projectname_confirm1);
+    }else if(projectname_confirm1==""){
+      setProjectName(projectName_process2);
+    }else{
+      console.log("process error");
+    }
+  },[projectName,projectName_process2,projectname_confirm1])
   const p = process.env;
-  const imgComplete = p.REACT_APP_PROCESS_PROMPT; //resened prompt to sd for img generation 
   const id = localStorage.getItem("userId");
   const base64Data = location.state?.base64Data ?? "";
   const [images, setImages] = useState([base64Data]); 
-  const promptData = location.state?.promptData ?? "";
   const storeImg = p.REACT_APP_STORE_IMG;
   const [selectImg , setSelectImg] = useState([]);
   const [selectSDImg, setSelectSDImg] = useState([]);
-  const u = process.env.REACT_APP_UPLOAD;
   const [times , setTimes]= useState(1); // 用來計算第幾次存取
-  const [chance,setChance] = useState(4);
+  const [chance,setChance] = useState(3);
+  const imgComplete = p.REACT_APP_PROCESS_PROMPT; //resened prompt to sd for img generation 
+  const u = process.env.REACT_APP_UPLOAD;
   const get_count = p.REACT_APP_GET_IMGCOUNT;
   const modify_count = p.REACT_APP_MODIFY_IMGCOUNT;
-
-    useEffect(() =>{
-      const fetchData = async() =>{
-        try{
-          const token = localStorage.getItem('jwtToken');
-          const projectName = projectname_confirm || projectName_process2 || "";
-          const response = await axios.get(`${get_count}username=${id}projectName=${projectName}`, {
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-            }
-           });
-           setChance(response.data);
-           console.log(chance);
-        }catch(error){
-          console.log("error is ",error);
-        }
-        fetchData();
-      }
-    },[resendPromptData,submitBatch])
-
+  const [promptData,setPromptData] = useState(location.state?.promptData ?? "");
   const [order, setOrder] = useState([
     { img: base64Data },
     { img: {} },
     { img: {} },
     { img: {} },
   ]); 
-
-  
   // 用來存取每一次sd生成的base64 string 
   const downloadSingleImage = (base64, index) => {
     const link = document.createElement('a');
@@ -64,8 +49,6 @@ const ImageDisplay = () => {
     link.download = `image_${index + 1}.jpg`;
     link.click();
   };
-
-
   // 重新下prompt 或者是使用重樣的prompt再生圖一次 => 需要夾帶2種process的projectname以及呼叫後端api 來達成ImgGernation的完成
   const resendPromptData = () => {
     const confirmed = window.confirm("需要重新撰寫prompt嗎?");
@@ -79,41 +62,78 @@ const ImageDisplay = () => {
             headers: {
               'Content-Type': 'application/json',
               'Authorization': `Bearer ${token}`
-            }
-          });
-  
+            }});
+
           console.log(response.data); // 這邊應該會是base64的圖片字串
           const newBase64Data = response.data;
-          setTimes(prevTimes => prevTimes + 1); //新資料型態 使用1 order matrix solve the problem of multiple sd data
+          setChance(chance-1);
+          setTimes(prevTimes => prevTimes + 1); //新資料型態 使用1 order matrix solve the problem of multiple sd data 
+          // 若是按下try again 會增加times
+
           setOrder(prevOrder => {
             let newOrder = [...prevOrder];
-            newOrder[prevOrder.length] = { img: newBase64Data };
-            return newOrder;
-          });
+            newOrder[times] = { img: newBase64Data };
+            return newOrder;});
           setLoading(false);
           console.log(order.order1);
-          const projectName = projectname_confirm || projectName_process2 || "";
+
           const countResponse = await axios.post(`${modify_count}?userName=${id}&projectName=${projectName}`, {
             headers: {
               'Content-Type': 'application/json',
               'Authorization': `Bearer ${token}`
-            }
-          });
-          console.log(countResponse.data);
-        }
-        catch (error) {
-          console.error("Error sending data to backend:", error);
-          setLoading(false);
-        }
-      }
-      postSDimg();
-    }
-    else {
-      navigate(`/PromptInputPage`, { state: { order, times, projectName_process2, projectname_confirm } });
-    }
-  }
-  
+            }});
 
+          console.log(countResponse.data);}
+          catch (error) {
+          console.error("Error sending data to backend:", error);
+          setLoading(false);}}
+
+      postSDimg();}
+    else {
+      const newPrompt = prompt("請輸入新的prompt:");
+      if (newPrompt) {
+        // 更新formData中的prompt
+        setPromptData(prevPromptData => ({
+          ...prevPromptData,
+          prompt: newPrompt
+        }));
+
+        console.log(promptData)
+        const postSDimg = async () => {
+          setLoading(true);
+          try {
+            const token = localStorage.getItem("jwtToken");
+            const response = await axios.post(`${imgComplete}`, promptData, {
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`}});
+
+            console.log(response.data); // 這邊應該會是base64的圖片字串
+            const newBase64Data = response.data;
+            setChance(chance-1);
+            setTimes(prevTimes => prevTimes + 1); //新資料型態 使用1 order matrix solve the problem of multiple sd data
+
+            setOrder(prevOrder => {
+              let newOrder = [...prevOrder];
+              newOrder[times] = { img: newBase64Data };
+              return newOrder;
+            });
+
+            setLoading(false);
+            console.log(order.order1);
+            const countResponse = await axios.post(`${modify_count}?userName=${id}&projectName=${projectName}`, {
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+              }});
+            console.log(countResponse.data);
+          }
+          catch (error) {
+            console.error("Error sending data to backend:", error);
+            setLoading(false);}}
+        postSDimg();}
+      }
+    }
 
   const handleButtonClick = (index) => {
     setLoading(true);
@@ -121,51 +141,38 @@ const ImageDisplay = () => {
         }
     setImages(order[index].img);
     //setImages(base64Data);
-    setLoading(false);
-    };
+    setLoading(false);};
 
   const handleChangeState =() =>{
     const confirm = window.confirm("sure to give up?");
     if(confirm){
     setLoading(!loading);
     }
-    else{
-    return;
-    }
-    // 確認是否submit 決定是否要變更狀態
-    }
+    else{ return;}}
 
   const submitBatch = () => {
     const confirm = window.confirm("確定要傳送照片了嗎");
     if (!confirm) {
-      return;
-    } else {
+      return;} else {
       const formData = new FormData();
       selectSDImg.forEach((img, index) => {
         const timestamp = new Date().getTime(); // 取得當前時間的時間戳記
-        formData.append('file', img, `sd_image_${index + 1}_${timestamp}.jpg`);
-      });
+        formData.append('file', img, `sd_image_${index + 1}_${timestamp}.jpg`);});
       console.log(formData);
       // 透過 axios 將 FormData 傳送到後端
       const token = localStorage.getItem('jwtToken');
-      const projectName = projectname_confirm || projectName_process2 || "";
       axios.post(`${u}?username=${id}&projectname=${projectName}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           'Authorization': `Bearer ${token}`
-        }
-      }).then(response => {
+        }}).then(response => {
         console.log(response.data);
         alert(response.data.message);
         // 處理後端回傳的資料
       }).catch(error => {
-        console.error("Error sending:", error);
-        // 處理錯誤
-      });
-    }
-  };
-
-  const handleCheck = (e, base64) => {
+        console.error("Error sending:", error);});}};
+        
+ const handleCheck = (e, base64) => {
     if (e.target.checked) {
       const img = dataURItoBlob(base64);
       setSelectSDImg(prevState => [...prevState, img]);
@@ -189,9 +196,29 @@ const ImageDisplay = () => {
   };
 
   useEffect(() => {
-    console.log(selectImg,projectname_confirm);
+    console.log(selectImg,"projectName is",projectName);
     setImages(order[0].img);
-  }, [selectImg]);
+  }, [selectImg,projectName]);
+
+  useEffect(() =>{
+    const fetchData = async() =>{
+      try{
+        const token = localStorage.getItem('jwtToken');
+        
+        const response = await axios.get(`${get_count}username=${id}projectName=${projectName}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+         });
+         setChance(response.data);
+         console.log(chance);
+      }catch(error){
+        console.log("error is ",error);
+      }
+      fetchData();
+    }
+  },[resendPromptData,submitBatch])
 
   return (
     <div style={{ backgroundColor: 'white' }}>

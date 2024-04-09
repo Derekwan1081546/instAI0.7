@@ -14,6 +14,7 @@ function DecisionPage (){
     const searchParams = new URLSearchParams(location.search);
     const type = searchParams.get("type");
     const [processValue, setProcessValue] = useState(2);
+    console.log(processValue);
     const p = process.env;
     
 

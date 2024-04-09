@@ -177,8 +177,9 @@ function ConfirmImg() {
      if(!confirmed){
       return
      }else{
-      const projectname_confirm = projectname
-      navigate(`/PromptInputPage?project=${projectname}`,{state:{projectname_confirm}});
+      const projectname_confirm1 = projectname
+      console.log(projectname_confirm1);
+      navigate(`/ModelSelectionPage?project=${projectname}`,{state:{projectname_confirm1}});
      }
   }
 
