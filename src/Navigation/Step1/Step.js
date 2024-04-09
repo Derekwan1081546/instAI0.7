@@ -11,10 +11,11 @@ function Step() {
   const userid = localStorage.getItem("userId");
   const projectname = searchParams.get('project');
   const g_s = process.env.REACT_APP_GET_STEP;
+  const id = localStorage.getItem('userId');
   
   const modelLink = `/Model?projectname=${projectname}`;
   const [upload, setUpload] = useState(
-    JSON.parse(localStorage.getItem(`firstPage_${userid}_${projectname}`) || 'false')
+    JSON.parse(localStorage.getItem(`testUpload${id}${projectname}`) || 'false')
   );
   const [requirement, setRequirement] = useState(
     JSON.parse(localStorage.getItem(`secondPage_${userid}_${projectname}`) || 'false')
@@ -60,31 +61,25 @@ function Step() {
   const Green1 = () => {
     console.log("upload 被點擊");
     var str = "上傳資料";
+    
     if (upload) {
       str = "預覽資料";
     }
     const userConfirm = window.confirm(str);
     if (userConfirm) {
       if (!upload) {
-        const CheckFilter = window.confirm("是否需要資料篩選?");
+        
         //setUpload(uplooaded);
         setUpload((prevData) => {
           const newUpload = !prevData;
           localStorage.setItem(`firstPage_${userid}_${projectname}`, newUpload.toString());
           return newUpload;
         });
-        if (CheckFilter) {
-          // If user confirms the need for data filtering
-          
-          console.log("upload", upload);
-          navigate(`/DataFilter?projectname=${projectname}`);
-        } else {
           // If user does not need data filtering
           //setUpload(upload);
           console.log("upload:", upload);
           navigate(`/UploadImg?projectname=${projectname}`);
-        }
-      } else {
+        } else {
         console.log("upload 已經確定");
         alert('資料已經上傳完畢');
         // navigate(`/ViewData?projectname=${projectname}`);

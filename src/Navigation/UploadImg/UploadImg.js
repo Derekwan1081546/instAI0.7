@@ -148,6 +148,7 @@ function UploadImg() {
             }
           });
         console.log(response.data);
+        
         alert(response.data.message);
 
         console.log(token);
@@ -164,6 +165,7 @@ function UploadImg() {
         setLoading(false);
         console.log('step updated successfully:', response2.data);
         navigate(`/Step?project=${projectname}`);
+        localStorage.setItem(`testUpload${id}${projectname}` , true);
         //navigate(`/LabelPage?id=${id}&projectname=${projectname}`);
       } catch (error) {
         console.error('Error sending data to backend:', error);

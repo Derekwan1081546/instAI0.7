@@ -40,7 +40,6 @@ function Requirement() {
       LastUpdated: new Date().toLocaleString(),
     }));
   }, [id]);
-
   const handleFormDataChange = (fieldName, value) => {
     setReqData((prevData) => ({
       ...prevData,
@@ -49,40 +48,25 @@ function Requirement() {
     if (fieldName !== "") {
       setlinktostep(true);
     }
-    console.log(`Field ${fieldName} updated to:`, value);
-  };
-
+    console.log(`Field ${fieldName} updated to:`, value);};
   const handleGenerateClick = async () => {
     const answer1Length = reqData.Requirement1.answer.trim().length;
     const answer2Length = reqData.Requirement2.answer.trim().length;
-    // 增加字數限制 必須超過100字
-    //if (answer1Length < 100 || answer2Length < 100) {
-    //  alert("Answers cannot less than 100 characters ! please give detailed description.");
-    //} 
    if (answer1Length === 0 || answer2Length === 0) {
-      alert("Please answer both questions.");
-    } else {
+      alert("Please answer both questions.");} else {
       const confirmed = window.confirm(
         `Are you sure you want to submit?\n\nData to be submitted:\n${JSON.stringify(
           reqData,
           null,
-          2
-        )}`
-      );
+          2)}`);
       if (confirmed) {
-        setIsDataChecked(true);
-      }
-    }
-  };
-
+        setIsDataChecked(true);}}};
   const handleSendData = async () => {
     const requestData = {
       method: "POST",
       request: reqData,
       response: {
-        message: "傳輸成功",
-      },
-    };
+      message: "傳輸成功",},};
     try {
       const token = localStorage.getItem('jwtToken');
       const response = await axios.post(
@@ -91,8 +75,7 @@ function Requirement() {
           headers: {
             'Content-Type':'application/json',
             'Authorization': `Bearer ${token}`
-          }
-        });
+          }});
       
       console.log("server response:", response.data);
       
@@ -103,9 +86,7 @@ function Requirement() {
             headers: {
               'Content-Type':'application/json',
               'Authorization': `Bearer ${token}`
-            }
-          });
-      
+            }});
       console.log('step updated successfully:', response2.data);
       alert("Requirement submitted successfully!");
       // Reset form data
@@ -120,8 +101,7 @@ function Requirement() {
         },
         ID: "",
         author: "",
-        LastUpdated: "",
-      });
+        LastUpdated: "",});
       setlinktostep(false);
       setIsDataChecked(false);
       localStorage.setItem(`secondPage_${id}_${projectname}`, 'true');
@@ -134,8 +114,7 @@ function Requirement() {
       } else {
         alert("Submission failed. Check network connection or try again later.");
       }
-    }
-  };
+    }};
 
   return (
     <div className="container-fluid mt-3">

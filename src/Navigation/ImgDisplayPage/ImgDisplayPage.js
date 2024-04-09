@@ -25,6 +25,7 @@ const ImageDisplay = () => {
   const [selectSDImg, setSelectSDImg] = useState([]);
   const u = process.env.REACT_APP_UPLOAD;
   const [times , setTimes]= useState(1); // 用來計算第幾次存取
+  const [chance,setChance] = useState(4);
   const get_count = p.REACT_APP_GET_IMGCOUNT;
   const modify_count = p.REACT_APP_MODIFY_IMGCOUNT;
 
@@ -39,6 +40,8 @@ const ImageDisplay = () => {
               'Authorization': `Bearer ${token}`
             }
            });
+           setChance(response.data);
+           console.log(chance);
         }catch(error){
           console.log("error is ",error);
         }
@@ -264,7 +267,9 @@ const ImageDisplay = () => {
               
              <Card className>
               <Card.Body className="d-flex justify-content-center">
-              <Button variant="secondary" style={{ width: '30%',height:'40px', marginLeft: "10px" }}onClick={resendPromptData}>try again ({p} attempts left)</Button>
+              <Button variant="secondary" style={{ width: '30%', height:'40px', marginLeft: "10px" }}onClick={resendPromptData}disabled={chance === 0}>
+               try again ({chance} attempts left)
+              </Button>
               <Button onClick={submitBatch} style={{ width: '30%', height:'40px',backgroundColor: 'blueviolet', borderColor: 'blueviolet', marginLeft: "10px" }}>use  img for model training</Button>
               </Card.Body>
              </Card> 
