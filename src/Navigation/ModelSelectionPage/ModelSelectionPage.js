@@ -19,9 +19,10 @@ export default function ModelStyle() {
   const p = process.env;
   const modelSelect = p.REACT_APP_MODEL_SELECT;
   const modelInformation = p.REACT_APP_MODEL_INFORMATION;
-  const projectname_confirm1 = location.state?.projectname_confirm1??'unknown_process1';
-  const projectName_process2 = location.state?.projectName_process2??"unknown_process2";
-  console.log("state is 1",projectname_confirm1 , "is 2" , projectName_process2);
+
+  const projectname_confirm1 = location.state?.projectname_confirm1??'';
+  const projectName_process2 = location.state?.projectName_process2??'';
+  console.log("state is ",projectname_confirm1 ,"", projectName_process2);
  
   const [models, setModels] = useState({
     model1: {
@@ -32,7 +33,7 @@ export default function ModelStyle() {
     },
     model2: {
       title: 'Anime Style',
-      modelName : 'VTBCkpt_v10.safetensors [85d06f5f3d]',
+      modelName : 'animagineXLV31_v31.safetensors [e3c47aedb0]',
       content: 'This is a model for generate Anime style imgs',
       img: anime_style, link: '/PromptInputPage'
     },
@@ -72,6 +73,7 @@ export default function ModelStyle() {
 
   const handleModelSelect =(modelKey) =>{
     const model =models[modelKey].modelName
+    //跳轉並抓取projectname1 || 2
     navigate(`/PromptInputPage`,{ state: { model ,projectname_confirm1 ,projectName_process2 } });
   }
 
@@ -104,7 +106,7 @@ export default function ModelStyle() {
       <Navbar style={{ backgroundColor: 'WHITE', boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)' }}>
         <Nav className="mr-auto" style={{ marginLeft: "10px" }}>
           <div className="col-auto mt-4">
-            <NavLink to={`/CreateProjectPage`} className="CreateProjectPageLink">
+            <NavLink to={`/Project?&type=1`} className="CreateProjectPageLink">
               <button className="btn createprojectPageButton" style={{ marginLeft: "10px", fontFamily: 'Lato' }}>
                 <h3 style={{ marginLeft: "10px" }}>←Back</h3>
               </button>

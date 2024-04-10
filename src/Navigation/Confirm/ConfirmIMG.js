@@ -171,7 +171,7 @@ function ConfirmImg() {
       
     }
   };
-
+  // 跳轉到sd 生圖片功能
   const handleSDlogic = () =>{
      const confirmed = window.confirm("生圖次數總共4次");
      if(!confirmed){

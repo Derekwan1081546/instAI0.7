@@ -16,10 +16,12 @@ function Project() {
   const [projectList, setProjectList] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [showLogoutPrompt, setShowLogoutPrompt] = useState(false);
+  
   const g_r = process.env.REACT_APP_GET_PROJECT;
   const d_p = process.env.REACT_APP_DELETE_PROJECT;
   const [isLoading, setIsLoading] = useState(false);
   let isMounted = true; // 使用一個標誌來標記組件是否已經 mount 
+
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true); // 在發送請求之前，設置isLoading為true

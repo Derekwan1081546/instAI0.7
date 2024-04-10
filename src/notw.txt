@@ -47,3 +47,18 @@ format : use img from <set manually> ${image}
 4.新增adminPage
 5.連結彥君的後端版本功能
 6.生徒新流程 => 選擇img generation => 先創建新專案 => 將projectname 導入到img generation process 可以讓圖片直接傳入
+
+
+4/10 note
+確認navigate路徑正確性 
+0.5版本
+1. 創建專案 Create.js 先獲取專案名字 => 回到project.js選取專案 跳入/Step?project=${projectName} => 上傳圖片/UploadImg?projectname=${projectname} 做完之後跳回/Step?project=${projectname}
+=> 上傳需求 跳轉至/Requirment?projectname=${projectname} => 傳送完畢跳回/Step?project=${projectname} => 跳入confirmImg.js的/ConfirmImg?projectname=${projectname} =>後續步驟不贅述
+
+confirm path 
+1. ConfirmImg.js獲取projectname 並將const projectname_confirm1 = projectname => 2. ModelSelectionPage.js 抓取projectname_confirm1 => 3. PromptInputPage.js維持projecyname_confirm1 => imgdisplaypage.js 維持projectname_confirm1
+ => 回傳至confirmImg.js?projectname=${projectname}
+
+ img normal path
+ 1. CreateProjectPage.js選擇imgGeneration => 2.Create.js創建專案名稱 projectname => 3. ModelSelectionPage轉換成projectname_process2 => 4.PromptInputPage維持projectname_process2
+ => 5.ImgDisplayPage.js維持projectname_process2 => 傳入對應的後端api => navigate到/Step?project=${projectname_process2}  注意: /Step?project=${projectname}

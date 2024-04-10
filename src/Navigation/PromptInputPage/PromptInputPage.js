@@ -19,9 +19,11 @@ export default function ImgPrompt(){
     const prompt = p.REACT_APP_PROCESS_PROMPT;   // 提交prompt的api 
     const modelTitle = location.state?.model ?? "";
 
-    const projectname_confirm1 = location.state?.projectname_confirm1??'unknown_process';
-    const projectName_process2 = location.state?.projectName_process2??"unknown_process";
-    console.log("state is 1",projectname_confirm1 , "is 2" , projectName_process2);
+    const projectname_confirm1 = location.state?.projectname_confirm1??'';
+    const projectName_process2 = location.state?.projectName_process2??'';
+    localStorage.setItem("projectname_confirm1",projectname_confirm1);
+    localStorage.setItem("projectname_process2",projectName_process2);
+    console.log("state is ",projectname_confirm1 ,"", projectName_process2);
     
     const [formData, setFormData] = useState({
       enable_hr: false,
@@ -34,7 +36,7 @@ export default function ImgPrompt(){
       prompt: "A shibar",
       styles: [],
       seed: -1,
-      batch_size: 10,
+      batch_size: 3,
       n_iter: 1,
       steps: 20,
       cfg_scale: 7,
@@ -138,7 +140,7 @@ export default function ImgPrompt(){
         <Nav className="mr-auto">
         <Nav className="mr-auto" style={{marginLeft:"10px"}}>
           <div className="col-auto mt-4">
-              <NavLink to={`/ModelSelectionPage`} className="ModelSelectPageLink">
+              <NavLink to={`/Project?&type=1`} className="ModelSelectPageLink">
                 <button className="btn ModelSelectPageButton" style={{ marginLeft: "10px", fontFamily: 'Lato' }}>
                   <h3 style={{ marginLeft: "10px" }}>←Back</h3>
                 </button>

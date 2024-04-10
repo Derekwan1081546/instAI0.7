@@ -57,7 +57,6 @@ function Requirement() {
       const confirmed = window.confirm(
         `Are you sure you want to submit?\n\nData to be submitted:\n${JSON.stringify(
           reqData,
-          null,
           2)}`);
       if (confirmed) {
         setIsDataChecked(true);}}};
@@ -81,7 +80,6 @@ function Requirement() {
       
       const response2 = await axios.post(
           `${c_s}/?step=2&username=${id}&projectname=${projectname}`, 
-          null,
           {
             headers: {
               'Content-Type':'application/json',

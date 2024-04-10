@@ -10,9 +10,12 @@ const ImageDisplay = () => {
   const [loading, setLoading] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const projectname_confirm1 = location.state?.projectname??"";
-  const projectName_process2 = location.state?.projectName??"";
+
+  const projectname_confirm1 = localStorage.getItem('projectname_confirm1');
+  const projectName_process2 = localStorage.getItem('projectname_process2');
   const[projectName,setProjectName] =useState('unknown');
+  console.log("projectname is",projectname_confirm1 ,"",projectName_process2);
+
   useEffect(()=>{
     if(projectName_process2 ==""){
       setProjectName(projectname_confirm1);
@@ -21,7 +24,10 @@ const ImageDisplay = () => {
     }else{
       console.log("process error");
     }
+    console.log(projectName);
+
   },[projectName,projectName_process2,projectname_confirm1])
+
   const p = process.env;
   const id = localStorage.getItem("userId");
   const base64Data = location.state?.base64Data ?? "";
@@ -36,6 +42,7 @@ const ImageDisplay = () => {
   const get_count = p.REACT_APP_GET_IMGCOUNT;
   const modify_count = p.REACT_APP_MODIFY_IMGCOUNT;
   const [promptData,setPromptData] = useState(location.state?.promptData ?? "");
+ 
   const [order, setOrder] = useState([
     { img: base64Data },
     { img: {} },
@@ -53,6 +60,7 @@ const ImageDisplay = () => {
   const resendPromptData = () => {
     const confirmed = window.confirm("需要重新撰寫prompt嗎?");
     if (!confirmed) {
+      //不用重新下prompt
       console.log(promptData)
       const postSDimg = async () => {
         setLoading(true);
@@ -89,6 +97,8 @@ const ImageDisplay = () => {
           setLoading(false);}}
 
       postSDimg();}
+
+      //重新下Prompt
     else {
       const newPrompt = prompt("請輸入新的prompt:");
       if (newPrompt) {
@@ -168,9 +178,23 @@ const ImageDisplay = () => {
         }}).then(response => {
         console.log(response.data);
         alert(response.data.message);
+      
+        if(projectname_confirm1==""){
+          let projectname = projectName_process2;
+          navigate(`/Step?project=${projectname}`);
+          console.log("process 2");
+        }else if(projectName_process2==""){
+          let projectname = projectname_confirm1;
+          navigate(`/ConfirmImg?projectname=${projectname}`);
+          console.log("process 1");
+        }
+        // localStorage.removeItem("projectname_confirm1");
+        // localStorage.removeItem("projectname_process2");
         // 處理後端回傳的資料
       }).catch(error => {
-        console.error("Error sending:", error);});}};
+        console.error("Error sending:", error);});
+      }
+    };
         
  const handleCheck = (e, base64) => {
     if (e.target.checked) {
@@ -225,7 +249,7 @@ const ImageDisplay = () => {
       <Navbar style={{ backgroundColor: 'WHITE', boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)' }}>
         <Nav className="mr-auto" style={{ marginLeft: "10px" }}>
         <div className="col-auto mt-4"> 
-          <NavLink to={`/PromptInputPage`} className="PromptInputPageLink">
+          <NavLink to={`/Project?&type=1`} className="PromptInputPageLink">
             <button className="btn PromptInputPageButton" style={{ marginLeft: "10px", fontFamily: 'Lato' }}>
               <h3 style={{ marginLeft: "10px" }}>←Back</h3>
             </button>
