@@ -62,3 +62,5 @@ confirm path
  img normal path
  1. CreateProjectPage.js選擇imgGeneration => 2.Create.js創建專案名稱 projectname => 3. ModelSelectionPage轉換成projectname_process2 => 4.PromptInputPage維持projectname_process2
  => 5.ImgDisplayPage.js維持projectname_process2 => 傳入對應的後端api => navigate到/Step?project=${projectname_process2}  注意: /Step?project=${projectname}
+
+ 但是還是有點小問題 requirement傳送會有問題
